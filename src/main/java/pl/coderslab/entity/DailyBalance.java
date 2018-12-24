@@ -11,13 +11,12 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Require {
+public class DailyBalance {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @OneToOne
-    private User user;
     @OneToMany
     private List<Meal> meals;
-    private int require;
+    private int needed;
+    private int received;
 }
