@@ -33,10 +33,15 @@ public class ProductController {
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public String addPost(@Valid Product product, BindingResult result){
+    public String addPost(@Valid Product product, BindingResult result, Model model){
         if(result.hasErrors()){
             return "addProduct";
         }
+        if((product.getProtein() + product.getCarbohydrates() + product.getFat()) > 100){
+            model.addAttribute("mistake", "mistake");
+            return "addProduct";
+        }
+        product.setWeight(100);
         productRepository.save(product);
         return "home";
     }

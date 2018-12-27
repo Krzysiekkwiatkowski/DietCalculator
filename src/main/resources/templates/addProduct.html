@@ -6,6 +6,9 @@
 </head>
 <body>
 <form th:action="@{/diet/product/add}" th:object="${product}" method="post">
+    <p th:if="${mistake}">
+        <th:text>Suma białka, węglowodanow i tłuszczy nie może przekroczyć 100g na 100 gram produktu!</th:text>
+    </p>
     Nazwa: <input type="text" th:field="*{name}"><th:if="${#fields.hasErrors('name')}" th:errors="*{name}"/></br>
     <th:text> Wartości na 100g produktu: </th:text></br>
     Białko: <input type="number" min=0 max = 100 step="0.1" th:field="*{protein}"><th:if="${#fields.hasErrors('protein')}" th:errors="*{protein}"/></br>

@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type"	content="text/html;	charset=UTF-8" />
+    <title>Title</title>
+</head>
+<body>
+<form th:action="@{/diet/meal/addProduct}" method="post">
+    Produkt: <select name="id">
+    <option th:each="product : ${productList}" th:value="${product.id}" th:text="${product.name}" />
+</select></br>
+    <input type="submit" value="Dodaj produkt">
+</form>
+</body>
+</html>
