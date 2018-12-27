@@ -32,7 +32,7 @@ public class Product {
     @Max(100)
     private double fat;
     @Min(0)
-    private double calories;
+    private int calories;
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "category_id")

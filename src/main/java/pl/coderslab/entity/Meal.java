@@ -23,5 +23,5 @@ public class Meal {
     private double totalProtein;
     private double totalCarbohydrates;
     private double totalFat;
-    private double totalCalories;
+    private int totalCalories;
 }
