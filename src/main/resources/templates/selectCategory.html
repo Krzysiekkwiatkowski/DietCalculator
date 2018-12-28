@@ -13,7 +13,8 @@
     Kategoria: <select name="id">
         <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}" />
     </select></br>
-    <input type="submit" value="Potwierdź kategorię">
+    <input type="submit" value="Potwierdź kategorię"></br></br>
+    <a th:href="@{'/diet/meal/confirm'}"> Zatwierdź posiłek </a>
 </form>
 </body>
 </html>

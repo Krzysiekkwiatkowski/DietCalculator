@@ -24,12 +24,15 @@ public class Product {
     private String name;
     @Min(+0)
     @Max(+100)
+    @Column(scale = 1, precision = 5)
     private double protein;
     @Min(0)
     @Max(100)
+    @Column(scale = 1, precision = 5)
     private double carbohydrates;
     @Min(0)
     @Max(100)
+    @Column(scale = 1, precision = 5)
     private double fat;
     @Min(0)
     private int calories;

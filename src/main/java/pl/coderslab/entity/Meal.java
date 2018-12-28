@@ -20,8 +20,11 @@ public class Meal {
     private int mealNumber;
     @ManyToMany
     private List<Product> products;
+    @Column(scale = 1, precision = 5)
     private double totalProtein;
+    @Column(scale = 1, precision = 5)
     private double totalCarbohydrates;
+    @Column(scale = 1, precision = 5)
     private double totalFat;
     private int totalCalories;
 }

@@ -8,7 +8,8 @@
 <form th:action="@{/diet/meal/addProduct}" method="post">
     Produkt: <select name="id">
     <option th:each="product : ${productList}" th:value="${product.id}" th:text="${product.name}" />
-</select></br>
+    </select></br>
+    Ilość: <input type="number" min="0" name="weight" /></br>
     <input type="submit" value="Dodaj produkt">
 </form>
 </body>
