@@ -3,17 +3,14 @@ package pl.coderslab.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import pl.coderslab.entity.Category;
 import pl.coderslab.entity.Meal;
 import pl.coderslab.entity.Product;
-import pl.coderslab.entity.User;
 import pl.coderslab.repository.CategoryRepository;
 import pl.coderslab.repository.MealRepository;
 import pl.coderslab.repository.ProductRepository;
+import pl.coderslab.repository.UserRepository;
 
 import javax.servlet.http.HttpSession;
 import java.sql.Date;
@@ -94,8 +91,19 @@ public class MealController {
             meal.setTotalCarbohydrates(carbohydratesSum);
             meal.setTotalFat(fatSum);
             meal.setTotalCalories(caloriesSum);
+            mealRepository.save(meal);
+            System.out.println("Białko: " + meal.getTotalProtein());
+            System.out.println("Węglowodany: " + meal.getTotalCarbohydrates());
+            System.out.println("Tłuszcz: " + meal.getTotalFat());
+            System.out.println("Kalorie: " + meal.getTotalCalories());
             session.removeAttribute("meal");
         }
+        return "home";
+    }
+
+    @RequestMapping("/delete/{id}")
+    public String delete(@PathVariable("id") Long id){
+        mealRepository.delete(mealRepository.findTopById(id));
         return "home";
     }
 

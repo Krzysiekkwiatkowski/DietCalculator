@@ -20,9 +20,11 @@ public class User {
     private String lastName;
     private String email;
     private String password;
+    private int age;
+    private int height;
     private double weight;
     private String activity;
-    private String buildType;
+    private String somatotype;
     private String goal;
     @OneToMany
     private List<DailyBalance> dailyBalances;
