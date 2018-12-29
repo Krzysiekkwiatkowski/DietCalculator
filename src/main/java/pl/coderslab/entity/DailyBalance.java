@@ -19,4 +19,5 @@ public class DailyBalance {
     private List<Meal> meals;
     private int needed;
     private int received;
+    private int balance;
 }

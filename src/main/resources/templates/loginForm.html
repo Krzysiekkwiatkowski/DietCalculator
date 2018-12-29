@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type"	content="text/html;	charset=UTF-8" />
+    <title>Title</title>
+</head>
+<body>
+<p style="color: red" th:if="${wrong}"> Błędny login lub hasło! </p>
+<form action="/diet/user/login" method="post">
+    Email: <input type="text" name="email"></br>
+    Password: <input type="password" name="password"></br>
+    <input type="submit" value="Zaloguj">
+</form>
+</body>
+</html>
