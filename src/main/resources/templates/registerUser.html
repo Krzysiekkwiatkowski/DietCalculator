@@ -10,7 +10,7 @@
     Imię: <input type="text" th:field="*{firstName}"><th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}" /></br>
     Nazwisko: <input type="text" th:field="*{lastName}"><th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}" /></br>
     Email: <input type="text" th:field="*{email}"><th:if="${#fields.hasErrors('email')}" th:errors="*{email}" /></br>
-    Hasło: <input type="text" th:field="*{password}"><th:if="${#fields.hasErrors('password')}" th:errors="*{password}" /></br>
+    Hasło: <input type="password" th:field="*{password}"><th:if="${#fields.hasErrors('password')}" th:errors="*{password}" /></br>
     Płeć: <select th:field="*{gender}">
         <option th:each="gender : ${genderList}" th:value="${gender}" th:text="${gender}" />
     </select></br>

@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import java.sql.Date;
 import java.util.List;
 
 @Data
@@ -18,7 +17,6 @@ public class Meal {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Date date;
     private int mealNumber;
     @ManyToMany
     @NotNull

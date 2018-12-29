@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type"	content="text/html;	charset=UTF-8" />
+    <title>Title</title>
+</head>
+<body>
+<form th:action="@{/diet/training/add}" th:object="${training}" method="post">
+    Intensywność treningu siłowego: <select th:field="*{strengthIntensity}">
+        <option th:each="intensity : ${intensityList}" th:text="${intensity}" th:value="${intensity}" />
+    </select></br>
+    Czas treningu siłowego: <input type="number" min="0" th:field="*{strengthTime}"></br>
+    Treningi w tygodniu: <input type="number" min="0" th:field="*{strengthDays}"></br>
+    Intensywność treningu aerobowego: <select th:field="*{cardioIntensity}">
+    <option th:each="intensity : ${intensityList}" th:text="${intensity}" th:value="${intensity}" />
+    </select></br>
+    Czas treningu aerobowego: <input type="number" min="0" th:field="*{cardioTime}"></br>
+    Treningi w tygodniu: <input type="number" min="0" th:field="*{cardioDays}"></br>
+    <input type="submit" value="Zatwierdź trening">
+</form>
+</body>
+</html>

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import pl.coderslab.entity.User;
 import pl.coderslab.repository.UserRepository;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +30,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public String registerPost(@Valid User user, BindingResult result){
+    public String registerPost(@Valid User user, BindingResult result, HttpSession session){
         if(result.hasErrors()){
             return "registerUser";
         }
@@ -72,8 +73,11 @@ public class UserController {
         } else if(goal.equals("Przybranie wagi")){
             goalFactor = 500;
         }
-        System.out.println((int) metabolism + activityFactor + somatotypeFactor + goalFactor);
+        int total = (int) metabolism + activityFactor + somatotypeFactor + goalFactor;
+        user.setTotalCalories(total);
+        System.out.println(total);
         userRepository.save(user);
+        session.setAttribute("user", user);
         return "home";
     }
 
@@ -83,9 +87,10 @@ public class UserController {
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public String loginPost(@RequestParam("email") String email, @RequestParam("password") String password, Model model){
+    public String loginPost(@RequestParam("email") String email, @RequestParam("password") String password, Model model, HttpSession session){
         User user = userRepository.findTopByEmail(email);
         if(BCrypt.checkpw(password, user.getPassword())){
+            session.setAttribute("user", user);
             return "home";
         }
         model.addAttribute("wrong", "wrong");

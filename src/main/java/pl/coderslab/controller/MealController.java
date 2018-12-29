@@ -4,13 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import pl.coderslab.entity.Category;
-import pl.coderslab.entity.Meal;
-import pl.coderslab.entity.Product;
-import pl.coderslab.repository.CategoryRepository;
-import pl.coderslab.repository.MealRepository;
-import pl.coderslab.repository.ProductRepository;
-import pl.coderslab.repository.UserRepository;
+import pl.coderslab.entity.*;
+import pl.coderslab.repository.*;
 
 import javax.servlet.http.HttpSession;
 import java.sql.Date;
@@ -22,6 +17,12 @@ import java.util.List;
 @Controller
 public class MealController {
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private DailyBalanceRepository dailyBalanceRepository;
+
+    @Autowired
     private MealRepository mealRepository;
 
     @Autowired
@@ -31,10 +32,10 @@ public class MealController {
     private CategoryRepository categoryRepository;
 
     @RequestMapping(value = "/add", method = RequestMethod.GET)
-    public String addGet(Model model, HttpSession session){
+    public String addGet(Model model, HttpSession session) {
         Object object = session.getAttribute("meal");
-        if(object != null){
-            List<Product> mealProducts = (List<Product>)object;
+        if (object != null) {
+            List<Product> mealProducts = (List<Product>) object;
             model.addAttribute("mealProducts", mealProducts);
         }
         model.addAttribute("categories", allCategories());
@@ -42,27 +43,27 @@ public class MealController {
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public String addPost(@ModelAttribute Category category, Model model){
+    public String addPost(@ModelAttribute Category category, Model model) {
         model.addAttribute("product", new Product());
         model.addAttribute("productList", allProductsByCategory(category.getId()));
         return "selectProduct";
     }
 
     @RequestMapping(value = "/addProduct", method = RequestMethod.POST)
-    public String addProductPost(@RequestParam("weight") int weight, @ModelAttribute Product product, HttpSession session, Model model){
+    public String addProductPost(@RequestParam("weight") int weight, @ModelAttribute Product product, HttpSession session, Model model) {
         Product loadedProduct = productRepository.findTopById(product.getId());
         double multiplier = weight / 100.0;
         loadedProduct.setProtein(loadedProduct.getProtein() * multiplier);
         loadedProduct.setCarbohydrates(loadedProduct.getCarbohydrates() * multiplier);
         loadedProduct.setFat(loadedProduct.getFat() * multiplier);
-        loadedProduct.setCalories((int)(loadedProduct.getCalories() * multiplier));
+        loadedProduct.setCalories((int) (loadedProduct.getCalories() * multiplier));
         loadedProduct.setWeight(weight);
         Object object = session.getAttribute("meal");
         List<Product> mealProducts;
-        if(object == null){
+        if (object == null) {
             mealProducts = new ArrayList<>();
         } else {
-            mealProducts = (List<Product>)object;
+            mealProducts = (List<Product>) object;
         }
         mealProducts.add(loadedProduct);
         model.addAttribute("mealProducts", mealProducts);
@@ -71,12 +72,16 @@ public class MealController {
     }
 
     @RequestMapping(value = "/confirm", method = RequestMethod.GET)
-    public String confirmGet(HttpSession session){
-        Object object = session.getAttribute("meal");
-        if(object != null){
-            List<Product> mealProducts = (List<Product>)object;
+    public String confirmGet(HttpSession session) {
+        Object objectMeal = session.getAttribute("meal");
+        Object objectUser = session.getAttribute("user");
+        if (objectMeal != null && objectUser != null) {
+            User user = (User) objectUser;
+            User loadedUser = userRepository.findTopByEmail(user.getEmail());
+            List<Product> mealProducts = (List<Product>) objectMeal;
             Meal meal = new Meal();
-            meal.setDate(Date.valueOf(LocalDate.now()));
+            List<Meal> meals = null;
+            DailyBalance dailyBalance = null;
             double proteinSum = 0.0;
             double carbohydratesSum = 0.0;
             double fatSum = 0.0;
@@ -87,28 +92,54 @@ public class MealController {
                 fatSum += product.getFat();
                 caloriesSum += product.getCalories();
             }
+            meal.setProducts(mealProducts);
             meal.setTotalProtein(proteinSum);
             meal.setTotalCarbohydrates(carbohydratesSum);
             meal.setTotalFat(fatSum);
             meal.setTotalCalories(caloriesSum);
-            mealRepository.save(meal);
+            int exist = dailyBalanceRepository.countByUserIdAndDate(loadedUser.getId(), Date.valueOf(LocalDate.now()));
+            if (exist == 1) {
+                dailyBalance = dailyBalanceRepository.findTopByUserIdAndAndDate(loadedUser.getId(), Date.valueOf(LocalDate.now()));
+                meals = dailyBalance.getMeals();
+                if (meals.size() == 0) {
+                    meals = new ArrayList<>();
+                    dailyBalance.setDate(Date.valueOf(LocalDate.now()));
+                    dailyBalance.setUser(loadedUser);
+                    dailyBalance.setNeeded(loadedUser.getTotalCalories() + loadedUser.getTraining().getDailyCalories());
+                } else {
+                    meals = dailyBalance.getMeals();
+                }
+            } else {
+                dailyBalance = new DailyBalance();
+                meals = new ArrayList<>();
+                dailyBalance.setDate(Date.valueOf(LocalDate.now()));
+                dailyBalance.setUser(loadedUser);
+                dailyBalance.setNeeded(loadedUser.getTotalCalories() + loadedUser.getTraining().getDailyCalories());
+            }
+            dailyBalance.setReceived(dailyBalance.getReceived() + meal.getTotalCalories());
+            dailyBalance.setBalance(dailyBalance.getReceived() - dailyBalance.getNeeded());
+            meal.setMealNumber(meals.size() + 1);
+            meals.add(meal);
+            dailyBalance.setMeals(meals);
             System.out.println("Białko: " + meal.getTotalProtein());
             System.out.println("Węglowodany: " + meal.getTotalCarbohydrates());
             System.out.println("Tłuszcz: " + meal.getTotalFat());
             System.out.println("Kalorie: " + meal.getTotalCalories());
+            mealRepository.save(meal);
+            dailyBalanceRepository.save(dailyBalance);
             session.removeAttribute("meal");
         }
         return "home";
     }
 
     @RequestMapping("/delete/{id}")
-    public String delete(@PathVariable("id") Long id){
+    public String delete(@PathVariable("id") Long id) {
         mealRepository.delete(mealRepository.findTopById(id));
         return "home";
     }
 
     @ModelAttribute("categories")
-    public List<Category> allCategories(){
+    public List<Category> allCategories() {
         return categoryRepository.findAll();
     }
 

@@ -6,4 +6,5 @@ import pl.coderslab.entity.Training;
 
 @Repository
 public interface TrainingRepository extends JpaRepository<Training, Long> {
+    Training findTopById(Long id);
 }
