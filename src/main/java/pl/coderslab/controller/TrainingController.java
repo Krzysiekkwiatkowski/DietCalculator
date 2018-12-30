@@ -46,18 +46,22 @@ public class TrainingController {
         double strIntensity = 0.0;
         double cardioIntensity = 0.0;
         if(training.getStrengthIntensity().equals("Umiarkowana")){
-            cardioIntensity = 8.0;
+            strIntensity = 8.0;
         } else if(training.getStrengthIntensity().equals("Średnia")){
-            cardioIntensity = 10.0;
+            strIntensity = 10.0;
         } else if(training.getStrengthIntensity().equals("Wysoka")){
-            cardioIntensity = 12.0;
+            strIntensity = 12.0;
         }
-        if(training.getCardioIntensity().equals("Umiarkowana")){
-            cardioIntensity = 3.5;
+        if(training.getCardioIntensity().equals("Niska")){
+            cardioIntensity = 4;
+        } else if(training.getCardioIntensity().equals("Umiarkowana")){
+            cardioIntensity = 6.5;
         } else if(training.getCardioIntensity().equals("Średnia")){
-            cardioIntensity = 8.5;
+            cardioIntensity = 8.0;
         } else if(training.getCardioIntensity().equals("Wysoka")){
-            cardioIntensity = 11.0;
+            cardioIntensity = 9.5;
+        } else if(training.getCardioIntensity().equals("Bardzo wysoka")){
+            cardioIntensity = 11;
         }
         double calories = ((training.getStrengthDays() * training.getStrengthTime() * strIntensity) + (training.getCardioDays() * training.getCardioTime() * cardioIntensity)) / 7;
         training.setDailyCalories((int)calories);
@@ -88,18 +92,22 @@ public class TrainingController {
         double strIntensity = 0.0;
         double cardioIntensity = 0.0;
         if(training.getStrengthIntensity().equals("Umiarkowana")){
-            cardioIntensity = 8.0;
+            strIntensity = 8.0;
         } else if(training.getStrengthIntensity().equals("Średnia")){
-            cardioIntensity = 10.0;
+            strIntensity = 10.0;
         } else if(training.getStrengthIntensity().equals("Wysoka")){
-            cardioIntensity = 12.0;
+            strIntensity = 12.0;
         }
-        if(training.getCardioIntensity().equals("Umiarkowana")){
-            cardioIntensity = 3.5;
+        if(training.getCardioIntensity().equals("Niska")){
+            cardioIntensity = 4;
+        } else if(training.getCardioIntensity().equals("Umiarkowana")){
+            cardioIntensity = 6.5;
         } else if(training.getCardioIntensity().equals("Średnia")){
-            cardioIntensity = 8.5;
+            cardioIntensity = 8.0;
         } else if(training.getCardioIntensity().equals("Wysoka")){
-            cardioIntensity = 11.0;
+            cardioIntensity = 9.5;
+        } else if(training.getCardioIntensity().equals("Bardzo wysoka")){
+            cardioIntensity = 11;
         }
         double calories = ((training.getStrengthDays() * training.getStrengthTime() * strIntensity) + (training.getCardioDays() * training.getCardioTime() * cardioIntensity)) / 7;
         training.setDailyCalories((int)calories);
@@ -125,12 +133,23 @@ public class TrainingController {
         return "home";
     }
 
-    @ModelAttribute("intensityList")
-    public List<String> allIntensity(){
+    @ModelAttribute("intensityListStrength")
+    public List<String> allIntensityStrength(){
         List<String> intensities = new ArrayList<>();
         intensities.add("Umiarkowana");
         intensities.add("Średnia");
         intensities.add("Wysoka");
+        return intensities;
+    }
+
+    @ModelAttribute("intensityListCardio")
+    public List<String> allIntensityCardio(){
+        List<String> intensities = new ArrayList<>();
+        intensities.add("Niska");
+        intensities.add("Umiarkowana");
+        intensities.add("Średnia");
+        intensities.add("Wysoka");
+        intensities.add("Bardzo wysoka");
         return intensities;
     }
 }

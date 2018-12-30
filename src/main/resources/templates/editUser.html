@@ -5,29 +5,29 @@
     <title>Title</title>
 </head>
 <body>
-<form th:action="@{/diet/user/register}" th:object="${user}" method="post">
+<form th:action="@{/diet/user/edit}" th:object="${user}" method="post">
+    <input type="hidden" name="id" th:field="*{id}" th:value="${id}">
+    <input type="hidden" name="email" th:field="*{email}" th:value="${email}">
+    <input type="hidden" name="password" th:field="*{password}" th:value="${password}">
     Nick: <input type="text" th:field="*{nickname}"><th:if="${#fields.hasError('nickname')}" th:errors="*{nickname}" /></br>
     Imię: <input type="text" th:field="*{firstName}"><th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}" /></br>
     Nazwisko: <input type="text" th:field="*{lastName}"><th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}" /></br>
-    <p style="color: red" th:if="${repeat}"> Istnieje już użytkownik o takim emailu! </p>
-    Email: <input type="text" th:field="*{email}"><th:if="${#fields.hasErrors('email')}" th:errors="*{email}" /></br>
-    Hasło: <input type="password" th:field="*{password}"><th:if="${#fields.hasErrors('password')}" th:errors="*{password}" /></br>
     Płeć: <select th:field="*{gender}">
-        <option th:each="gender : ${genderList}" th:value="${gender}" th:text="${gender}" />
-    </select></br>
+    <option th:each="gender : ${genderList}" th:value="${gender}" th:text="${gender}" />
+</select></br>
     Wiek: <input type="number" min="0" th:field="*{age}"><th:if="${#fields.hasErrors('age')}" th:errors="*{age}" /></br>
     Wzrost: <input type="number" min="0" th:field="*{height}"><th:if="${#fields.hasErrors('height')}" th:errors="*{height}" /></br>
     Waga: <input type="number" min="0" step="0,1" th:field="*{weight}"><th:if="${#fields.hasErrors('weight')}" th:errors="*{weight}" /></br>
     Aktywność: <select th:field="*{activity}">
-        <option th:each="activity : ${activityList}" th:value="${activity}" th:text="${activity}" />
-    </select></br>
+    <option th:each="activity : ${activityList}" th:value="${activity}" th:text="${activity}" />
+</select></br>
     Somatotyp: <select th:field="*{somatotype}">
-        <option th:each="somatotype : ${somatotypeList}" th:value="${somatotype}" th:text="${somatotype}"/>
-    </select></br>
+    <option th:each="somatotype : ${somatotypeList}" th:value="${somatotype}" th:text="${somatotype}"/>
+</select></br>
     Cel: <select th:field="*{goal}">
-        <option th:each="goal : ${goalList}" th:value="${goal}" th:text="${goal}"/>
-    </select></br>
-    <input type="submit" value="Zarejestruj">
+    <option th:each="goal : ${goalList}" th:value="${goal}" th:text="${goal}"/>
+</select></br>
+    <input type="submit" value="Aktualizuj">
 </form>
 </body>
 </html>

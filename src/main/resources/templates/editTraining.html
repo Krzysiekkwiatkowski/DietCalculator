@@ -8,13 +8,13 @@
 <form th:action="@{/diet/training/add}" th:object="${training}" method="post">
     <input type="hidden" name="id" th:field="*{id}" th:value="${id}">
     Intensywność treningu siłowego: <select th:field="*{strengthIntensity}">
-    <option th:each="intensity : ${intensityList}" th:text="${intensity}" th:value="${intensity}" />
-</select></br>
+        <option th:each="intensity : ${intensityListStrength}" th:text="${intensity}" th:value="${intensity}" />
+    </select></br>
     Czas treningu siłowego: <input type="number" min="0" th:field="*{strengthTime}"></br>
     Treningi w tygodniu: <input type="number" min="0" th:field="*{strengthDays}"></br>
     Intensywność treningu aerobowego: <select th:field="*{cardioIntensity}">
-    <option th:each="intensity : ${intensityList}" th:text="${intensity}" th:value="${intensity}" />
-</select></br>
+        <option th:each="intensity : ${intensityListCardio}" th:text="${intensity}" th:value="${intensity}" />
+    </select></br>
     Czas treningu aerobowego: <input type="number" min="0" th:field="*{cardioTime}"></br>
     Treningi w tygodniu: <input type="number" min="0" th:field="*{cardioDays}"></br>
     <input type="submit" value="Zmień trening">
