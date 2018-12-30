@@ -44,7 +44,7 @@ public class User {
     private String somatotype;
     @NotBlank
     private String goal;
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
     private List<DailyBalance> dailyBalances;
     @OneToOne
     private Training training;

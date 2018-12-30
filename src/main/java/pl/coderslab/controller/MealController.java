@@ -78,10 +78,16 @@ public class MealController {
         if (objectMeal != null && objectUser != null) {
             User user = (User) objectUser;
             User loadedUser = userRepository.findTopByEmail(user.getEmail());
+            List<DailyBalance> dailyBalances;
+            DailyBalance dailyBalance = null;
+            List<Meal> meals = null;
+            if(loadedUser.getDailyBalances() == null){
+                dailyBalances = new ArrayList<>();
+            } else {
+                dailyBalances = user.getDailyBalances();
+            }
             List<Product> mealProducts = (List<Product>) objectMeal;
             Meal meal = new Meal();
-            List<Meal> meals = null;
-            DailyBalance dailyBalance = null;
             double proteinSum = 0.0;
             double carbohydratesSum = 0.0;
             double fatSum = 0.0;
@@ -114,27 +120,28 @@ public class MealController {
                 meals = new ArrayList<>();
                 dailyBalance.setDate(Date.valueOf(LocalDate.now()));
                 dailyBalance.setUser(loadedUser);
-                dailyBalance.setNeeded(loadedUser.getTotalCalories() + loadedUser.getTraining().getDailyCalories());
+                if(loadedUser.getTraining() != null){
+                    dailyBalance.setNeeded(loadedUser.getTotalCalories() + loadedUser.getTraining().getDailyCalories());
+                } else {
+                    dailyBalance.setNeeded(loadedUser.getTotalCalories());
+                }
             }
             dailyBalance.setReceived(dailyBalance.getReceived() + meal.getTotalCalories());
             dailyBalance.setBalance(dailyBalance.getReceived() - dailyBalance.getNeeded());
             meal.setMealNumber(meals.size() + 1);
             meals.add(meal);
             dailyBalance.setMeals(meals);
+            dailyBalances.add(dailyBalance);
+            loadedUser.setDailyBalances(dailyBalances);
             System.out.println("Białko: " + meal.getTotalProtein());
             System.out.println("Węglowodany: " + meal.getTotalCarbohydrates());
             System.out.println("Tłuszcz: " + meal.getTotalFat());
             System.out.println("Kalorie: " + meal.getTotalCalories());
             mealRepository.save(meal);
             dailyBalanceRepository.save(dailyBalance);
+            userRepository.save(loadedUser);
             session.removeAttribute("meal");
         }
-        return "home";
-    }
-
-    @RequestMapping("/delete/{id}")
-    public String delete(@PathVariable("id") Long id) {
-        mealRepository.delete(mealRepository.findTopById(id));
         return "home";
     }
 

@@ -97,6 +97,12 @@ public class UserController {
         return "loginForm";
     }
 
+    @RequestMapping(value = "/logout", method = RequestMethod.GET)
+    public String logout(HttpSession session){
+        session.removeAttribute("user");
+        return "home";
+    }
+
     @ModelAttribute("genderList")
     public List<String> allGenders(){
         List<String> genders = new ArrayList<>();

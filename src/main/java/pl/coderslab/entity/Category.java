@@ -20,6 +20,6 @@ public class Category {
     private String name;
     @NotBlank
     private String description;
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "category")
     private List<Product> products;
 }
