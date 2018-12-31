@@ -48,5 +48,8 @@ public class User {
     private List<DailyBalance> dailyBalances;
     @OneToOne
     private Training training;
+    private double totalProtein;
+    private double totalCarbohydrates;
+    private double totalFat;
     private int totalCalories;
 }
