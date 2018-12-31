@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type"	content="text/html;	charset=UTF-8" />
+    <title>Title</title>
+</head>
+<body>
+<h4 th:text="'Twój posiłek dostarcza: '"></h4>
+<p th:text="'Białko: ' + ${meal.totalProtein}"></p>
+<p th:text="'Węglowodany: ' + ${meal.totalCarbohydrates}"></p>
+<p th:text="'Tłuszcze: ' + ${meal.totalFat}"></p>
+<p th:text="'Kalorie: ' + ${meal.totalCalories}"></p>
+</body>
+</html>

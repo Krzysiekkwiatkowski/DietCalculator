@@ -145,6 +145,13 @@ public class MealController {
         return "home";
     }
 
+    @RequestMapping("/view/{id}")
+    public String viewMeal(@PathVariable("id") Long id, Model model){
+        Meal meal = mealRepository.findTopById(id);
+        model.addAttribute("meal", meal);
+        return "viewMeal";
+    }
+
     @ModelAttribute("categories")
     public List<Category> allCategories() {
         return categoryRepository.findAll();

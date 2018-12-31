@@ -48,12 +48,13 @@ public class ProductController {
 
     @RequestMapping(value = "/edit/{id}", method = RequestMethod.GET)
     public String editGet(@PathVariable("id") Long id, Model model){
-        model.addAttribute("product", productRepository.findById(id));
+        model.addAttribute("product", productRepository.findTopById(id));
         return "editProduct";
     }
 
     @RequestMapping(value = "/edit/*", method = RequestMethod.POST)
     public String editPost(@Valid Product product, BindingResult result){
+        System.out.println(product.getId() + " - " + product.getName());
         if(result.hasErrors()){
             return "editProduct";
         }

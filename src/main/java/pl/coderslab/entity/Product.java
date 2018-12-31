@@ -43,4 +43,18 @@ public class Product {
     private Category category;
     @Min(0)
     private int weight;
+
+    @Override
+    public String toString(){
+        return "Product{" +
+                "id="+ id +
+                ",name="+ name +
+                ",protein="+ protein +
+                ",carbohydrates="+ carbohydrates +
+                ",fat="+ fat +
+                ",calories="+ calories +
+                ",category="+ category.getName() +
+                ",weight="+ weight +
+                "}";
+    }
 }
