@@ -131,12 +131,10 @@ public class MealController {
             meal.setMealNumber(meals.size() + 1);
             meals.add(meal);
             dailyBalance.setMeals(meals);
+            System.out.println(dailyBalance);
+            System.out.println(dailyBalances);
             dailyBalances.add(dailyBalance);
             loadedUser.setDailyBalances(dailyBalances);
-            System.out.println("Białko: " + meal.getTotalProtein());
-            System.out.println("Węglowodany: " + meal.getTotalCarbohydrates());
-            System.out.println("Tłuszcz: " + meal.getTotalFat());
-            System.out.println("Kalorie: " + meal.getTotalCalories());
             mealRepository.save(meal);
             dailyBalanceRepository.save(dailyBalance);
             userRepository.save(loadedUser);

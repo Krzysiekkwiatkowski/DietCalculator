@@ -10,6 +10,7 @@ import pl.coderslab.entity.DailyBalance;
 import pl.coderslab.entity.Meal;
 import pl.coderslab.entity.User;
 import pl.coderslab.repository.DailyBalanceRepository;
+import pl.coderslab.repository.TrainingRepository;
 import pl.coderslab.repository.UserRepository;
 
 import javax.servlet.http.HttpSession;
@@ -27,6 +28,9 @@ public class UserController {
 
     @Autowired
     private DailyBalanceRepository dailyBalanceRepository;
+
+    @Autowired
+    private TrainingRepository trainingRepository;
 
     @RequestMapping(value = "/register", method = RequestMethod.GET)
     public String registerGet(Model model){
@@ -326,6 +330,21 @@ public class UserController {
         }
         model.addAttribute("wrongPassword", "wrongPassword");
         return "changePassword";
+    }
+
+    @RequestMapping(value = "/delete", method = RequestMethod.GET)
+    public String delete(HttpSession session){
+        Object object = session.getAttribute("user");
+        if(object == null){
+            return "loginForm";
+        }
+        User user = (User)object;
+        User loadedUser = userRepository.findTopByEmail(user.getEmail());
+        trainingRepository.delete(loadedUser.getTraining());
+        dailyBalanceRepository.deleteAll(dailyBalanceRepository.findAllByUser(loadedUser));
+        userRepository.delete(loadedUser);
+        session.removeAttribute("user");
+        return "home";
     }
 
     @ModelAttribute("genderList")
