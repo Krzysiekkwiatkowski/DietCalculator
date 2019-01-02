@@ -141,6 +141,39 @@ public class MealController {
         return "home";
     }
 
+    @RequestMapping(value = "/delete/{id}")
+    public String delete(@PathVariable("id") Long id, HttpSession session){
+        Object object = session.getAttribute("user");
+        if(object == null){
+            return "loginForm";
+        }
+        User user = (User)object;
+        User loadedUser = userRepository.findTopByEmail(user.getEmail());
+        if(dailyBalanceRepository.findTopByUserIdAndAndDate(loadedUser.getId(), Date.valueOf(LocalDate.now())) != null){
+            DailyBalance dailyBalance = dailyBalanceRepository.findTopByUserIdAndAndDate(loadedUser.getId(), Date.valueOf(LocalDate.now()));
+            List<Meal> meals = dailyBalance.getMeals();
+            Meal toDelete = null;
+            for (Meal meal : meals) {
+                if(meal.getId() == id){
+                    mealRepository.delete(meal);
+                    toDelete = meal;
+                }
+            }
+            if(toDelete != null){
+                meals.remove(toDelete);
+            }
+            int totalReceived = 0;
+            for (Meal meal : meals) {
+                totalReceived += meal.getTotalCalories();
+            }
+            dailyBalance.setBalance(totalReceived - dailyBalance.getNeeded());
+            dailyBalance.setMeals(meals);
+            dailyBalanceRepository.save(dailyBalance);
+
+        }
+        return "home";
+    }
+
     @RequestMapping("/view/{id}")
     public String viewMeal(@PathVariable("id") Long id, Model model){
         Meal meal = mealRepository.findTopById(id);
@@ -151,6 +184,11 @@ public class MealController {
     @ModelAttribute("categories")
     public List<Category> allCategories() {
         return categoryRepository.findAll();
+    }
+
+    @ModelAttribute("products")
+    public List<Product> allProducts() {
+        return productRepository.findAll();
     }
 
     @ModelAttribute("productList")

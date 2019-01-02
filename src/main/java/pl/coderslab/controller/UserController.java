@@ -103,8 +103,8 @@ public class UserController {
         user.setTotalCalories(total);
         user.setTotalProtein(user.getWeight() * 1.8);
         if(goal.equals("Utrata wagi")){
-            user.setTotalFat(user.getWeight() * 3.0);
-            user.setTotalCarbohydrates((total - 4.0 * user.getTotalProtein() - 9.0 * user.getTotalFat())/ 4.0);
+            user.setTotalCarbohydrates(user.getWeight() * 1.5);
+            user.setTotalFat((total - 4.0 * user.getTotalProtein() - 4.0 * user.getTotalCarbohydrates())/ 9.0);
         }
         if(goal.equals("Utrzymanie wagi")){
             user.setTotalCarbohydrates(user.getWeight() * 2.5);
@@ -340,8 +340,12 @@ public class UserController {
         }
         User user = (User)object;
         User loadedUser = userRepository.findTopByEmail(user.getEmail());
-        trainingRepository.delete(loadedUser.getTraining());
-        dailyBalanceRepository.deleteAll(dailyBalanceRepository.findAllByUser(loadedUser));
+        if(loadedUser.getTraining() != null){
+            trainingRepository.delete(loadedUser.getTraining());
+        }
+        if(dailyBalanceRepository.findAllByUser(loadedUser) != null) {
+            dailyBalanceRepository.deleteAll(dailyBalanceRepository.findAllByUser(loadedUser));
+        }
         userRepository.delete(loadedUser);
         session.removeAttribute("user");
         return "home";

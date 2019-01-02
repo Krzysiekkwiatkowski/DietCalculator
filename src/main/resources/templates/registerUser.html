@@ -17,7 +17,7 @@
     </select></br>
     Wiek: <input type="number" min="0" th:field="*{age}"><th:if="${#fields.hasErrors('age')}" th:errors="*{age}" /></br>
     Wzrost: <input type="number" min="0" th:field="*{height}"><th:if="${#fields.hasErrors('height')}" th:errors="*{height}" /></br>
-    Waga: <input type="number" min="0" step="0,1" th:field="*{weight}"><th:if="${#fields.hasErrors('weight')}" th:errors="*{weight}" /></br>
+    Waga: <input type="number" min="0" step="0.1" th:field="*{weight}"><th:if="${#fields.hasErrors('weight')}" th:errors="*{weight}" /></br>
     Aktywność: <select th:field="*{activity}">
         <option th:each="activity : ${activityList}" th:value="${activity}" th:text="${activity}" />
     </select></br>

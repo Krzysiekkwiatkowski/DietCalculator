@@ -11,7 +11,8 @@
         <p th:each="product : ${mealProducts}" th:text="${product.name + ' -> ' + product.weight + 'g'}"></p>
     </div>
     Kategoria: <select name="id">
-        <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}" />
+    <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}" >
+    </option>
     </select></br>
     <input type="submit" value="Potwierdź kategorię"></br></br>
     <a th:href="@{'/diet/meal/confirm'}"> Zatwierdź posiłek </a>
