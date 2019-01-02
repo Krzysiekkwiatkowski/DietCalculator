@@ -51,9 +51,8 @@ public class CategoryController {
     }
 
     @RequestMapping(value = "/all", method = RequestMethod.GET)
-    public String all(Model model){
-        model.addAttribute("categories", allCategories());
-        return "home";
+    public String all(){
+        return "allCategories";
     }
 
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)

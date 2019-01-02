@@ -84,7 +84,7 @@ public class MealController {
             if(loadedUser.getDailyBalances() == null){
                 dailyBalances = new ArrayList<>();
             } else {
-                dailyBalances = user.getDailyBalances();
+                dailyBalances = loadedUser.getDailyBalances();
             }
             List<Product> mealProducts = (List<Product>) objectMeal;
             Meal meal = new Meal();
@@ -131,8 +131,6 @@ public class MealController {
             meal.setMealNumber(meals.size() + 1);
             meals.add(meal);
             dailyBalance.setMeals(meals);
-            System.out.println(dailyBalance);
-            System.out.println(dailyBalances);
             dailyBalances.add(dailyBalance);
             loadedUser.setDailyBalances(dailyBalances);
             mealRepository.save(meal);

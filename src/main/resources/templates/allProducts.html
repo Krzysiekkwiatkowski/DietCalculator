@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type"	content="text/html;	charset=UTF-8" />
+    <title>Title</title>
+</head>
+<body>
+<form th:action="@{/diet/product/search}" method="post">
+    Nazwa: <input type="text" name="name">
+    <input type="submit" value="Wyszukaj">
+</form>
+<h3 th:text="'Lista produktów: '"></h3>
+<p th:each="product : ${products}" th:text="${product.name}"/>
+</body>
+</html>

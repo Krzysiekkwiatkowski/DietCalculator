@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type"	content="text/html;	charset=UTF-8" />
+    <title>Title</title>
+</head>
+<body>
+<h3 th:text="'Lista kategorii: '"></h3>
+<p th:each="category : ${categories}" th:text="${category.name}" />
+</body>
+</html>
