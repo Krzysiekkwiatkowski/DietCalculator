@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type"	content="text/html;	charset=UTF-8" />
+    <title>Title</title>
+    <style>
+        .bcg {
+            background: url(http://localhost:63342/DietCalculator/templates/images/background.jpg) no-repeat center center fixed;
+            background-size: cover;
+        }
+    </style>
+</head>
+<body>
+<div class="bcg" style=" width: 1584px; height: 774px">
+    <div style="float: left">
+        <div style="width: 300px; height: 774px;">
+        </div>
+    </div>
+    <div style="float: right">
+        <div style="width: 300px; height: 774px">
+        </div>
+    </div>
+    <div style="float: right">
+        <div style="background-color: green; width: 984px" th:include="fragments/logBar">
+        </div>
+    </div>
+    <div style="float: left">
+        <div th:if="${addProduct != null}">
+            <div  th:replace="addProduct :: body" style="background-color: gold; height: 700px; width: 984px; float: right">
+            </div>
+        </div>
+        <div th:if="${editProduct != null}">
+            <div  th:replace="editProduct :: body" style="background-color: gold; height: 700px; width: 984px; float: right">
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

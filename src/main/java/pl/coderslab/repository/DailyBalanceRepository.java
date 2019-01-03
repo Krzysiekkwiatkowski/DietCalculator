@@ -13,4 +13,5 @@ public interface DailyBalanceRepository extends JpaRepository<DailyBalance, Long
     int countByUserIdAndDate(Long id, Date date);
     DailyBalance findTopByUserIdAndAndDate(Long id, Date date);
     List<DailyBalance> findAllByUser(User user);
+    void deleteAllByUser(User user);
 }

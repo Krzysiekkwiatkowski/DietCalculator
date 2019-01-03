@@ -26,17 +26,20 @@ public class ProductController {
     public String addGet(Model model){
         model.addAttribute("product", new Product());
         model.addAttribute("categories", allCategories());
-        return "addProduct";
+        model.addAttribute("addProduct", "addProduct");
+        return "home";
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public String addPost(@Valid Product product, BindingResult result, Model model){
         if(result.hasErrors()){
-            return "addProduct";
+            model.addAttribute("addProduct", "addProduct");
+            return "home";
         }
         if((product.getProtein() + product.getCarbohydrates() + product.getFat()) > 100){
+            model.addAttribute("addProduct", "addProduct");
             model.addAttribute("mistake", "mistake");
-            return "addProduct";
+            return "home";
         }
         product.setWeight(100);
         productRepository.save(product);
@@ -45,15 +48,16 @@ public class ProductController {
 
     @RequestMapping(value = "/edit/{id}", method = RequestMethod.GET)
     public String editGet(@PathVariable("id") Long id, Model model){
+        model.addAttribute("editProduct", "editProduct");
         model.addAttribute("product", productRepository.findTopById(id));
-        return "editProduct";
+        return "home";
     }
 
     @RequestMapping(value = "/edit/*", method = RequestMethod.POST)
-    public String editPost(@Valid Product product, BindingResult result){
-        System.out.println(product.getId() + " - " + product.getName());
+    public String editPost(@Valid Product product, BindingResult result, Model model){
         if(result.hasErrors()){
-            return "editProduct";
+            model.addAttribute("editProduct", "editProduct");
+            return "home";
         }
         productRepository.save(product);
         return "home";

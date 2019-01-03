@@ -3,6 +3,7 @@ package pl.coderslab.controller;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -10,6 +11,7 @@ import pl.coderslab.entity.DailyBalance;
 import pl.coderslab.entity.Meal;
 import pl.coderslab.entity.User;
 import pl.coderslab.repository.DailyBalanceRepository;
+import pl.coderslab.repository.MealRepository;
 import pl.coderslab.repository.TrainingRepository;
 import pl.coderslab.repository.UserRepository;
 
@@ -31,6 +33,9 @@ public class UserController {
 
     @Autowired
     private TrainingRepository trainingRepository;
+
+    @Autowired
+    private MealRepository mealRepository;
 
     @RequestMapping(value = "/register", method = RequestMethod.GET)
     public String registerGet(Model model){
@@ -315,8 +320,6 @@ public class UserController {
 
     @RequestMapping(value = "/password", method = RequestMethod.POST)
     public String changePasswordPost(@RequestParam("oldPassword") String oldPassword, @RequestParam("newPassword") String newPassword, Model model, HttpSession session){
-        System.out.println("stare -> " + oldPassword);
-        System.out.println("nowe -> " + newPassword);
         Object object = session.getAttribute("user");
         if(object == null){
             return "loginForm";
@@ -332,6 +335,7 @@ public class UserController {
         return "changePassword";
     }
 
+    @Transactional
     @RequestMapping(value = "/delete", method = RequestMethod.GET)
     public String delete(HttpSession session){
         Object object = session.getAttribute("user");
@@ -344,7 +348,16 @@ public class UserController {
             trainingRepository.delete(loadedUser.getTraining());
         }
         if(dailyBalanceRepository.findAllByUser(loadedUser) != null) {
-            dailyBalanceRepository.deleteAll(dailyBalanceRepository.findAllByUser(loadedUser));
+            for (DailyBalance dailyBalance : dailyBalanceRepository.findAllByUser(loadedUser)) {
+                List<Long> numbers = new ArrayList<>();
+                for (Meal meal : dailyBalance.getMeals()) {
+                    numbers.add(meal.getId());
+                }
+                for (Long number : numbers) {
+                    mealRepository.deleteById(number);
+                }
+            }
+            dailyBalanceRepository.deleteAllByUser(loadedUser);
         }
         userRepository.delete(loadedUser);
         session.removeAttribute("user");
