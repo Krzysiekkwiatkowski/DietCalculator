@@ -37,6 +37,18 @@
             <div  th:replace="allProducts :: body" style="background-color: gold; height: 700px; width: 984px; float: right">
             </div>
         </div>
+        <div th:if="${addCategory != null}">
+            <div  th:replace="addCategory :: body" style="background-color: gold; height: 700px; width: 984px; float: right">
+            </div>
+        </div>
+        <div th:if="${editCategory != null}">
+            <div  th:replace="editCategory :: body" style="background-color: gold; height: 700px; width: 984px; float: right">
+            </div>
+        </div>
+        <div th:if="${allCategories != null}">
+            <div  th:replace="allCategories :: body" style="background-color: gold; height: 700px; width: 984px; float: right">
+            </div>
+        </div>
     </div>
 </div>
 </body>

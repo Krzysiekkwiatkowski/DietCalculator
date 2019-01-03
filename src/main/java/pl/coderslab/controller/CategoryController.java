@@ -22,14 +22,16 @@ public class CategoryController {
 
     @RequestMapping(value = "/add", method = RequestMethod.GET)
     public String addGet(Model model){
+        model.addAttribute("addCategory", "addCategory");
         model.addAttribute("category", new Category());
-        return "addCategory";
+        return "home";
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public String addPost(@Valid Category category, BindingResult result){
+    public String addPost(@Valid Category category, BindingResult result, Model model){
         if(result.hasErrors()){
-            return "addCategory";
+            model.addAttribute("addCategory", "addCategory");
+            return "home";
         }
         categoryRepository.save(category);
         return "home";
@@ -37,22 +39,25 @@ public class CategoryController {
 
     @RequestMapping(value = "/edit/{id}", method = RequestMethod.GET)
     public String editGet(@PathVariable("id") Long id, Model model){
+        model.addAttribute("editCategory", "editCategory");
         model.addAttribute("category", categoryRepository.findById(id));
-        return "editCategory";
+        return "home";
     }
 
     @RequestMapping(value = "/edit/*", method = RequestMethod.POST)
-    public String editPost(@Valid Category category, BindingResult result){
+    public String editPost(@Valid Category category, BindingResult result, Model model){
         if(result.hasErrors()){
-            return "editCategory";
+            model.addAttribute("editCategory", "editCategory");
+            return "home";
         }
         categoryRepository.save(category);
         return "home";
     }
 
     @RequestMapping(value = "/all", method = RequestMethod.GET)
-    public String all(){
-        return "allCategories";
+    public String all(Model model){
+        model.addAttribute("allCategories", "allCategories");
+        return "home";
     }
 
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
