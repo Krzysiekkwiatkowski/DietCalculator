@@ -5,7 +5,7 @@
     <title>Title</title>
 </head>
 <body>
-<form th:action="@{/diet/training/add}" th:object="${training}" method="post">
+<form th:action="@{/diet/training/edit/}" th:object="${training}" method="post">
     <input type="hidden" name="id" th:field="*{id}" th:value="${id}">
     Intensywność treningu siłowego: <select th:field="*{strengthIntensity}">
         <option th:each="intensity : ${intensityListStrength}" th:text="${intensity}" th:value="${intensity}" />

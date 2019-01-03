@@ -39,19 +39,22 @@ public class UserController {
 
     @RequestMapping(value = "/register", method = RequestMethod.GET)
     public String registerGet(Model model){
+        model.addAttribute("registerUser", "registerUser");
         model.addAttribute("user", new User());
-        return "registerUser";
+        return "home";
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public String registerPost(@Valid User user, BindingResult result, HttpSession session, Model model){
         if(result.hasErrors()){
-            return "registerUser";
+            model.addAttribute("registerUser", "registerUser");
+            return "home";
         }
         for (User check : userRepository.findAll()) {
             if(check.getEmail().equals(user.getEmail())){
+                model.addAttribute("registerUser", "registerUser");
                 model.addAttribute("repeat", "repeat");
-                return "registerUser";
+                return "home";
             }
         }
         user.setPassword(BCrypt.hashpw(user.getPassword(), BCrypt.gensalt()));
@@ -121,25 +124,28 @@ public class UserController {
         }
         userRepository.save(user);
         session.setAttribute("user", user);
-        return "home";
+        return "redirect:/diet/home";
     }
 
     @RequestMapping(value = "/edit", method = RequestMethod.GET)
     public String editGet(Model model, HttpSession session){
         Object object = session.getAttribute("user");
         if(object == null){
-            return "loginForm";
+            model.addAttribute("loginForm", "loginForm");
+            return "home";
         }
         User user = (User)object;
         User loadedUser = userRepository.findTopByEmail(user.getEmail());
+        model.addAttribute("editUser", "editUser");
         model.addAttribute("user", loadedUser);
-        return "editUser";
+        return "home";
     }
 
     @RequestMapping(value = "/edit", method = RequestMethod.POST)
-    public String editPost(@Valid User user, BindingResult result){
+    public String editPost(@Valid User user, BindingResult result, Model model){
         if(result.hasErrors()){
-            return "editUser";
+            model.addAttribute("editUser", "editUser");
+            return "home";
         }
         String activity = user.getActivity();
         String somatotype = user.getSomatotype();
@@ -212,12 +218,12 @@ public class UserController {
             dailyBalance.setBalance(dailyBalance.getReceived() - dailyBalance.getNeeded());
             dailyBalanceRepository.save(dailyBalance);
         }
-        return "home";
+        return "redirect:/diet/home";
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String loginGet(){
-        return "loginForm";
+        return "home";
     }
 
     @RequestMapping("/actual")

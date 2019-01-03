@@ -24,29 +24,47 @@
         <div style="background-color: green; width: 984px" th:include="fragments/logBar">
         </div>
     </div>
-    <div style="float: left">
-        <div th:if="${addProduct != null}">
-            <div  th:replace="addProduct :: body" style="background-color: gold; height: 700px; width: 984px; float: right">
+    <div style="float: left; background-color: gray; width: 984px; height: 700px">
+        <div>
+            <div th:if="${addProduct != null}">
+                <div  th:replace="addProduct :: body" style="background-color: gold; height: 700px; width: 984px; float: right">
+                </div>
             </div>
-        </div>
-        <div th:if="${editProduct != null}">
-            <div  th:replace="editProduct :: body" style="background-color: gold; height: 700px; width: 984px; float: right">
+            <div th:if="${editProduct != null}">
+                <div  th:replace="editProduct :: body" style="background-color: gold; height: 700px; width: 984px; float: right">
+                </div>
             </div>
-        </div>
-        <div th:if="${allProducts != null}">
-            <div  th:replace="allProducts :: body" style="background-color: gold; height: 700px; width: 984px; float: right">
+            <div th:if="${allProducts != null}">
+                <div  th:replace="allProducts :: body" style="background-color: gold; height: 700px; width: 984px; float: right">
+                </div>
             </div>
-        </div>
-        <div th:if="${addCategory != null}">
-            <div  th:replace="addCategory :: body" style="background-color: gold; height: 700px; width: 984px; float: right">
+            <div th:if="${addCategory != null}">
+                <div  th:replace="addCategory :: body" style="background-color: gold; height: 700px; width: 984px; float: right">
+                </div>
             </div>
-        </div>
-        <div th:if="${editCategory != null}">
-            <div  th:replace="editCategory :: body" style="background-color: gold; height: 700px; width: 984px; float: right">
+            <div th:if="${editCategory != null}">
+                <div  th:replace="editCategory :: body" style="background-color: gold; height: 700px; width: 984px; float: right">
+                </div>
             </div>
-        </div>
-        <div th:if="${allCategories != null}">
-            <div  th:replace="allCategories :: body" style="background-color: gold; height: 700px; width: 984px; float: right">
+            <div th:if="${allCategories != null}">
+                <div  th:replace="allCategories :: body" style="background-color: gold; height: 700px; width: 984px; float: right">
+                </div>
+            </div>
+            <div th:if="${addTraining != null}">
+                <div  th:replace="addTraining :: body" style="background-color: gold; height: 700px; width: 984px; float: right">
+                </div>
+            </div>
+            <div th:if="${editTraining != null}">
+                <div  th:replace="editTraining :: body" style="background-color: gold; height: 700px; width: 984px; float: right">
+                </div>
+            </div>
+            <div th:if="${registerUser != null}">
+                <div  th:replace="registerUser :: body" style="background-color: gold; height: 700px; width: 984px; float: right">
+                </div>
+            </div>
+            <div th:if="${editUser != null}">
+                <div  th:replace="editUser :: body" style="background-color: gold; height: 700px; width: 984px; float: right">
+                </div>
             </div>
         </div>
     </div>

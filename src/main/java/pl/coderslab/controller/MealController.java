@@ -36,10 +36,13 @@ public class MealController {
         Object object = session.getAttribute("meal");
         if (object != null) {
             List<Product> mealProducts = (List<Product>) object;
+
             model.addAttribute("mealProducts", mealProducts);
+            model.addAttribute("categories", allCategories());
+            return "selectCategory";
         }
-        model.addAttribute("categories", allCategories());
-        return "selectCategory";
+        model.addAttribute("loginForm", "loginForm");
+        return "home";
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)

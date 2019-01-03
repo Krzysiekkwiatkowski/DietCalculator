@@ -29,18 +29,21 @@ public class TrainingController {
 
     @RequestMapping(value = "/add", method = RequestMethod.GET)
     public String addGet(Model model){
+        model.addAttribute("addTraining", "addTraining");
         model.addAttribute("training", new Training());
-        return "addTraining";
+        return "home";
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public String addPost(@Valid Training training, BindingResult result, HttpSession session){
+    public String addPost(@Valid Training training, BindingResult result, HttpSession session, Model model){
         if(result.hasErrors()){
-            return "addTraining";
+            model.addAttribute("addTraining", "addTraining");
+            return "home";
         }
         Object object = session.getAttribute("user");
         if(object == null){
-            return "addTraining";
+            model.addAttribute("addTraining", "addTraining");
+            return "home";
         }
         User user = (User)object;
         double strIntensity = 0.0;
@@ -69,24 +72,26 @@ public class TrainingController {
         user.setTraining(training);
         user.setTotalCalories(user.getTotalCalories() + training.getDailyCalories());
         userRepository.save(user);
-        System.out.println(training.getDailyCalories());
         return "home";
     }
 
     @RequestMapping(value = "/edit/{id}", method = RequestMethod.GET)
     public String editGet(@PathVariable("id") Long id, Model model){
+        model.addAttribute("editTraining", "editTraining");
         model.addAttribute("training", trainingRepository.findTopById(id));
-        return "editTraining";
+        return "home";
     }
 
     @RequestMapping(value = "/edit/*", method = RequestMethod.POST)
-    public String editPost(@Valid Training training, BindingResult result, HttpSession session){
+    public String editPost(@Valid Training training, BindingResult result, HttpSession session, Model model){
         if(result.hasErrors()){
-            return "editTraining";
+            model.addAttribute("editTraining", "editTraining");
+            return "home";
         }
         Object object = session.getAttribute("user");
         if(object == null){
-            return "editTraining";
+            model.addAttribute("loginForm", "loginForm");
+            return "home";
         }
         User user = (User)object;
         double strIntensity = 0.0;
@@ -114,15 +119,15 @@ public class TrainingController {
         trainingRepository.save(training);
         user.setTraining(training);
         userRepository.save(user);
-        System.out.println(training.getDailyCalories());
         return "home";
     }
 
     @RequestMapping(value = "/delete/{id}")
-    public String delete(@PathVariable("id") Long id, HttpSession session){
+    public String delete(@PathVariable("id") Long id, HttpSession session, Model model){
         Object object = session.getAttribute("user");
         if(object == null){
-            return "redirect:/diet/user/login";
+            model.addAttribute("loginForm");
+            return "home";
         }
         User user = (User)object;
         if(user.getTraining().getId() == id) {
