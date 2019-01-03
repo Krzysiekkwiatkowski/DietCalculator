@@ -33,6 +33,10 @@
             <div  th:replace="editProduct :: body" style="background-color: gold; height: 700px; width: 984px; float: right">
             </div>
         </div>
+        <div th:if="${allProducts != null}">
+            <div  th:replace="allProducts :: body" style="background-color: gold; height: 700px; width: 984px; float: right">
+            </div>
+        </div>
     </div>
 </div>
 </body>

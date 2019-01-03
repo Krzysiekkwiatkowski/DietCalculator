@@ -65,14 +65,16 @@ public class ProductController {
 
     @RequestMapping(value = "/search", method = RequestMethod.POST)
     public String search(@RequestParam("name") String name, Model model){
+        model.addAttribute("allProducts", "allProducts");
         model.addAttribute("products", productRepository.findByNameContaining(name));
-        return "allProducts";
+        return "home";
     }
 
     @RequestMapping(value = "/all", method = RequestMethod.GET)
     public String all(Model model){
+        model.addAttribute("allProducts", "allProducts");
         model.addAttribute("products", allProducts());
-        return "allProducts";
+        return "home";
     }
 
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
