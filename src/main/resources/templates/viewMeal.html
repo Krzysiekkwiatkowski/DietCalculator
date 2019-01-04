@@ -5,10 +5,15 @@
     <title>Title</title>
 </head>
 <body>
+<div th:if="${exist != null}">
 <h4 th:text="'Twój posiłek dostarcza: '"></h4>
-<p th:text="'Białko: ' + ${meal.totalProtein}"></p>
-<p th:text="'Węglowodany: ' + ${meal.totalCarbohydrates}"></p>
-<p th:text="'Tłuszcze: ' + ${meal.totalFat}"></p>
-<p th:text="'Kalorie: ' + ${meal.totalCalories}"></p>
+    <p th:text="'Białko: ' + ${meal.totalProtein}"></p>
+    <p th:text="'Węglowodany: ' + ${meal.totalCarbohydrates}"></p>
+    <p th:text="'Tłuszcze: ' + ${meal.totalFat}"></p>
+    <p th:text="'Kalorie: ' + ${meal.totalCalories}"></p>
+</div>
+<div th:if="${exist == null}">
+    <p style="color: red" th:text="'Nie ma takiego posiłku!'"></p>
+</div>
 </body>
 </html>

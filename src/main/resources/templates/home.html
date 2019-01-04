@@ -78,6 +78,18 @@
                 <div  th:replace="changePassword :: body" style="background-color: gold; height: 700px; width: 984px; float: right">
                 </div>
             </div>
+            <div th:if="${selectCategory != null}">
+                <div  th:replace="selectCategory :: body" style="background-color: gold; height: 700px; width: 984px; float: right">
+                </div>
+            </div>
+            <div th:if="${selectProduct != null}">
+                <div  th:replace="selectProduct :: body" style="background-color: gold; height: 700px; width: 984px; float: right">
+                </div>
+            </div>
+            <div th:if="${viewMeal != null}">
+                <div  th:replace="viewMeal :: body" style="background-color: gold; height: 700px; width: 984px; float: right">
+                </div>
+            </div>
         </div>
     </div>
 </div>

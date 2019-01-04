@@ -286,6 +286,7 @@ public class UserController {
             }
         }
         model.addAttribute("exist", "exist");
+        model.addAttribute("actualBalance", "actualBalance");
         model.addAttribute("protein", protein.toString());
         model.addAttribute("carbohydrates", carbohydrates.toString());
         model.addAttribute("fat", fat.toString());

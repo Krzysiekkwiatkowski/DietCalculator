@@ -33,22 +33,30 @@ public class MealController {
 
     @RequestMapping(value = "/add", method = RequestMethod.GET)
     public String addGet(Model model, HttpSession session) {
-        Object object = session.getAttribute("meal");
-        if (object != null) {
-            List<Product> mealProducts = (List<Product>) object;
+        Object objectMeal = session.getAttribute("meal");
+        Object objectUser = session.getAttribute("user");
+        if(objectUser == null){
+            model.addAttribute("loginForm", "loginForm");
+            return "home";
+        }
+        if (objectMeal != null) {
+            List<Product> mealProducts = (List<Product>) objectMeal;
+            model.addAttribute("selectCategory", "selectCategory");
             model.addAttribute("mealProducts", mealProducts);
             model.addAttribute("categories", allCategories());
-            return "selectCategory";
+            return "home";
         }
-        model.addAttribute("loginForm", "loginForm");
+        model.addAttribute("selectCategory", "selectCategory");
+        model.addAttribute("categories", allCategories());
         return "home";
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public String addPost(@ModelAttribute Category category, Model model) {
+        model.addAttribute("selectProduct", "selectProduct");
         model.addAttribute("product", new Product());
         model.addAttribute("productList", allProductsByCategory(category.getId()));
-        return "selectProduct";
+        return "home";
     }
 
     @RequestMapping(value = "/addProduct", method = RequestMethod.POST)
@@ -113,7 +121,11 @@ public class MealController {
                     meals = new ArrayList<>();
                     dailyBalance.setDate(Date.valueOf(LocalDate.now()));
                     dailyBalance.setUser(loadedUser);
-                    dailyBalance.setNeeded(loadedUser.getTotalCalories() + loadedUser.getTraining().getDailyCalories());
+                    if(loadedUser.getTraining() != null) {
+                        dailyBalance.setNeeded(loadedUser.getTotalCalories() + loadedUser.getTraining().getDailyCalories());
+                    } else {
+                        dailyBalance.setNeeded(loadedUser.getTotalCalories());
+                    }
                 } else {
                     meals = dailyBalance.getMeals();
                 }
@@ -140,14 +152,15 @@ public class MealController {
             userRepository.save(loadedUser);
             session.removeAttribute("meal");
         }
-        return "home";
+        return "redirect:/diet/home";
     }
 
     @RequestMapping(value = "/delete/{id}")
-    public String delete(@PathVariable("id") Long id, HttpSession session){
+    public String delete(@PathVariable("id") Long id, HttpSession session, Model model){
         Object object = session.getAttribute("user");
         if(object == null){
-            return "loginForm";
+            model.addAttribute("loginForm", "loginForm");
+            return "home";
         }
         User user = (User)object;
         User loadedUser = userRepository.findTopByEmail(user.getEmail());
@@ -173,14 +186,40 @@ public class MealController {
             dailyBalanceRepository.save(dailyBalance);
 
         }
-        return "home";
+        return "redirect:/diet/home";
     }
 
     @RequestMapping("/view/{id}")
-    public String viewMeal(@PathVariable("id") Long id, Model model){
-        Meal meal = mealRepository.findTopById(id);
-        model.addAttribute("meal", meal);
-        return "viewMeal";
+    public String viewMeal(@PathVariable("id") Long id, Model model, HttpSession session){
+        Object objectUser = session.getAttribute("user");
+        Object objectMeal = mealRepository.findTopById(id);
+        boolean check = false;
+        if(objectUser == null){
+            model.addAttribute("loginForm", "loginForm");
+            return "home";
+        }
+        if(objectMeal == null){
+            model.addAttribute("exist", null);
+            model.addAttribute("viewMeal", "viewMeal");
+            return "home";
+        }
+        User user = (User)objectUser;
+        User loadedUser = userRepository.findTopByEmail(user.getEmail());
+        Object object = dailyBalanceRepository.findTopByUserIdAndAndDate(loadedUser.getId(), Date.valueOf(LocalDate.now())).getMeals();
+        if(object != null) {
+            for (Meal searchMeal : (List<Meal>)object) {
+                if(searchMeal.getId() == id){
+                    Meal meal = (Meal)objectMeal;
+                    model.addAttribute("exist", "exist");
+                    model.addAttribute("meal", meal);
+                    model.addAttribute("viewMeal", "viewMeal");
+                    return "home";
+                }
+            }
+        }
+        model.addAttribute("exist", null);
+        model.addAttribute("viewMeal", "viewMeal");
+        return "home";
     }
 
     @ModelAttribute("categories")
