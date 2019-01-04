@@ -5,13 +5,18 @@
     <title>Title</title>
 </head>
 <body>
-<p th:text="'Białko: '"></p>
-<p th:text="${protein}"></p>
-<p th:text="'Węglowodany: '"></p>
-<p th:text="${carbohydrates}"></p>
-<p th:text="'Tłuszcz: '"></p>
-<p th:text="${fat}"></p>
-<p th:text="'Kalorie: '"></p>
-<p th:text="${calories}"></p>
+<div th:if="${exist != null}">
+    <p th:text="'Białko: '"></p>
+    <p th:text="${protein}"></p>
+    <p th:text="'Węglowodany: '"></p>
+    <p th:text="${carbohydrates}"></p>
+    <p th:text="'Tłuszcz: '"></p>
+    <p th:text="${fat}"></p>
+    <p th:text="'Kalorie: '"></p>
+    <p th:text="${calories}"></p>
+</div>
+<div th:if="${exist == null}" style="color: red">
+    Nie dodano jeszcze posiłku!
+</div>
 </body>
 </html>

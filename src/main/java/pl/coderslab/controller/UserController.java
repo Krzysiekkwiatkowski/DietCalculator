@@ -221,16 +221,12 @@ public class UserController {
         return "redirect:/diet/home";
     }
 
-    @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public String loginGet(){
-        return "home";
-    }
-
     @RequestMapping("/actual")
     public String actualBalance(Model model, HttpSession session){
         Object object = session.getAttribute("user");
         if(object == null){
-            return "loginForm";
+            model.addAttribute("loginForm", "loginForm");
+            return "home";
         }
         User user = (User)object;
         User loadedUser = userRepository.findTopByEmail(user.getEmail());
@@ -239,8 +235,9 @@ public class UserController {
         double totalFat = loadedUser.getTotalFat();
         int totalCalories = loadedUser.getTotalCalories();
         if(dailyBalanceRepository.findTopByUserIdAndAndDate(loadedUser.getId(), Date.valueOf(LocalDate.now())) == null){
-            model.addAttribute("not", "not");
-            return "actualBalance";
+            model.addAttribute("actualBalance", "actualBalance");
+            model.addAttribute("exist", null);
+            return "home";
         }
         double proteinReceived = 0.0;
         double carbohydratesReceived = 0.0;
@@ -288,65 +285,84 @@ public class UserController {
                 calories.append(".");
             }
         }
+        model.addAttribute("exist", "exist");
         model.addAttribute("protein", protein.toString());
         model.addAttribute("carbohydrates", carbohydrates.toString());
         model.addAttribute("fat", fat.toString());
         model.addAttribute("calories", calories.toString());
-        return "actualBalance";
+        return "home";
+    }
+
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    public String loginGet(Model model){
+        model.addAttribute("loginForm", "loginForm");
+        return "home";
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public String loginPost(@RequestParam("email") String email, @RequestParam("password") String password, Model model, HttpSession session){
-        User user = userRepository.findTopByEmail(email);
-        if(BCrypt.checkpw(password, user.getPassword())){
-            session.setAttribute("user", user);
+        Object object = userRepository.findTopByEmail(email);
+        if(object == null) {
+            model.addAttribute("loginForm", "loginForm");
+            model.addAttribute("wrong", "wrong");
             return "home";
         }
+        User user = (User)object;
+        if(BCrypt.checkpw(password, user.getPassword())){
+            session.setAttribute("user", user);
+            return "redirect:/diet/home";
+        }
+        model.addAttribute("loginForm", "loginForm");
         model.addAttribute("wrong", "wrong");
-        return "loginForm";
+        return "home";
     }
 
     @RequestMapping(value = "/logout", method = RequestMethod.GET)
     public String logout(HttpSession session){
         session.removeAttribute("user");
-        return "home";
+        return "redirect:/diet/home";
     }
 
     @RequestMapping(value = "/password", method = RequestMethod.GET)
     public String changePasswordGet(HttpSession session, Model model){
         Object object = session.getAttribute("user");
         if(object == null){
-            return "loginForm";
+            model.addAttribute("loginForm", "loginForm");
+            return "home";
         }
         User user = (User)object;
         User loadedUser = userRepository.findTopByEmail(user.getEmail());
         model.addAttribute("user", loadedUser);
-        return "changePassword";
+        model.addAttribute("changePassword", "changePassword");
+        return "home";
     }
 
     @RequestMapping(value = "/password", method = RequestMethod.POST)
     public String changePasswordPost(@RequestParam("oldPassword") String oldPassword, @RequestParam("newPassword") String newPassword, Model model, HttpSession session){
         Object object = session.getAttribute("user");
         if(object == null){
-            return "loginForm";
+            model.addAttribute("loginForm", "loginForm");
+            return "home";
         }
         User user = (User)object;
         User loadedUser = userRepository.findTopByEmail(user.getEmail());
         if(BCrypt.checkpw(oldPassword, loadedUser.getPassword())){
             loadedUser.setPassword(BCrypt.hashpw(newPassword, BCrypt.gensalt()));
             userRepository.save(loadedUser);
-            return "home";
+            return "redirect:/diet/home";
         }
+        model.addAttribute("changePassword", "changePassword");
         model.addAttribute("wrongPassword", "wrongPassword");
-        return "changePassword";
+        return "home";
     }
 
     @Transactional
     @RequestMapping(value = "/delete", method = RequestMethod.GET)
-    public String delete(HttpSession session){
+    public String delete(HttpSession session, Model model){
         Object object = session.getAttribute("user");
         if(object == null){
-            return "loginForm";
+            model.addAttribute("loginForm", "loginForm");
+            return "home";
         }
         User user = (User)object;
         User loadedUser = userRepository.findTopByEmail(user.getEmail());
@@ -367,7 +383,7 @@ public class UserController {
         }
         userRepository.delete(loadedUser);
         session.removeAttribute("user");
-        return "home";
+        return "redirect:/diet/home";
     }
 
     @ModelAttribute("genderList")

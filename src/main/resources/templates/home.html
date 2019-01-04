@@ -66,6 +66,18 @@
                 <div  th:replace="editUser :: body" style="background-color: gold; height: 700px; width: 984px; float: right">
                 </div>
             </div>
+            <div th:if="${loginForm != null}">
+                <div  th:replace="loginForm :: body" style="background-color: gold; height: 700px; width: 984px; float: right">
+                </div>
+            </div>
+            <div th:if="${actualBalance != null}">
+                <div  th:replace="actualBalance :: body" style="background-color: gold; height: 700px; width: 984px; float: right">
+                </div>
+            </div>
+            <div th:if="${changePassword != null}">
+                <div  th:replace="changePassword :: body" style="background-color: gold; height: 700px; width: 984px; float: right">
+                </div>
+            </div>
         </div>
     </div>
 </div>
