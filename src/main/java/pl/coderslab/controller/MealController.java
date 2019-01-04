@@ -181,6 +181,7 @@ public class MealController {
             for (Meal meal : meals) {
                 totalReceived += meal.getTotalCalories();
             }
+            dailyBalance.setReceived(totalReceived);
             dailyBalance.setBalance(totalReceived - dailyBalance.getNeeded());
             dailyBalance.setMeals(meals);
             dailyBalanceRepository.save(dailyBalance);
