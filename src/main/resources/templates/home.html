@@ -20,8 +20,16 @@
         <div style="width: 300px; height: 774px">
         </div>
     </div>
-    <div style="float: right">
-        <div style="background-color: green; width: 984px" th:include="fragments/logBar">
+    <div th:if="${logged == null}">
+        <div style="float: right">
+            <div style="background-color: green; width: 984px" th:include="fragments/logBar">
+            </div>
+        </div>
+    </div>
+    <div th:if="${logged != null}">
+        <div style="float: right">
+            <div style="background-color: green; width: 984px" th:include="fragments/logoutBar">
+            </div>
         </div>
     </div>
     <div style="float: left; background-color: gray; width: 984px; height: 700px; text-align: center">

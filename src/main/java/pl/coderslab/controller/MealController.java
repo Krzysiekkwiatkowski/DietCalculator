@@ -36,9 +36,11 @@ public class MealController {
         Object objectMeal = session.getAttribute("meal");
         Object objectUser = session.getAttribute("user");
         if(objectUser == null){
+            model.addAttribute("logged", null);
             model.addAttribute("loginForm", "loginForm");
             return "home";
         }
+        model.addAttribute("logged", "logged");
         if (objectMeal != null) {
             List<Product> mealProducts = (List<Product>) objectMeal;
             model.addAttribute("selectCategory", "selectCategory");
@@ -52,7 +54,14 @@ public class MealController {
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public String addPost(@ModelAttribute Category category, Model model) {
+    public String addPost(@ModelAttribute Category category, Model model, HttpSession session) {
+        Object object = session.getAttribute("user");
+        if(object == null){
+            model.addAttribute("logged", null);
+            model.addAttribute("loginForm", "loginForm");
+            return "home";
+        }
+        model.addAttribute("logged", "logged");
         model.addAttribute("selectProduct", "selectProduct");
         model.addAttribute("product", new Product());
         model.addAttribute("productList", allProductsByCategory(category.getId()));
@@ -61,6 +70,13 @@ public class MealController {
 
     @RequestMapping(value = "/addProduct", method = RequestMethod.POST)
     public String addProductPost(@RequestParam("weight") int weight, @ModelAttribute Product product, HttpSession session, Model model) {
+        Object objectUser = session.getAttribute("user");
+        if(objectUser == null){
+            model.addAttribute("logged", null);
+            model.addAttribute("loginForm", "loginForm");
+            return "home";
+        }
+        model.addAttribute("logged", "logged");
         Product loadedProduct = productRepository.findTopById(product.getId());
         double multiplier = weight / 100.0;
         loadedProduct.setProtein(loadedProduct.getProtein() * multiplier);
@@ -82,10 +98,16 @@ public class MealController {
     }
 
     @RequestMapping(value = "/confirm", method = RequestMethod.GET)
-    public String confirmGet(HttpSession session) {
+    public String confirmGet(HttpSession session, Model model) {
         Object objectMeal = session.getAttribute("meal");
         Object objectUser = session.getAttribute("user");
-        if (objectMeal != null && objectUser != null) {
+        if(objectUser == null){
+            model.addAttribute("logged", null);
+            model.addAttribute("loginForm", "loginForm");
+            return "home";
+        }
+        model.addAttribute("logged", "logged");
+        if (objectMeal != null) {
             User user = (User) objectUser;
             User loadedUser = userRepository.findTopByEmail(user.getEmail());
             List<DailyBalance> dailyBalances;
@@ -159,9 +181,11 @@ public class MealController {
     public String delete(@PathVariable("id") Long id, HttpSession session, Model model){
         Object object = session.getAttribute("user");
         if(object == null){
+            model.addAttribute("logged", null);
             model.addAttribute("loginForm", "loginForm");
             return "home";
         }
+        model.addAttribute("logged", "logged");
         User user = (User)object;
         User loadedUser = userRepository.findTopByEmail(user.getEmail());
         if(dailyBalanceRepository.findTopByUserIdAndAndDate(loadedUser.getId(), Date.valueOf(LocalDate.now())) != null){
@@ -194,11 +218,12 @@ public class MealController {
     public String viewMeal(@PathVariable("id") Long id, Model model, HttpSession session){
         Object objectUser = session.getAttribute("user");
         Object objectMeal = mealRepository.findTopById(id);
-        boolean check = false;
         if(objectUser == null){
+            model.addAttribute("logged", null);
             model.addAttribute("loginForm", "loginForm");
             return "home";
         }
+        model.addAttribute("logged", "logged");
         if(objectMeal == null){
             model.addAttribute("exist", null);
             model.addAttribute("viewMeal", "viewMeal");
