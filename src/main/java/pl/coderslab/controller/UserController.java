@@ -39,6 +39,7 @@ public class UserController {
 
     @RequestMapping(value = "/register", method = RequestMethod.GET)
     public String registerGet(Model model){
+        model.addAttribute("logged", null);
         model.addAttribute("registerUser", "registerUser");
         model.addAttribute("user", new User());
         return "home";
@@ -46,6 +47,7 @@ public class UserController {
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public String registerPost(@Valid User user, BindingResult result, HttpSession session, Model model){
+        model.addAttribute("logged", null);
         if(result.hasErrors()){
             model.addAttribute("registerUser", "registerUser");
             return "home";
@@ -131,9 +133,11 @@ public class UserController {
     public String editGet(Model model, HttpSession session){
         Object object = session.getAttribute("user");
         if(object == null){
+            model.addAttribute("logged", null);
             model.addAttribute("loginForm", "loginForm");
             return "home";
         }
+        model.addAttribute("logged", "logged");
         User user = (User)object;
         User loadedUser = userRepository.findTopByEmail(user.getEmail());
         model.addAttribute("editUser", "editUser");
@@ -142,7 +146,14 @@ public class UserController {
     }
 
     @RequestMapping(value = "/edit", method = RequestMethod.POST)
-    public String editPost(@Valid User user, BindingResult result, Model model){
+    public String editPost(@Valid User user, BindingResult result, Model model, HttpSession session){
+        Object object = session.getAttribute("user");
+        if(object == null){
+            model.addAttribute("logged", null);
+            model.addAttribute("loginForm", "loginForm");
+            return "home";
+        }
+        model.addAttribute("logged", "logged");
         if(result.hasErrors()){
             model.addAttribute("editUser", "editUser");
             return "home";
@@ -225,9 +236,11 @@ public class UserController {
     public String actualBalance(Model model, HttpSession session){
         Object object = session.getAttribute("user");
         if(object == null){
+            model.addAttribute("logged", null);
             model.addAttribute("loginForm", "loginForm");
             return "home";
         }
+        model.addAttribute("logged", "logged");
         User user = (User)object;
         User loadedUser = userRepository.findTopByEmail(user.getEmail());
         double totalProtein = loadedUser.getTotalProtein();
@@ -295,7 +308,14 @@ public class UserController {
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public String loginGet(Model model){
+    public String loginGet(Model model, HttpSession session){
+        Object object = session.getAttribute("user");
+        if(object == null){
+            model.addAttribute("logged", null);
+            model.addAttribute("loginForm", "loginForm");
+            return "home";
+        }
+        model.addAttribute("logged", "logged");
         model.addAttribute("loginForm", "loginForm");
         return "home";
     }
@@ -304,10 +324,12 @@ public class UserController {
     public String loginPost(@RequestParam("email") String email, @RequestParam("password") String password, Model model, HttpSession session){
         Object object = userRepository.findTopByEmail(email);
         if(object == null) {
+            model.addAttribute("logged", null);
             model.addAttribute("loginForm", "loginForm");
             model.addAttribute("wrong", "wrong");
             return "home";
         }
+        model.addAttribute("logged", "logged");
         User user = (User)object;
         if(BCrypt.checkpw(password, user.getPassword())){
             session.setAttribute("user", user);
@@ -319,8 +341,9 @@ public class UserController {
     }
 
     @RequestMapping(value = "/logout", method = RequestMethod.GET)
-    public String logout(HttpSession session){
+    public String logout(Model model, HttpSession session){
         session.removeAttribute("user");
+        model.addAttribute("logged", null);
         return "redirect:/diet/home";
     }
 
@@ -328,9 +351,11 @@ public class UserController {
     public String changePasswordGet(HttpSession session, Model model){
         Object object = session.getAttribute("user");
         if(object == null){
+            model.addAttribute("logged", null);
             model.addAttribute("loginForm", "loginForm");
             return "home";
         }
+        model.addAttribute("logged", "logged");
         User user = (User)object;
         User loadedUser = userRepository.findTopByEmail(user.getEmail());
         model.addAttribute("user", loadedUser);
@@ -342,9 +367,11 @@ public class UserController {
     public String changePasswordPost(@RequestParam("oldPassword") String oldPassword, @RequestParam("newPassword") String newPassword, Model model, HttpSession session){
         Object object = session.getAttribute("user");
         if(object == null){
+            model.addAttribute("logged", null);
             model.addAttribute("loginForm", "loginForm");
             return "home";
         }
+        model.addAttribute("logged", "logged");
         User user = (User)object;
         User loadedUser = userRepository.findTopByEmail(user.getEmail());
         if(BCrypt.checkpw(oldPassword, loadedUser.getPassword())){
@@ -362,9 +389,11 @@ public class UserController {
     public String delete(HttpSession session, Model model){
         Object object = session.getAttribute("user");
         if(object == null){
+            model.addAttribute("logged", null);
             model.addAttribute("loginForm", "loginForm");
             return "home";
         }
+        model.addAttribute("logged", "logged");
         User user = (User)object;
         User loadedUser = userRepository.findTopByEmail(user.getEmail());
         if(loadedUser.getTraining() != null){
