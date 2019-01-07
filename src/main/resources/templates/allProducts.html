@@ -5,6 +5,7 @@
     <title>Title</title>
 </head>
 <body>
+<h3 th:text="'Lista produktów:'"></h3>
 <form th:action="@{/diet/product/search}" method="post">
     Nazwa: <input type="text" name="name">
     <input type="submit" value="Wyszukaj">
