@@ -179,6 +179,19 @@ public class MealController {
         return "redirect:/diet/home";
     }
 
+    @RequestMapping(value = "/option", method = RequestMethod.GET)
+    public String option(Model model, HttpSession session){
+        Object object = session.getAttribute("user");
+        if(object == null){
+            model.addAttribute("logged", null);
+            model.addAttribute("loginForm", "loginForm");
+            return "home";
+        }
+        model.addAttribute("logged", "logged");
+        model.addAttribute("mealOption","mealOption");
+        return "home";
+    }
+
     @RequestMapping(value = "/delete/{id}")
     public String delete(@PathVariable("id") Long id, HttpSession session, Model model){
         Object object = session.getAttribute("user");

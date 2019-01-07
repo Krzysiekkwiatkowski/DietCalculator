@@ -120,6 +120,19 @@ public class ProductController {
         return "home";
     }
 
+    @RequestMapping(value = "/option", method = RequestMethod.GET)
+    public String option(Model model, HttpSession session){
+        Object object = session.getAttribute("user");
+        if(object == null){
+            model.addAttribute("logged", null);
+            model.addAttribute("loginForm", "loginForm");
+            return "home";
+        }
+        model.addAttribute("logged", "logged");
+        model.addAttribute("productOption","productOption");
+        return "home";
+    }
+
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
     public String delete(@PathVariable("id") Long id, Model model, HttpSession session){
         Object object = session.getAttribute("user");

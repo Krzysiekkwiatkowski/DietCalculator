@@ -53,6 +53,10 @@
                 <div  th:replace="allProducts :: body" style="height: 700px; width: 984px; float: right">
                 </div>
             </div>
+            <div th:if="${productOption != null}">
+                <div  th:replace="productOption :: body" style="height: 700px; width: 984px; float: right">
+                </div>
+            </div>
             <div th:if="${addCategory != null}">
                 <div  th:replace="addCategory :: body" style="height: 700px; width: 984px; float: right">
                 </div>
@@ -63,6 +67,10 @@
             </div>
             <div th:if="${allCategories != null}">
                 <div  th:replace="allCategories :: body" style="height: 700px; width: 984px; float: right">
+                </div>
+            </div>
+            <div th:if="${categoryOption != null}">
+                <div  th:replace="categoryOption :: body" style="height: 700px; width: 984px; float: right">
                 </div>
             </div>
             <div th:if="${addTraining != null}">
@@ -79,6 +87,10 @@
             </div>
             <div th:if="${editUser != null}">
                 <div  th:replace="editUser :: body" style="height: 700px; width: 984px; float: right">
+                </div>
+            </div>
+            <div th:if="${userOption != null}">
+                <div  th:replace="userOption :: body" style="height: 700px; width: 984px; float: right">
                 </div>
             </div>
             <div th:if="${loginForm != null}">
@@ -103,6 +115,10 @@
             </div>
             <div th:if="${viewMeal != null}">
                 <div  th:replace="viewMeal :: body" style="height: 700px; width: 984px; float: right">
+                </div>
+            </div>
+            <div th:if="${mealOption != null}">
+                <div  th:replace="mealOption :: body" style="height: 700px; width: 984px; float: right">
                 </div>
             </div>
         </div>

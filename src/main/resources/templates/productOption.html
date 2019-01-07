@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type"	content="text/html;	charset=UTF-8" />
+    <title>Title</title>
+</head>
+<body>
+<h3 th:text="'Co chcesz zrobić:'"></h3>
+<p><a th:href="@{/diet/product/add}"><button style="width: 150px"> Dodaj </button></a></p>
+<p><a th:href="@{/diet/product/all}"><button style="width: 150px"> Pokaż wszystkie </button></a></p>
+</body>
+</html>

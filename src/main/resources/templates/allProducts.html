@@ -11,6 +11,8 @@
     <input type="submit" value="Wyszukaj">
 </form>
 <h3 th:text="'Lista produktów: '"></h3>
-<p th:each="product : ${products}" th:text="${product.name}"/>
+<div th:each="product : ${products}">
+    <p><p style="display: inline" th:text="${product.name} + ' '" /><a style="display: inline" th:href="@{'/diet/product/edit/' + ${product.id}}" th:text="'Edytuj'"></a></p>
+</div>
 </body>
 </html>

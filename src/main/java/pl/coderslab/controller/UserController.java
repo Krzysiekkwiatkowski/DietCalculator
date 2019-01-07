@@ -396,6 +396,19 @@ public class UserController {
         return "home";
     }
 
+    @RequestMapping(value = "/option", method = RequestMethod.GET)
+    public String option(Model model, HttpSession session){
+        Object object = session.getAttribute("user");
+        if(object == null){
+            model.addAttribute("logged", null);
+            model.addAttribute("loginForm", "loginForm");
+            return "home";
+        }
+        model.addAttribute("logged", "logged");
+        model.addAttribute("userOption","userOption");
+        return "home";
+    }
+
     @Transactional
     @RequestMapping(value = "/delete", method = RequestMethod.GET)
     public String delete(HttpSession session, Model model){
