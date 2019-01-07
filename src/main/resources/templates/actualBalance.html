@@ -7,13 +7,13 @@
 <body>
 <div th:if="${exist != null}">
     <h3 th:text="'Aktualnie dostarczone makroskładniki:'"></h3>
-    <p th:text="'Białko: '"></p>
+    <p th:text="'Białko: ' + ${proteinPart}"></p>
     <p th:text="${protein}"></p>
-    <p th:text="'Węglowodany: '"></p>
+    <p th:text="'Węglowodany: ' + ${carbohydratesPart}"></p>
     <p th:text="${carbohydrates}"></p>
-    <p th:text="'Tłuszcz: '"></p>
+    <p th:text="'Tłuszcz: ' + ${fatPart}"></p>
     <p th:text="${fat}"></p>
-    <p th:text="'Kalorie: '"></p>
+    <p th:text="'Kalorie: ' + ${caloriesPart}"></p>
     <p th:text="${calories}"></p>
 </div>
 <div th:if="${exist == null}" style="color: red">

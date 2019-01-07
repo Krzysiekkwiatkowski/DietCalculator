@@ -8,13 +8,17 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import pl.coderslab.entity.DailyBalance;
 import pl.coderslab.entity.Training;
 import pl.coderslab.entity.User;
+import pl.coderslab.repository.DailyBalanceRepository;
 import pl.coderslab.repository.TrainingRepository;
 import pl.coderslab.repository.UserRepository;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +30,9 @@ public class TrainingController {
 
     @Autowired
     private TrainingRepository trainingRepository;
+
+    @Autowired
+    private DailyBalanceRepository dailyBalanceRepository;
 
     @RequestMapping(value = "/add", method = RequestMethod.GET)
     public String addGet(Model model, HttpSession session){
@@ -80,6 +87,27 @@ public class TrainingController {
         trainingRepository.save(training);
         user.setTraining(training);
         user.setTotalCalories(user.getTotalCalories() + training.getDailyCalories());
+        user.setTotalProtein(user.getWeight() * 1.8);
+        String goal = user.getGoal();
+        int total = user.getTotalCalories();
+        if(goal.equals("Utrata wagi")){
+            user.setTotalCarbohydrates(user.getWeight() * 1.5);
+            user.setTotalFat((total - 4.0 * user.getTotalProtein() - 4.0 * user.getTotalCarbohydrates())/ 9.0);
+        }
+        if(goal.equals("Utrzymanie wagi")){
+            user.setTotalCarbohydrates(user.getWeight() * 2.5);
+            user.setTotalFat((total - 4.0 * user.getTotalProtein() - 4.0 * user.getTotalCarbohydrates())/ 9.0);
+        }
+        if(goal.equals("Przybranie wagi")){
+            user.setTotalCarbohydrates(user.getWeight() * 3.5);
+            user.setTotalFat((total - 4.0 * user.getTotalProtein() - 4.0 * user.getTotalCarbohydrates())/ 9.0);
+        }
+        if(dailyBalanceRepository.findTopByUserIdAndAndDate(user.getId(), Date.valueOf(LocalDate.now())) != null) {
+            DailyBalance dailyBalance = dailyBalanceRepository.findTopByUserIdAndAndDate(user.getId(), Date.valueOf(LocalDate.now()));
+            dailyBalance.setNeeded(user.getTotalCalories());
+            dailyBalance.setBalance(dailyBalance.getReceived() - dailyBalance.getNeeded());
+            dailyBalanceRepository.save(dailyBalance);
+        }
         userRepository.save(user);
         return "home";
     }
@@ -132,10 +160,32 @@ public class TrainingController {
         } else if(training.getCardioIntensity().equals("Bardzo wysoka")){
             cardioIntensity = 11;
         }
+        int oldDailyCalories = training.getDailyCalories();
         double calories = ((training.getStrengthDays() * training.getStrengthTime() * strIntensity) + (training.getCardioDays() * training.getCardioTime() * cardioIntensity)) / 7;
         training.setDailyCalories((int)calories);
         trainingRepository.save(training);
-        user.setTraining(training);
+        user.setTotalCalories(user.getTotalCalories() - oldDailyCalories + training.getDailyCalories());
+        user.setTotalProtein(user.getWeight() * 1.8);
+        String goal = user.getGoal();
+        int total = user.getTotalCalories();
+        if(goal.equals("Utrata wagi")){
+            user.setTotalCarbohydrates(user.getWeight() * 1.5);
+            user.setTotalFat((total - 4.0 * user.getTotalProtein() - 4.0 * user.getTotalCarbohydrates())/ 9.0);
+        }
+        if(goal.equals("Utrzymanie wagi")){
+            user.setTotalCarbohydrates(user.getWeight() * 2.5);
+            user.setTotalFat((total - 4.0 * user.getTotalProtein() - 4.0 * user.getTotalCarbohydrates())/ 9.0);
+        }
+        if(goal.equals("Przybranie wagi")){
+            user.setTotalCarbohydrates(user.getWeight() * 3.5);
+            user.setTotalFat((total - 4.0 * user.getTotalProtein() - 4.0 * user.getTotalCarbohydrates())/ 9.0);
+        }
+        if(dailyBalanceRepository.findTopByUserIdAndAndDate(user.getId(), Date.valueOf(LocalDate.now())) != null) {
+            DailyBalance dailyBalance = dailyBalanceRepository.findTopByUserIdAndAndDate(user.getId(), Date.valueOf(LocalDate.now()));
+            dailyBalance.setNeeded(user.getTotalCalories());
+            dailyBalance.setBalance(dailyBalance.getReceived() - dailyBalance.getNeeded());
+            dailyBalanceRepository.save(dailyBalance);
+        }
         userRepository.save(user);
         return "home";
     }

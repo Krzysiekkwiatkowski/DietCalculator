@@ -8,7 +8,7 @@
 <h3 th:text="'Logowanie'"></h3>
 <p style="color: red" th:if="${wrong}"> Błędny login lub hasło! </p>
 <form action="/diet/user/login" method="post">
-    Email: <input style="border-radius: 4px; border: 2px solid g; background-color: gainsboro" type="text" name="email"></br>
+    Email: <input type="text" name="email"></br>
     Password: <input type="password" name="password"></br>
     <input type="submit" value="Zaloguj">
 </form>

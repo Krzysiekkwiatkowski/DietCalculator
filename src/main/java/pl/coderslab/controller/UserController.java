@@ -18,6 +18,7 @@ import pl.coderslab.repository.UserRepository;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.sql.Date;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -111,18 +112,19 @@ public class UserController {
         }
         int total = (int) metabolism + activityFactor + somatotypeFactor + goalFactor;
         user.setTotalCalories(total);
-        user.setTotalProtein(user.getWeight() * 1.8);
+        DecimalFormat decimalFormat = new DecimalFormat("#.#");
+        user.setTotalProtein(Double.parseDouble(decimalFormat.format(user.getWeight() * 1.8).replace(",", ".")));
         if(goal.equals("Utrata wagi")){
-            user.setTotalCarbohydrates(user.getWeight() * 1.5);
-            user.setTotalFat((total - 4.0 * user.getTotalProtein() - 4.0 * user.getTotalCarbohydrates())/ 9.0);
+            user.setTotalCarbohydrates(Double.parseDouble(decimalFormat.format(user.getWeight() * 1.5).replace(",", ".")));
+            user.setTotalFat(Double.parseDouble(decimalFormat.format((total - 4.0 * user.getTotalProtein() - 4.0 * user.getTotalCarbohydrates())/ 9.0).replace(",", ".")));
         }
         if(goal.equals("Utrzymanie wagi")){
-            user.setTotalCarbohydrates(user.getWeight() * 2.5);
-            user.setTotalFat((total - 4.0 * user.getTotalProtein() - 4.0 * user.getTotalCarbohydrates())/ 9.0);
+            user.setTotalCarbohydrates(Double.parseDouble(decimalFormat.format(user.getWeight() * 2.5).replace(",", ".")));
+            user.setTotalFat(Double.parseDouble(decimalFormat.format((total - 4.0 * user.getTotalProtein() - 4.0 * user.getTotalCarbohydrates())/ 9.0).replace(",", ".")));
         }
         if(goal.equals("Przybranie wagi")){
-            user.setTotalCarbohydrates(user.getWeight() * 3.5);
-            user.setTotalFat((total - 4.0 * user.getTotalProtein() - 4.0 * user.getTotalCarbohydrates())/ 9.0);
+            user.setTotalCarbohydrates(Double.parseDouble(decimalFormat.format(user.getWeight() * 3.5).replace(",", ".")));
+            user.setTotalFat(Double.parseDouble(decimalFormat.format((total - 4.0 * user.getTotalProtein() - 4.0 * user.getTotalCarbohydrates())/ 9.0).replace(",", ".")));
         }
         userRepository.save(user);
         session.setAttribute("user", user);
@@ -209,26 +211,27 @@ public class UserController {
         }
         int total = (int) metabolism + activityFactor + somatotypeFactor + goalFactor;
         user.setTotalCalories(total);
-        user.setTotalProtein(user.getWeight() * 1.8);
+        DecimalFormat decimalFormat = new DecimalFormat("#.#");
+        user.setTotalProtein(Double.parseDouble(decimalFormat.format(user.getWeight() * 1.8).replace(",", ".")));
         if(goal.equals("Utrata wagi")){
-            user.setTotalCarbohydrates(user.getWeight() * 1.5);
-            user.setTotalFat((total - 4.0 * user.getTotalProtein() - 4.0 * user.getTotalCarbohydrates())/ 9.0);
+            user.setTotalCarbohydrates(Double.parseDouble(decimalFormat.format(user.getWeight() * 1.5).replace(",", ".")));
+            user.setTotalFat(Double.parseDouble(decimalFormat.format((total - 4.0 * user.getTotalProtein() - 4.0 * user.getTotalCarbohydrates())/ 9.0).replace(",", ".")));
         }
         if(goal.equals("Utrzymanie wagi")){
-            user.setTotalCarbohydrates(user.getWeight() * 2.5);
-            user.setTotalFat((total - 4.0 * user.getTotalProtein() - 4.0 * user.getTotalCarbohydrates())/ 9.0);
+            user.setTotalCarbohydrates(Double.parseDouble(decimalFormat.format(user.getWeight() * 2.5).replace(",", ".")));
+            user.setTotalFat(Double.parseDouble(decimalFormat.format((total - 4.0 * user.getTotalProtein() - 4.0 * user.getTotalCarbohydrates())/ 9.0).replace(",", ".")));
         }
         if(goal.equals("Przybranie wagi")){
-            user.setTotalCarbohydrates(user.getWeight() * 3.5);
-            user.setTotalFat((total - 4.0 * user.getTotalProtein() - 4.0 * user.getTotalCarbohydrates())/ 9.0);
+            user.setTotalCarbohydrates(Double.parseDouble(decimalFormat.format(user.getWeight() * 3.5).replace(",", ".")));
+            user.setTotalFat(Double.parseDouble(decimalFormat.format((total - 4.0 * user.getTotalProtein() - 4.0 * user.getTotalCarbohydrates())/ 9.0).replace(",", ".")));
         }
-        userRepository.save(user);
         if(dailyBalanceRepository.findTopByUserIdAndAndDate(user.getId(), Date.valueOf(LocalDate.now())) != null) {
             DailyBalance dailyBalance = dailyBalanceRepository.findTopByUserIdAndAndDate(user.getId(), Date.valueOf(LocalDate.now()));
             dailyBalance.setNeeded(user.getTotalCalories());
             dailyBalance.setBalance(dailyBalance.getReceived() - dailyBalance.getNeeded());
             dailyBalanceRepository.save(dailyBalance);
         }
+        userRepository.save(user);
         return "redirect:/diet/home";
     }
 
@@ -268,6 +271,7 @@ public class UserController {
         StringBuilder carbohydrates = new StringBuilder();
         StringBuilder fat = new StringBuilder();
         StringBuilder calories = new StringBuilder();
+        DecimalFormat decimalFormat = new DecimalFormat("#.#");
         for (int i = 0; i < 100; i++) {
             if(i < (proteinReceived / totalProtein) * 100){
                 protein.append("|");
@@ -298,6 +302,14 @@ public class UserController {
                 calories.append(".");
             }
         }
+        StringBuilder sbProtein = new StringBuilder();
+        StringBuilder sbCarbohydrates = new StringBuilder();
+        StringBuilder sbFat = new StringBuilder();
+        StringBuilder sbCalories = new StringBuilder();
+        model.addAttribute("proteinPart", sbProtein.append(" " + Double.parseDouble(decimalFormat.format(proteinReceived).replace(",", ".")) + "/" + totalProtein).toString());
+        model.addAttribute("carbohydratesPart", sbCarbohydrates.append(" " + Double.parseDouble(decimalFormat.format(carbohydratesReceived).replace(",", ".")) + "/" + totalCarbohydrates).toString());
+        model.addAttribute("fatPart", sbFat.append(" " + Double.parseDouble(decimalFormat.format(fatReceived).replace(",", ".")) + "/" + totalFat).toString());
+        model.addAttribute("caloriesPart", sbCalories.append(" " + Double.parseDouble(decimalFormat.format(caloriesReceived).replace(",", ".")) + "/" + totalCalories));
         model.addAttribute("exist", "exist");
         model.addAttribute("actualBalance", "actualBalance");
         model.addAttribute("protein", protein.toString());

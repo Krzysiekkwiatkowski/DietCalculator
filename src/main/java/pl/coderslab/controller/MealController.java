@@ -9,6 +9,7 @@ import pl.coderslab.repository.*;
 
 import javax.servlet.http.HttpSession;
 import java.sql.Date;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -130,10 +131,11 @@ public class MealController {
                 fatSum += product.getFat();
                 caloriesSum += product.getCalories();
             }
+            DecimalFormat decimalFormat = new DecimalFormat("#.#");
             meal.setProducts(mealProducts);
-            meal.setTotalProtein(proteinSum);
-            meal.setTotalCarbohydrates(carbohydratesSum);
-            meal.setTotalFat(fatSum);
+            meal.setTotalProtein(Double.parseDouble(decimalFormat.format(proteinSum).replace(",", ".")));
+            meal.setTotalCarbohydrates(Double.parseDouble(decimalFormat.format(carbohydratesSum).replace(",", ".")));
+            meal.setTotalFat(Double.parseDouble(decimalFormat.format(fatSum).replace(",", ".")));
             meal.setTotalCalories(caloriesSum);
             int exist = dailyBalanceRepository.countByUserIdAndDate(loadedUser.getId(), Date.valueOf(LocalDate.now()));
             if (exist == 1) {

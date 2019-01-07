@@ -8,6 +8,7 @@
 <h3 th:text="'Zmiana treningu'"></h3>
 <form th:action="@{/diet/training/edit/}" th:object="${training}" method="post">
     <input type="hidden" name="id" th:field="*{id}" th:value="${id}">
+    <input type="hidden" name="dailyCalories" th:field="*{dailyCalories}" th:value="${dailyCalories}">
     Intensywność treningu siłowego: <select th:field="*{strengthIntensity}">
         <option th:each="intensity : ${intensityListStrength}" th:text="${intensity}" th:value="${intensity}" />
     </select></br>
