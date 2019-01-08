@@ -117,6 +117,10 @@
                 <div  th:replace="viewMeal :: body" style="height: 700px; width: 984px; float: right">
                 </div>
             </div>
+            <div th:if="${viewMeals != null}">
+                <div  th:replace="viewMeals :: body" style="height: 700px; width: 984px; float: right">
+                </div>
+            </div>
             <div th:if="${mealOption != null}">
                 <div  th:replace="mealOption :: body" style="height: 700px; width: 984px; float: right">
                 </div>

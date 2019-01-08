@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type"	content="text/html;	charset=UTF-8" />
+    <title>Title</title>
+</head>
+<body>
+<div th:if="${exist != null}">
+    <div th:each="meal : ${meals}">
+        <p>
+            <p style="display: inline" th:text="'Posiłek nr.' + ${meal.mealNumber}"/>
+            <a style="display: inline" th:href="@{'/diet/meal/view/' + ${meal.mealNumber}}" ><button style="margin-left: 10px" type="submit" th:text="'Zobacz szczegóły'" /></a>
+            <a style="display: inline" th:href="@{'/diet/meal/delete/' + ${meal.id}}"><button type="submit" th:text="'Usuń'" /></a>
+            <div th:if="${meal.id == confirm}">
+                <p th:text="'Czy na pewno chcesz usunąć posiłek nr.' + ${meal.mealNumber}" />
+                <a th:href="@{'/diet/meal/delete/' + ${meal.id} + '/yes'}"><button type="submit" th:text="'Tak'"/></a>
+                <a th:href="@{/diet/meal/view}"><button type="submit" th:text="'Nie'"/></a>
+            </div>
+        </p>
+    </div>
+</div>
+<div th:if="${exist == null}">
+    <p style="color: red" th:text="'Nie dodano jeszcze żadnego posiłku!'"></p>
+</div>
+</body>
+</html>
