@@ -6,6 +6,17 @@
 </head>
 <body>
 <h3 th:text="'Lista kategorii: '"></h3>
-<p th:each="category : ${categories}" th:text="${category.name}" />
+<div th:each="category : ${categories}">
+    <p>
+        <p style="display: inline" th:text="${category.name}" /><a style="margin-left: 5px; display: inline" th:href="@{'/diet/category/edit/'+ ${category.id}}" th:text="'Edytuj'"></a><a style="margin-left: 5px; display: inline" th:href="@{'/diet/category/delete/'+ ${category.id}}" th:text="'Usuń'"></a>
+        <div th:if="${confirm != null}">
+            <div th:if="${category.id == confirm}">
+                <p th:text="'Czy na pewno chcesz usunąć ' + ${category.name}"/>
+                <a th:href="@{'/diet/category/delete/' + ${category.id} + '/yes'}" ><button type="submit" th:text="'Tak'"></button></a>
+                <a th:href="@{/diet/category/all}" ><button type="submit" th:text="'Nie'"></button></a>
+            </div>
+        </div>
+    </p>
+</div>
 </body>
 </html>

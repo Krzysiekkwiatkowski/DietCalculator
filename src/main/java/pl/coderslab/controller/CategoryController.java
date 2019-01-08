@@ -92,7 +92,7 @@ public class CategoryController {
             return "home";
         }
         model.addAttribute("logged", "logged");
-        model.addAttribute("allCategories", "allCategories");
+        model.addAttribute("allCategories", allCategories());
         return "home";
     }
 
@@ -110,7 +110,21 @@ public class CategoryController {
     }
 
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
-    public String delete(@PathVariable("id") Long id, Model model, HttpSession session){
+    public String deleteGet(@PathVariable("id") Long id, Model model, HttpSession session){
+        Object object = session.getAttribute("user");
+        if(object == null){
+            model.addAttribute("logged", null);
+            model.addAttribute("loginForm", "loginForm");
+            return "home";
+        }
+        model.addAttribute("allCategories", "allCategories");
+        model.addAttribute("confirm", id);
+        model.addAttribute("logged", "logged");
+        return "home";
+    }
+
+    @RequestMapping(value = "/delete/{id}/yes", method = RequestMethod.GET)
+    public String deleteConfirm(@PathVariable("id") Long id, Model model, HttpSession session){
         Object object = session.getAttribute("user");
         if(object == null){
             model.addAttribute("logged", null);
@@ -119,7 +133,7 @@ public class CategoryController {
         }
         model.addAttribute("logged", "logged");
         categoryRepository.deleteById(id);
-        return "home";
+        return "redirect:/diet/category/all";
     }
 
     @ModelAttribute("categories")

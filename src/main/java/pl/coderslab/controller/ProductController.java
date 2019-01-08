@@ -159,7 +159,7 @@ public class ProductController {
         }
         model.addAttribute("logged", "logged");
         productRepository.deleteById(id);
-        return "home";
+        return "redirect:/diet/product/all";
     }
 
     @ModelAttribute("categories")
