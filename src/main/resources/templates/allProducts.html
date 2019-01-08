@@ -12,7 +12,18 @@
 </form>
 <h3 th:text="'Lista produktów: '"></h3>
 <div th:each="product : ${products}">
-    <p><p style="display: inline" th:text="${product.name} + ' '" /><a style="display: inline" th:href="@{'/diet/product/edit/' + ${product.id}}" th:text="'Edytuj'"></a></p>
+    <p>
+        <p style="display: inline" th:text="${product.name} + ' '" /><a style="display: inline" th:href="@{'/diet/product/edit/' + ${product.id}}" th:text="'Edytuj'"></a><a style="margin-left: 5px;display: inline" th:href="@{'/diet/product/delete/' + ${product.id}}" th:text="'Usuń'"></a>
+        <div th:if="${confirm != null}">
+            <div th:if="${product.id == confirm}">
+                <p th:text="'Czy na pewno chcesz usunąć ' + ${product.name}" />
+                <a th:href="@{'/diet/product/delete/' + ${product.id} + '/yes'}"><button type="submit" th:text="'Tak'"/></button></a>
+                <form th:action="@{/diet/product/all}" method="get">
+                    <input type="submit" value="Nie">
+                </form>
+            </div>
+        </div>
+    </p>
 </div>
 </body>
 </html>

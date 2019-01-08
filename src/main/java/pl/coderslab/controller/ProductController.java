@@ -134,7 +134,23 @@ public class ProductController {
     }
 
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
-    public String delete(@PathVariable("id") Long id, Model model, HttpSession session){
+    public String deleteGet(@PathVariable("id") Long id, Model model, HttpSession session){
+        Object object = session.getAttribute("user");
+        if(object == null){
+            model.addAttribute("logged", null);
+            model.addAttribute("loginForm", "loginForm");
+            return "home";
+        }
+        model.addAttribute("confirm", id);
+        model.addAttribute("logged", "logged");
+        model.addAttribute("allProducts", "allProducts");
+        model.addAttribute("products", allProducts());
+        model.addAttribute("logged", "logged");
+        return "home";
+    }
+
+    @RequestMapping(value = "/delete/{id}/yes", method = RequestMethod.GET)
+    public String deleteConfirm(@PathVariable("id") Long id, Model model, HttpSession session){
         Object object = session.getAttribute("user");
         if(object == null){
             model.addAttribute("logged", null);
