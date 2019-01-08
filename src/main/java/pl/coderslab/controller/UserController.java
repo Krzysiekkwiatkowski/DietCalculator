@@ -232,7 +232,7 @@ public class UserController {
             dailyBalanceRepository.save(dailyBalance);
         }
         userRepository.save(user);
-        return "redirect:/diet/home";
+        return "redirect:/diet/user/option";
     }
 
     @RequestMapping("/actual")
@@ -393,7 +393,7 @@ public class UserController {
         }
         model.addAttribute("changePassword", "changePassword");
         model.addAttribute("wrongPassword", "wrongPassword");
-        return "home";
+        return "redirect:/diet/user/option";
     }
 
     @RequestMapping(value = "/option", method = RequestMethod.GET)
@@ -409,9 +409,22 @@ public class UserController {
         return "home";
     }
 
+    @RequestMapping(value = "/delete")
+    public String delete(Model model, HttpSession session){
+        Object object = session.getAttribute("user");
+        if(object == null){
+            model.addAttribute("logged", null);
+            model.addAttribute("loginForm", "loginForm");
+            return "home";
+        }
+        model.addAttribute("logged", "logged");
+        model.addAttribute("deleteUser", "deleteUser");
+        return "home";
+    }
+
     @Transactional
-    @RequestMapping(value = "/delete", method = RequestMethod.GET)
-    public String delete(HttpSession session, Model model){
+    @RequestMapping(value = "/delete/yes", method = RequestMethod.GET)
+    public String deleteConfirm(HttpSession session, Model model){
         Object object = session.getAttribute("user");
         if(object == null){
             model.addAttribute("logged", null);

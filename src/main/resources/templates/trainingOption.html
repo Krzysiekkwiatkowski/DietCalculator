@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type"	content="text/html;	charset=UTF-8" />
+    <title>Title</title>
+</head>
+<body>
+<h3 th:text="'Co chcesz zrobić:'"></h3>
+<p th:if="${training == null}"><a th:href="@{/diet/training/add}" ><button style="width: 150px" type="submit" th:text="'Dodaj trening'"/></a></p>
+<p th:if="${training != null}"><a th:href="@{'/diet/training/edit/' + ${training}}"><button style="width: 150px" type="submit" th:text="'Aktualizuj trening'"/></a></p>
+<p th:if="${training != null}"><a th:href="@{'/diet/training/delete/' + ${training}}"><button style="width: 150px" type="submit" th:text="'Usuń trening'"/></a></p>
+</body>
+</html>

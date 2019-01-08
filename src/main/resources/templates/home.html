@@ -113,6 +113,10 @@
                 <div  th:replace="selectProduct :: body" style="height: 700px; width: 984px; float: right">
                 </div>
             </div>
+            <div th:if="${trainingOption != null}">
+                <div  th:replace="trainingOption :: body" style="height: 700px; width: 984px; float: right">
+                </div>
+            </div>
             <div th:if="${viewMeal != null}">
                 <div  th:replace="viewMeal :: body" style="height: 700px; width: 984px; float: right">
                 </div>
@@ -123,6 +127,10 @@
             </div>
             <div th:if="${mealOption != null}">
                 <div  th:replace="mealOption :: body" style="height: 700px; width: 984px; float: right">
+                </div>
+            </div>
+            <div th:if="${deleteUser != null}">
+                <div  th:replace="deleteUser :: body" style="height: 700px; width: 984px; float: right">
                 </div>
             </div>
         </div>

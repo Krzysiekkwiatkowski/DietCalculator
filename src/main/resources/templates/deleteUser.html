@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type"	content="text/html;	charset=UTF-8" />
+    <title>Title</title>
+</head>
+<body>
+<h3 style="color: red" th:text="'Czy jesteś pewny, że chcesz usunąć konto?'"></h3>
+<a th:href="@{/diet/user/delete/yes}"><button type="submit" th:text="'Tak, jestem pewny'" /></a>
+<a th:href="@{/diet/user/option}"><button type="submit" th:text="'Nie, chcę zachować konto'" /></a>
+</body>
+</html>
