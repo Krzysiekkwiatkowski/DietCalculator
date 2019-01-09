@@ -10,9 +10,10 @@
     Nazwa: <input type="text" name="name">
     <input type="submit" value="Wyszukaj">
 </form>
-<h3 th:text="'Lista produktów: '"></h3>
-<div th:each="product : ${products}">
-    <p>
+<div th:if="${search != null}">
+    <h3 th:text="'Lista produktów: '"></h3>
+    <div th:each="product : ${products}">
+        <p>
         <p style="display: inline" th:text="${product.name} + ' '" /><a style="display: inline" th:href="@{'/diet/product/edit/' + ${product.id}}" th:text="'Edytuj'"></a><a style="margin-left: 5px;display: inline" th:href="@{'/diet/product/delete/' + ${product.id}}" th:text="'Usuń'"></a>
         <div th:if="${confirm != null}">
             <div th:if="${product.id == confirm}">
@@ -21,6 +22,25 @@
                 <a th:href="@{/diet/product/all}"><button type="submit" th:text="'Nie'" /></a>
             </div>
         </div>
+        </p>
+    </div>
+</div>
+<div th:if="${search == null}">
+    <h3 th:text="'Lista produktów: '"></h3>
+    <div th:each="product : ${limitedProducts}">
+        <p>
+            <p style="display: inline" th:text="${product.name} + ' '" /><a style="display: inline" th:href="@{'/diet/product/edit/' + ${product.id}}" th:text="'Edytuj'"></a><a style="margin-left: 5px;display: inline" th:href="@{'/diet/product/delete/' + ${product.id}}" th:text="'Usuń'"></a>
+            <div th:if="${confirm != null}">
+                <div th:if="${product.id == confirm}">
+                    <p th:text="'Czy na pewno chcesz usunąć ' + ${product.name}" />
+                    <a th:href="@{'/diet/product/delete/' + ${product.id} + '/yes'}"><button type="submit" th:text="'Tak'"/></button></a>
+                    <a th:href="@{/diet/product/all}"><button type="submit" th:text="'Nie'" /></a>
+                </div>
+            </div>
+        </p>
+    </div>
+    <p style="display: inline; margin-left: 10px" th:each="number : ${pages}">
+        <a th:href="@{'/diet/product/all?page=' + ${number}}" th:text="${number} + ' '"></a>
     </p>
 </div>
 </body>

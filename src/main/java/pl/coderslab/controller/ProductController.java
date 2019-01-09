@@ -10,8 +10,10 @@ import pl.coderslab.entity.Product;
 import pl.coderslab.repository.CategoryRepository;
 import pl.coderslab.repository.ProductRepository;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 @RequestMapping("/diet/product")
@@ -100,6 +102,10 @@ public class ProductController {
             model.addAttribute("loginForm", "loginForm");
             return "home";
         }
+        if(name.equals("")){
+            return "redirect:/diet/product/all";
+        }
+        model.addAttribute("search", "search");
         model.addAttribute("logged", "logged");
         model.addAttribute("allProducts", "allProducts");
         model.addAttribute("products", productRepository.findByNameContaining(name));
@@ -107,16 +113,33 @@ public class ProductController {
     }
 
     @RequestMapping(value = "/all", method = RequestMethod.GET)
-    public String all(Model model, HttpSession session){
+    public String all(HttpServletRequest request, Model model, HttpSession session){
         Object object = session.getAttribute("user");
         if(object == null){
             model.addAttribute("logged", null);
             model.addAttribute("loginForm", "loginForm");
             return "home";
         }
+        int count = productRepository.countAllProduct();
+        List<Product> limitedProducts = null;
+        List<Integer> pages = new ArrayList<>();
+        int numberOfPages = count / 12;
+        if(count > 0){
+            String exist = request.getParameter("page");
+            if(exist == null) {
+                limitedProducts = productRepository.findAll(12, 0);
+            } else {
+                Integer page = Integer.parseInt(exist);
+                limitedProducts = productRepository.findAll(12, (page - 1) * 12);
+            }
+            for (int i = 0; i < numberOfPages + 1; i++) {
+                pages.add(i, i + 1);
+            }
+        }
+        model.addAttribute("pages", pages);
         model.addAttribute("logged", "logged");
         model.addAttribute("allProducts", "allProducts");
-        model.addAttribute("products", allProducts());
+        model.addAttribute("limitedProducts", limitedProducts);
         return "home";
     }
 
