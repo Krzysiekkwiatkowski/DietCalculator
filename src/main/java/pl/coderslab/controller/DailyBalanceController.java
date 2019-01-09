@@ -122,22 +122,26 @@ public class DailyBalanceController {
         User user = (User)object;
         User loadedUser = userRepository.findTopByEmail(user.getEmail());
         Object dailyObject = dailyBalanceRepository.findAllByUserAndDate(loadedUser, Date.valueOf(LocalDate.now()));
-        if(dailyObject == null){
+        if(dailyObject == null || ((List) dailyObject).size() == 0){
             model.addAttribute("weeklyBalance", "weeklyBalance");
             model.addAttribute("exist", null);
             return "home";
         }
         List<DailyBalance> dailyBalances = (List<DailyBalance>)dailyObject;
         int days = dailyBalances.size();
-        double totalProtein = loadedUser.getTotalProtein() * days;
-        double totalCarbohydrates = loadedUser.getTotalCarbohydrates() * days;
-        double totalFat = loadedUser.getTotalFat() * days;
-        int totalCalories = loadedUser.getTotalCalories() * days;
+        double totalProtein = 0.0;
+        double totalCarbohydrates = 0.0;
+        double totalFat = 0.0;
+        int totalCalories = 0;
         double proteinReceived = 0.0;
         double carbohydratesReceived = 0.0;
         double fatReceived = 0.0;
         int caloriesReceived = 0;
         for (DailyBalance dailyBalance : dailyBalances) {
+            totalProtein += dailyBalance.getTotalProtein();
+            totalCarbohydrates += dailyBalance.getTotalCarbohydrates();
+            totalFat += dailyBalance.getTotalFat();
+            totalCalories += dailyBalance.getNeeded();
             for (Meal meal : dailyBalance.getMeals()) {
                 proteinReceived += meal.getTotalProtein();
                 carbohydratesReceived += meal.getTotalCarbohydrates();

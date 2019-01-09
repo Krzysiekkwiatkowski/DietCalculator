@@ -107,6 +107,9 @@ public class TrainingController {
         }
         if(dailyBalanceRepository.findTopByUserIdAndAndDate(loadedUser.getId(), Date.valueOf(LocalDate.now())) != null) {
             DailyBalance dailyBalance = dailyBalanceRepository.findTopByUserIdAndAndDate(loadedUser.getId(), Date.valueOf(LocalDate.now()));
+            dailyBalance.setTotalProtein(loadedUser.getTotalProtein());
+            dailyBalance.setTotalCarbohydrates(loadedUser.getTotalCarbohydrates());
+            dailyBalance.setTotalFat(loadedUser.getTotalFat());
             dailyBalance.setNeeded(loadedUser.getTotalCalories());
             dailyBalance.setBalance(dailyBalance.getReceived() - dailyBalance.getNeeded());
             dailyBalanceRepository.save(dailyBalance);
@@ -187,6 +190,9 @@ public class TrainingController {
         }
         if(dailyBalanceRepository.findTopByUserIdAndAndDate(loadedUser.getId(), Date.valueOf(LocalDate.now())) != null) {
             DailyBalance dailyBalance = dailyBalanceRepository.findTopByUserIdAndAndDate(loadedUser.getId(), Date.valueOf(LocalDate.now()));
+            dailyBalance.setTotalProtein(loadedUser.getTotalProtein());
+            dailyBalance.setTotalCarbohydrates(loadedUser.getTotalCarbohydrates());
+            dailyBalance.setTotalFat(loadedUser.getTotalFat());
             dailyBalance.setNeeded(loadedUser.getTotalCalories());
             dailyBalance.setBalance(dailyBalance.getReceived() - dailyBalance.getNeeded());
             dailyBalanceRepository.save(dailyBalance);
@@ -254,31 +260,34 @@ public class TrainingController {
             double calories = ((training.getStrengthDays() * training.getStrengthTime() * strIntensity) + (training.getCardioDays() * training.getCardioTime() * cardioIntensity)) / 7;
             training.setDailyCalories((int)calories);
             trainingRepository.save(training);
-            user.setTotalCalories(user.getTotalCalories() - oldDailyCalories + training.getDailyCalories());
-            user.setTotalProtein(user.getWeight() * 1.8);
-            String goal = user.getGoal();
-            int total = user.getTotalCalories();
+            loadedUser.setTotalCalories(loadedUser.getTotalCalories() - oldDailyCalories + training.getDailyCalories());
+            loadedUser.setTotalProtein(loadedUser.getWeight() * 1.8);
+            String goal = loadedUser.getGoal();
+            int total = loadedUser.getTotalCalories();
             DecimalFormat decimalFormat =  new DecimalFormat("#.#");
             if(goal.equals("Utrata wagi")){
-                user.setTotalCarbohydrates(Double.parseDouble(decimalFormat.format(((total - 1.8 * 4 * user.getWeight()) * 0.4) / 4.0).replace(",", ".")));
-                user.setTotalFat(Double.parseDouble(decimalFormat.format(((total - 1.8 * 4 * user.getWeight()) * 0.6) / 9.0).replace(",", ".")));
+                loadedUser.setTotalCarbohydrates(Double.parseDouble(decimalFormat.format(((total - 1.8 * 4 * loadedUser.getWeight()) * 0.4) / 4.0).replace(",", ".")));
+                loadedUser.setTotalFat(Double.parseDouble(decimalFormat.format(((total - 1.8 * 4 * loadedUser.getWeight()) * 0.6) / 9.0).replace(",", ".")));
             }
             if(goal.equals("Utrzymanie wagi")){
-                user.setTotalCarbohydrates(Double.parseDouble(decimalFormat.format(((total - 1.8 * 4 * user.getWeight()) * 0.5) / 4.0).replace(",", ".")));
-                user.setTotalFat(Double.parseDouble(decimalFormat.format(((total - 1.8 * 4 * user.getWeight()) * 0.5) / 9.0).replace(",", ".")));
+                loadedUser.setTotalCarbohydrates(Double.parseDouble(decimalFormat.format(((total - 1.8 * 4 * loadedUser.getWeight()) * 0.5) / 4.0).replace(",", ".")));
+                loadedUser.setTotalFat(Double.parseDouble(decimalFormat.format(((total - 1.8 * 4 * loadedUser.getWeight()) * 0.5) / 9.0).replace(",", ".")));
             }
             if(goal.equals("Przybranie wagi")){
-                user.setTotalCarbohydrates(Double.parseDouble(decimalFormat.format(((total - 1.8 * 4 * user.getWeight()) * 0.6) / 4.0).replace(",", ".")));
-                user.setTotalFat(Double.parseDouble(decimalFormat.format(((total - 1.8 * 4 * user.getWeight()) * 0.4) / 9.0).replace(",", ".")));
+                loadedUser.setTotalCarbohydrates(Double.parseDouble(decimalFormat.format(((total - 1.8 * 4 * loadedUser.getWeight()) * 0.6) / 4.0).replace(",", ".")));
+                loadedUser.setTotalFat(Double.parseDouble(decimalFormat.format(((total - 1.8 * 4 * loadedUser.getWeight()) * 0.4) / 9.0).replace(",", ".")));
             }
             if(dailyBalanceRepository.findTopByUserIdAndAndDate(user.getId(), Date.valueOf(LocalDate.now())) != null) {
-                DailyBalance dailyBalance = dailyBalanceRepository.findTopByUserIdAndAndDate(user.getId(), Date.valueOf(LocalDate.now()));
+                DailyBalance dailyBalance = dailyBalanceRepository.findTopByUserIdAndAndDate(loadedUser.getId(), Date.valueOf(LocalDate.now()));
+                dailyBalance.setTotalProtein(loadedUser.getTotalProtein());
+                dailyBalance.setTotalCarbohydrates(loadedUser.getTotalCarbohydrates());
+                dailyBalance.setTotalFat(loadedUser.getTotalFat());
                 dailyBalance.setNeeded(user.getTotalCalories());
                 dailyBalance.setBalance(dailyBalance.getReceived() - dailyBalance.getNeeded());
                 dailyBalanceRepository.save(dailyBalance);
             }
-            user.setTraining(null);
-            userRepository.save(user);
+            loadedUser.setTraining(null);
+            userRepository.save(loadedUser);
             trainingRepository.deleteById(id);
         }
         return "home";

@@ -227,6 +227,9 @@ public class UserController {
         }
         if(dailyBalanceRepository.findTopByUserIdAndAndDate(user.getId(), Date.valueOf(LocalDate.now())) != null) {
             DailyBalance dailyBalance = dailyBalanceRepository.findTopByUserIdAndAndDate(user.getId(), Date.valueOf(LocalDate.now()));
+            dailyBalance.setTotalProtein(user.getTotalProtein());
+            dailyBalance.setTotalCarbohydrates(user.getTotalCarbohydrates());
+            dailyBalance.setTotalFat(user.getTotalFat());
             dailyBalance.setNeeded(user.getTotalCalories());
             dailyBalance.setBalance(dailyBalance.getReceived() - dailyBalance.getNeeded());
             dailyBalanceRepository.save(dailyBalance);

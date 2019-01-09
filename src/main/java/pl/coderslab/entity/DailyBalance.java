@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
 import java.sql.Date;
 import java.util.List;
 
@@ -21,6 +22,15 @@ public class DailyBalance {
     private List<Meal> meals;
     @ManyToOne
     private User user;
+    @Min(0)
+    @Column(scale = 1, precision = 5)
+    private double totalProtein;
+    @Min(0)
+    @Column(scale = 1, precision = 5)
+    private double totalCarbohydrates;
+    @Min(0)
+    @Column(scale = 1, precision = 5)
+    private double totalFat;
     private int needed;
     private int received;
     private int balance;
