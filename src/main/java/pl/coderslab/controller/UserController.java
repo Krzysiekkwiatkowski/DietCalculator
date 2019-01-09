@@ -74,11 +74,11 @@ public class UserController {
         int somatotypeFactor = 0;
         int goalFactor = 0;
         if(somatotype.equals("Ektomorfik")){
-            somatotypeFactor = 700;
+            somatotypeFactor = 800;
         } else if(somatotype.equals("Endomorfik")){
-            somatotypeFactor = 200;
-        } else if(somatotype.equals("Mezomorfik")){
             somatotypeFactor = 400;
+        } else if(somatotype.equals("Mezomorfik")){
+            somatotypeFactor = 450;
         }
         if(activity.equals("Średnia")){
             if(somatotype.equals("Mezomorfik")){
@@ -115,16 +115,16 @@ public class UserController {
         DecimalFormat decimalFormat = new DecimalFormat("#.#");
         user.setTotalProtein(Double.parseDouble(decimalFormat.format(user.getWeight() * 1.8).replace(",", ".")));
         if(goal.equals("Utrata wagi")){
-            user.setTotalCarbohydrates(Double.parseDouble(decimalFormat.format(user.getWeight() * 1.5).replace(",", ".")));
-            user.setTotalFat(Double.parseDouble(decimalFormat.format((total - 4.0 * user.getTotalProtein() - 4.0 * user.getTotalCarbohydrates())/ 9.0).replace(",", ".")));
+            user.setTotalCarbohydrates(Double.parseDouble(decimalFormat.format(((total - 1.8 * 4 * user.getWeight()) * 0.4) / 4.0).replace(",", ".")));
+            user.setTotalFat(Double.parseDouble(decimalFormat.format(((total - 1.8 * 4 * user.getWeight()) * 0.6) / 9.0).replace(",", ".")));
         }
         if(goal.equals("Utrzymanie wagi")){
-            user.setTotalCarbohydrates(Double.parseDouble(decimalFormat.format(user.getWeight() * 2.5).replace(",", ".")));
-            user.setTotalFat(Double.parseDouble(decimalFormat.format((total - 4.0 * user.getTotalProtein() - 4.0 * user.getTotalCarbohydrates())/ 9.0).replace(",", ".")));
+            user.setTotalCarbohydrates(Double.parseDouble(decimalFormat.format(((total - 1.8 * 4 * user.getWeight()) * 0.5) / 4.0).replace(",", ".")));
+            user.setTotalFat(Double.parseDouble(decimalFormat.format(((total - 1.8 * 4 * user.getWeight()) * 0.5) / 9.0).replace(",", ".")));
         }
         if(goal.equals("Przybranie wagi")){
-            user.setTotalCarbohydrates(Double.parseDouble(decimalFormat.format(user.getWeight() * 3.5).replace(",", ".")));
-            user.setTotalFat(Double.parseDouble(decimalFormat.format((total - 4.0 * user.getTotalProtein() - 4.0 * user.getTotalCarbohydrates())/ 9.0).replace(",", ".")));
+            user.setTotalCarbohydrates(Double.parseDouble(decimalFormat.format(((total - 1.8 * 4 * user.getWeight()) * 0.6) / 4.0).replace(",", ".")));
+            user.setTotalFat(Double.parseDouble(decimalFormat.format(((total - 1.8 * 4 * user.getWeight()) * 0.4) / 9.0).replace(",", ".")));
         }
         userRepository.save(user);
         session.setAttribute("user", user);
@@ -214,16 +214,16 @@ public class UserController {
         DecimalFormat decimalFormat = new DecimalFormat("#.#");
         user.setTotalProtein(Double.parseDouble(decimalFormat.format(user.getWeight() * 1.8).replace(",", ".")));
         if(goal.equals("Utrata wagi")){
-            user.setTotalCarbohydrates(Double.parseDouble(decimalFormat.format(user.getWeight() * 1.5).replace(",", ".")));
-            user.setTotalFat(Double.parseDouble(decimalFormat.format((total - 4.0 * user.getTotalProtein() - 4.0 * user.getTotalCarbohydrates())/ 9.0).replace(",", ".")));
+            user.setTotalCarbohydrates(Double.parseDouble(decimalFormat.format(((total - 1.8 * 4 * user.getWeight()) * 0.4) / 4.0).replace(",", ".")));
+            user.setTotalFat(Double.parseDouble(decimalFormat.format(((total - 1.8 * 4 * user.getWeight()) * 0.6) / 9.0).replace(",", ".")));
         }
         if(goal.equals("Utrzymanie wagi")){
-            user.setTotalCarbohydrates(Double.parseDouble(decimalFormat.format(user.getWeight() * 2.5).replace(",", ".")));
-            user.setTotalFat(Double.parseDouble(decimalFormat.format((total - 4.0 * user.getTotalProtein() - 4.0 * user.getTotalCarbohydrates())/ 9.0).replace(",", ".")));
+            user.setTotalCarbohydrates(Double.parseDouble(decimalFormat.format(((total - 1.8 * 4 * user.getWeight()) * 0.5) / 4.0).replace(",", ".")));
+            user.setTotalFat(Double.parseDouble(decimalFormat.format(((total - 1.8 * 4 * user.getWeight()) * 0.5) / 9.0).replace(",", ".")));
         }
         if(goal.equals("Przybranie wagi")){
-            user.setTotalCarbohydrates(Double.parseDouble(decimalFormat.format(user.getWeight() * 3.5).replace(",", ".")));
-            user.setTotalFat(Double.parseDouble(decimalFormat.format((total - 4.0 * user.getTotalProtein() - 4.0 * user.getTotalCarbohydrates())/ 9.0).replace(",", ".")));
+            user.setTotalCarbohydrates(Double.parseDouble(decimalFormat.format(((total - 1.8 * 4 * user.getWeight()) * 0.6) / 4.0).replace(",", ".")));
+            user.setTotalFat(Double.parseDouble(decimalFormat.format(((total - 1.8 * 4 * user.getWeight()) * 0.4) / 9.0).replace(",", ".")));
         }
         if(dailyBalanceRepository.findTopByUserIdAndAndDate(user.getId(), Date.valueOf(LocalDate.now())) != null) {
             DailyBalance dailyBalance = dailyBalanceRepository.findTopByUserIdAndAndDate(user.getId(), Date.valueOf(LocalDate.now()));
@@ -233,90 +233,6 @@ public class UserController {
         }
         userRepository.save(user);
         return "redirect:/diet/user/option";
-    }
-
-    @RequestMapping("/actual")
-    public String actualBalance(Model model, HttpSession session){
-        Object object = session.getAttribute("user");
-        if(object == null){
-            model.addAttribute("logged", null);
-            model.addAttribute("loginForm", "loginForm");
-            return "home";
-        }
-        model.addAttribute("logged", "logged");
-        User user = (User)object;
-        User loadedUser = userRepository.findTopByEmail(user.getEmail());
-        double totalProtein = loadedUser.getTotalProtein();
-        double totalCarbohydrates = loadedUser.getTotalCarbohydrates();
-        double totalFat = loadedUser.getTotalFat();
-        int totalCalories = loadedUser.getTotalCalories();
-        if(dailyBalanceRepository.findTopByUserIdAndAndDate(loadedUser.getId(), Date.valueOf(LocalDate.now())) == null){
-            model.addAttribute("actualBalance", "actualBalance");
-            model.addAttribute("exist", null);
-            return "home";
-        }
-        double proteinReceived = 0.0;
-        double carbohydratesReceived = 0.0;
-        double fatReceived = 0.0;
-        int caloriesReceived = 0;
-        DailyBalance dailyBalance = dailyBalanceRepository.findTopByUserIdAndAndDate(loadedUser.getId(), Date.valueOf(LocalDate.now()));
-        List<Meal> meals = dailyBalance.getMeals();
-        for (Meal meal : meals) {
-            proteinReceived += meal.getTotalProtein();
-            carbohydratesReceived += meal.getTotalCarbohydrates();
-            fatReceived += meal.getTotalFat();
-            caloriesReceived += meal.getTotalCalories();
-        }
-        StringBuilder protein = new StringBuilder();
-        StringBuilder carbohydrates = new StringBuilder();
-        StringBuilder fat = new StringBuilder();
-        StringBuilder calories = new StringBuilder();
-        DecimalFormat decimalFormat = new DecimalFormat("#.#");
-        for (int i = 0; i < 100; i++) {
-            if(i < (proteinReceived / totalProtein) * 100){
-                protein.append("|");
-            } else if(i == 99){
-                protein.append("|");
-            } else {
-                protein.append(".");
-            }
-            if(i < (carbohydratesReceived / totalCarbohydrates) * 100){
-                carbohydrates.append("|");
-            } else if(i == 99){
-                carbohydrates.append("|");
-            } else {
-                carbohydrates.append(".");
-            }
-            if(i < (fatReceived / totalFat) * 100){
-                fat.append("|");
-            } else if(i == 99){
-                fat.append("|");
-            } else {
-                fat.append(".");
-            }
-            if(i < ((caloriesReceived  * 100)/ totalCalories)){
-                calories.append("|");
-            } else if(i == 99){
-                calories.append("|");
-            } else {
-                calories.append(".");
-            }
-        }
-        StringBuilder sbProtein = new StringBuilder();
-        StringBuilder sbCarbohydrates = new StringBuilder();
-        StringBuilder sbFat = new StringBuilder();
-        StringBuilder sbCalories = new StringBuilder();
-        model.addAttribute("proteinPart", sbProtein.append(" " + Double.parseDouble(decimalFormat.format(proteinReceived).replace(",", ".")) + "/" + totalProtein).toString());
-        model.addAttribute("carbohydratesPart", sbCarbohydrates.append(" " + Double.parseDouble(decimalFormat.format(carbohydratesReceived).replace(",", ".")) + "/" + totalCarbohydrates).toString());
-        model.addAttribute("fatPart", sbFat.append(" " + Double.parseDouble(decimalFormat.format(fatReceived).replace(",", ".")) + "/" + totalFat).toString());
-        model.addAttribute("caloriesPart", sbCalories.append(" " + Double.parseDouble(decimalFormat.format(caloriesReceived).replace(",", ".")) + "/" + totalCalories));
-        model.addAttribute("exist", "exist");
-        model.addAttribute("actualBalance", "actualBalance");
-        model.addAttribute("protein", protein.toString());
-        model.addAttribute("carbohydrates", carbohydrates.toString());
-        model.addAttribute("fat", fat.toString());
-        model.addAttribute("calories", calories.toString());
-        return "home";
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)

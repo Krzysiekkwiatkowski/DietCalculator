@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type"	content="text/html;	charset=UTF-8" />
+    <title>Title</title>
+</head>
+<body>
+<h3 th:text="'Zobacz bilans:'"></h3>
+<p><a th:href="@{/diet/daily/actual}"><button style="width: 150px" type="submit" th:text="'Dzisiejszy'" /></a></p>
+<p><a th:href="@{/diet/daily/weekly}"><button style="width: 150px" type="submit" th:text="'Ostatnie dni'" /></a></p>
+</body>
+</html>

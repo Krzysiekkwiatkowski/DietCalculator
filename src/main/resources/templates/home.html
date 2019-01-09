@@ -77,6 +77,10 @@
                 <div  th:replace="addTraining :: body" style="height: 700px; width: 984px; float: right">
                 </div>
             </div>
+            <div th:if="${balanceOption != null}">
+                <div  th:replace="balanceOption :: body" style="height: 700px; width: 984px; float: right">
+                </div>
+            </div>
             <div th:if="${editTraining != null}">
                 <div  th:replace="editTraining :: body" style="height: 700px; width: 984px; float: right">
                 </div>
@@ -97,7 +101,7 @@
                 <div  th:replace="loginForm :: body" style="height: 700px; width: 984px; float: right">
                 </div>
             </div>
-            <div th:if="${actualBalance != null}">
+            <div th:if="${actualBalance != null || weeklyBalance != null}">
                 <div  th:replace="actualBalance :: body" style="height: 700px; width: 984px; float: right">
                 </div>
             </div>

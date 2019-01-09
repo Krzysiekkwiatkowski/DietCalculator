@@ -5,19 +5,37 @@
     <title>Title</title>
 </head>
 <body>
-<div th:if="${exist != null}">
-    <h3 th:text="'Wszystkie dostarczone dzisiaj makroskładniki:'"></h3>
-    <p th:text="'Białko: ' + ${proteinPart}"></p>
-    <p th:text="${protein}"></p>
-    <p th:text="'Węglowodany: ' + ${carbohydratesPart}"></p>
-    <p th:text="${carbohydrates}"></p>
-    <p th:text="'Tłuszcz: ' + ${fatPart}"></p>
-    <p th:text="${fat}"></p>
-    <p th:text="'Kalorie: ' + ${caloriesPart}"></p>
-    <p th:text="${calories}"></p>
+<div th:if="${actualBalance != null}">
+    <div th:if="${exist != null}">
+        <h3 th:text="'Wszystkie dostarczone dzisiaj makroskładniki:'"></h3>
+        <p th:text="'Białko: ' + ${proteinPart}"></p>
+        <p th:text="${protein}"></p>
+        <p th:text="'Węglowodany: ' + ${carbohydratesPart}"></p>
+        <p th:text="${carbohydrates}"></p>
+        <p th:text="'Tłuszcz: ' + ${fatPart}"></p>
+        <p th:text="${fat}"></p>
+        <p th:text="'Kalorie: ' + ${caloriesPart}"></p>
+        <p th:text="${calories}"></p>
+    </div>
+    <div th:if="${exist == null}" style="color: red">
+        Nie dodano jeszcze posiłku!
+    </div>
 </div>
-<div th:if="${exist == null}" style="color: red">
-    Nie dodano jeszcze posiłku!
+<div th:if="${weeklyBalance != null}">
+    <div th:if="${exist != null}">
+        <h3 th:text="'Wszystkie dostarczone makroskładniki w ciągu ostatnich ' + ${days} + ' dni:'"></h3>
+        <p th:text="'Białko: ' + ${proteinPart}"></p>
+        <p th:text="${protein}"></p>
+        <p th:text="'Węglowodany: ' + ${carbohydratesPart}"></p>
+        <p th:text="${carbohydrates}"></p>
+        <p th:text="'Tłuszcz: ' + ${fatPart}"></p>
+        <p th:text="${fat}"></p>
+        <p th:text="'Kalorie: ' + ${caloriesPart}"></p>
+        <p th:text="${calories}"></p>
+    </div>
+    <div th:if="${exist == null}" style="color: red">
+        Nie ma wymaganej ilości danych!
+    </div>
 </div>
 </body>
 </html>
