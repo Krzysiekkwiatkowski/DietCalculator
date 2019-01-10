@@ -6,7 +6,12 @@
 </head>
 <body>
 <div style="text-align: right">
-    <a th:href="@{/diet/user/register}"><button style="margin-top: 10px; margin-right: 10px; margin-bottom: 10px"> Zarejestruj się </button></a> <a th:href="@{/diet/user/login}"><button style="margin-top: 10px; margin-right: 10px; margin-bottom: 10px"> Zaloguj się </button></a>
+    <form class="inLine" th:action="@{/diet/user/register}" method="get">
+        <button class="logButton button" type="submit" > Zarejestruj się </button>
+    </form>
+    <form class="inLine" th:action="@{/diet/user/login}" method="get">
+        <button class="logButton button" > Zaloguj się </button>
+    </form>
 </div>
 </body>
 </html>

@@ -5,6 +5,10 @@
     height: 774px;
 }
 
+.inLine{
+    display: inline;
+}
+
 .floatLeft{
     float: left;
 }
@@ -26,6 +30,10 @@
     height: 650px;
 }
 
+.title{
+    height: 75px;
+}
+
 .center{
     text-align: center;
 }
@@ -34,7 +42,24 @@
     width: 1584px;
     height: 774px;
 }
+
 .form{
     background-color: cornsilk;
     border: 4px solid green;
+}
+
+.content{
+    height: 700px;
+    width: 984px;
+}
+
+.button{
+    background-color: grey;
+    border: 2px solid black;
+}
+
+.logButton{
+    margin-top: 10px;
+    margin-right: 10px;
+    margin-bottom: 10px
 }

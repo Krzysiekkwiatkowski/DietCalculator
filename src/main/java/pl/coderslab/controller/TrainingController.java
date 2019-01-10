@@ -54,7 +54,7 @@ public class TrainingController {
         Object object = session.getAttribute("user");
         if(object == null){
             model.addAttribute("logged", null);
-            model.addAttribute("addTraining", "addTraining");
+            model.addAttribute("loginForm", "loginForm");
             return "home";
         }
         model.addAttribute("logged", "logged");
@@ -206,7 +206,7 @@ public class TrainingController {
         Object object = session.getAttribute("user");
         if(object == null){
             model.addAttribute("logged", null);
-            model.addAttribute("loginForm");
+            model.addAttribute("loginForm", "loginForm");
             return "home";
         }
         User user = (User)object;
@@ -228,7 +228,7 @@ public class TrainingController {
         Object object = session.getAttribute("user");
         if(object == null){
             model.addAttribute("logged", null);
-            model.addAttribute("loginForm");
+            model.addAttribute("loginForm", "loginForm");
             return "home";
         }
         model.addAttribute("logged", "logged");

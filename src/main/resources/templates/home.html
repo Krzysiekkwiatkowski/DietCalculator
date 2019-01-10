@@ -17,119 +17,119 @@
     </div>
     <div th:if="${logged == null}">
         <div class="floatRight">
-            <div style="background-color: darkslategrey; width: 984px" th:include="fragments/logBar">
+            <div class="w" style="background-color: lightgrey" th:include="fragments/logBar">
             </div>
         </div>
     </div>
     <div th:if="${logged != null}">
         <div class="floatRight">
-            <div style="background-color: darkslategrey; width: 984px" th:include="fragments/logoutBar">
+            <div class="w" style="background-color: lightgrey" th:include="fragments/logoutBar">
             </div>
         </div>
     </div>
-    <div class="floatLeft" style="background-color: blue; width: 984px; height: 75px; text-align: center;">
+    <div class="floatLeft" style="background-color: gray; border: 3px black; width: 984px; height: 75px; text-align: center;">
         <h1 th:text="'Kalkulator diety'"></h1>
     </div>
     <div class="floatLeft">
-        <div style="background-color: darkblue; width: 984px" th:include="fragments/navBar">
+        <div style="background-color: lightgrey; width: 984px" th:include="fragments/navBar">
         </div>
     </div>
-    <div class="floatLeft" style="background-color: gray; width: 984px; height: 625px; text-align: center">
+    <div class="floatLeft" style="background-color: gray; width: 984px; height: 600px; text-align: center">
         <div>
             <div th:if="${addProduct != null}">
-                <div th:replace="addProduct :: body" style="height: 700px; width: 984px; float: right">
+                <div class="content, floatRight" th:replace="addProduct :: body" >
                 </div>
             </div>
             <div th:if="${editProduct != null}">
-                <div  th:replace="editProduct :: body" style="height: 700px; width: 984px; float: right">
+                <div class="content, floatRight" th:replace="editProduct :: body" >
                 </div>
             </div>
             <div th:if="${allProducts != null}">
-                <div  th:replace="allProducts :: body" style="height: 700px; width: 984px; float: right">
+                <div class="content, floatRight" th:replace="allProducts :: body" >
                 </div>
             </div>
             <div th:if="${productOption != null}">
-                <div  th:replace="productOption :: body" style="height: 700px; width: 984px; float: right">
+                <div class="content, floatRight" th:replace="productOption :: body" >
                 </div>
             </div>
             <div th:if="${addCategory != null}">
-                <div  th:replace="addCategory :: body" style="height: 700px; width: 984px; float: right">
+                <div class="content, floatRight" th:replace="addCategory :: body" >
                 </div>
             </div>
             <div th:if="${editCategory != null}">
-                <div  th:replace="editCategory :: body" style="height: 700px; width: 984px; float: right">
+                <div class="content, floatRight" th:replace="editCategory :: body" >
                 </div>
             </div>
             <div th:if="${allCategories != null}">
-                <div  th:replace="allCategories :: body" style="height: 700px; width: 984px; float: right">
+                <div class="content, floatRight" th:replace="allCategories :: body" >
                 </div>
             </div>
             <div th:if="${categoryOption != null}">
-                <div  th:replace="categoryOption :: body" style="height: 700px; width: 984px; float: right">
+                <div class="content, floatRight" th:replace="categoryOption :: body" >
                 </div>
             </div>
             <div th:if="${addTraining != null}">
-                <div  th:replace="addTraining :: body" style="height: 700px; width: 984px; float: right">
+                <div class="content, floatRight" th:replace="addTraining :: body" >
                 </div>
             </div>
             <div th:if="${balanceOption != null}">
-                <div  th:replace="balanceOption :: body" style="height: 700px; width: 984px; float: right">
+                <div class="content, floatRight" th:replace="balanceOption :: body" >
                 </div>
             </div>
             <div th:if="${editTraining != null}">
-                <div  th:replace="editTraining :: body" style="height: 700px; width: 984px; float: right">
+                <div class="content, floatRight" th:replace="editTraining :: body" >
                 </div>
             </div>
             <div th:if="${registerUser != null}">
-                <div  th:replace="registerUser :: body" style="height: 700px; width: 984px; float: right">
+                <div class="content, floatRight" th:replace="registerUser :: body" >
                 </div>
             </div>
             <div th:if="${editUser != null}">
-                <div  th:replace="editUser :: body" style="height: 700px; width: 984px; float: right">
+                <div class="content, floatRight" th:replace="editUser :: body" >
                 </div>
             </div>
             <div th:if="${userOption != null}">
-                <div  th:replace="userOption :: body" style="height: 700px; width: 984px; float: right">
+                <div class="content, floatRight" th:replace="userOption :: body" >
                 </div>
             </div>
             <div th:if="${loginForm != null}">
-                <div  th:replace="loginForm :: body" style="height: 700px; width: 984px; float: right">
+                <div class="content, floatRight" th:replace="loginForm :: body" >
                 </div>
             </div>
             <div th:if="${actualBalance != null || weeklyBalance != null}">
-                <div  th:replace="actualBalance :: body" style="height: 700px; width: 984px; float: right">
+                <div class="content, floatRight" th:replace="actualBalance :: body" >
                 </div>
             </div>
             <div th:if="${changePassword != null}">
-                <div  th:replace="changePassword :: body" style="height: 700px; width: 984px; float: right">
+                <div class="content, floatRight" th:replace="changePassword :: body" >
                 </div>
             </div>
             <div th:if="${selectCategory != null}">
-                <div  th:replace="selectCategory :: body" style="height: 700px; width: 984px; float: right">
+                <div class="content, floatRight" th:replace="selectCategory :: body" >
                 </div>
             </div>
             <div th:if="${selectProduct != null}">
-                <div  th:replace="selectProduct :: body" style="height: 700px; width: 984px; float: right">
+                <div class="content, floatRight" th:replace="selectProduct :: body" >
                 </div>
             </div>
             <div th:if="${trainingOption != null}">
-                <div  th:replace="trainingOption :: body" style="height: 700px; width: 984px; float: right">
+                <div class="content, floatRight" th:replace="trainingOption :: body" >
                 </div>
             </div>
             <div th:if="${viewMeal != null}">
-                <div  th:replace="viewMeal :: body" style="height: 700px; width: 984px; float: right">
+                <div class="content, floatRight" th:replace="viewMeal :: body" >
                 </div>
             </div>
             <div th:if="${viewMeals != null}">
-                <div  th:replace="viewMeals :: body" style="height: 700px; width: 984px; float: right">
+                <div class="content, floatRight" th:replace="viewMeals :: body" >
                 </div>
             </div>
             <div th:if="${mealOption != null}">
-                <div  th:replace="mealOption :: body" style="height: 700px; width: 984px; float: right">
+                <div class="content, floatRight" th:replace="mealOption :: body" >
                 </div>
             </div>
             <div th:if="${deleteUser != null}">
-                <div  th:replace="deleteUser :: body" style="height: 700px; width: 984px; float: right">
+                <div class="content, floatRight" th:replace="deleteUser :: body" >
                 </div>
             </div>
         </div>

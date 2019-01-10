@@ -6,7 +6,9 @@
 </head>
 <body>
 <div style="text-align: right">
-    <a th:href="@{/diet/user/logout}"><button style="margin-top: 10px; margin-right: 10px; margin-bottom: 10px"> Wyloguj się </button></a>
+    <form class="inLine" th:action="@{/diet/user/logout}" method="get">
+        <button class="logButton button" type="submit" > Wyloguj się </button>
+    </form>
 </div>
 </body>
 </html>
