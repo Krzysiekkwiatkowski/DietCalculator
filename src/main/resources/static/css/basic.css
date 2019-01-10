@@ -1,0 +1,40 @@
+.bcg{
+    background: url(http://localhost:63342/DietCalculator/templates/images/background.jpg) no-repeat center center fixed;
+    background-size: cover;
+    width: 1584px;
+    height: 774px;
+}
+
+.floatLeft{
+    float: left;
+}
+
+.floatRight{
+    float: right;
+}
+
+.wh{
+    width: 300px;
+    height: 774px;
+}
+
+.w{
+    width: 984px;
+}
+
+.h{
+    height: 650px;
+}
+
+.center{
+    text-align: center;
+}
+
+.page{
+    width: 1584px;
+    height: 774px;
+}
+.form{
+    background-color: cornsilk;
+    border: 4px solid green;
+}

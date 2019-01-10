@@ -3,43 +3,38 @@
 <head>
     <meta http-equiv="Content-Type"	content="text/html;	charset=UTF-8" />
     <title>Title</title>
-    <style>
-        .bcg {
-            background: url(http://localhost:63342/DietCalculator/templates/images/background.jpg) no-repeat center center fixed;
-            background-size: cover;
-        }
-    </style>
+    <link rel="stylesheet" th:href="@{/css/basic.css}">
 </head>
 <body>
-<div class="bcg" style=" width: 1584px; height: 774px">
-    <div style="float: left">
-        <div style="width: 300px; height: 774px;">
+<div class="bcg" style=" width: 1584px; height: 774px;">
+    <div class="floatLeft">
+        <div class="wh">
         </div>
     </div>
-    <div style="float: right">
-        <div style="width: 300px; height: 774px">
+    <div class="floatRight">
+        <div class="wh" >
         </div>
     </div>
     <div th:if="${logged == null}">
-        <div style="float: right">
+        <div class="floatRight">
             <div style="background-color: darkslategrey; width: 984px" th:include="fragments/logBar">
             </div>
         </div>
     </div>
     <div th:if="${logged != null}">
-        <div style="float: right">
+        <div class="floatRight">
             <div style="background-color: darkslategrey; width: 984px" th:include="fragments/logoutBar">
             </div>
         </div>
     </div>
-    <div style="float: left; background-color: blue; width: 984px; height: 75px; text-align: center;">
+    <div class="floatLeft" style="background-color: blue; width: 984px; height: 75px; text-align: center;">
         <h1 th:text="'Kalkulator diety'"></h1>
     </div>
-    <div style="float: left">
+    <div class="floatLeft">
         <div style="background-color: darkblue; width: 984px" th:include="fragments/navBar">
         </div>
     </div>
-    <div style="float: left; background-color: gray; width: 984px; height: 625px; text-align: center">
+    <div class="floatLeft" style="background-color: gray; width: 984px; height: 625px; text-align: center">
         <div>
             <div th:if="${addProduct != null}">
                 <div th:replace="addProduct :: body" style="height: 700px; width: 984px; float: right">
