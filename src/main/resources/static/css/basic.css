@@ -100,3 +100,14 @@ input,select{
     width: 400px;
     height: 700px;
 }
+
+.graphText{
+    margin-bottom: 30px;
+}
+
+.graph{
+    align-items: center;
+    display:block;
+    height: 33px;
+    padding-top: 15px;
+}

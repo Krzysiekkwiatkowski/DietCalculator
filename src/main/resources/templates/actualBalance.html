@@ -7,15 +7,21 @@
 <body>
 <div th:if="${actualBalance != null}">
     <div th:if="${exist != null}">
-        <h3 th:text="'Wszystkie dostarczone dzisiaj makroskładniki:'"></h3>
-        <p th:text="'Białko: ' + ${proteinPart}"></p>
-        <p th:text="${protein}"></p>
-        <p th:text="'Węglowodany: ' + ${carbohydratesPart}"></p>
-        <p th:text="${carbohydrates}"></p>
-        <p th:text="'Tłuszcz: ' + ${fatPart}"></p>
-        <p th:text="${fat}"></p>
-        <p th:text="'Kalorie: ' + ${caloriesPart}"></p>
-        <p th:text="${calories}"></p>
+        <div style="background-color: red; float: left; width: 250px; height: 500px">
+            <div style="width: 250px; height: 83px">
+            </div>
+            <p class="graphText" th:text="'Białko: ' + ${proteinPart}"></p>
+            <p class="graphText" th:text="'Węglowodany: ' + ${carbohydratesPart}"></p>
+            <p class="graphText" th:text="'Tłuszcz: ' + ${fatPart}"></p>
+            <p class="graphText" th:text="'Kalorie: ' + ${caloriesPart}"></p>
+        </div>
+        <div class="floatLeft" style="border-right: 2px solid black ;width: 399px; height: 350px">
+            <h3 th:text="'Wszystkie dostarczone dzisiaj makroskładniki:'"></h3>
+            <div class="graph" th:style="'width: ' + ${protein * 4} + 'px; background-color: green;'" th:text="${protein} + '%'"></div>
+            <div class="graph" th:style="'width: ' + ${carbohydrates * 4} + 'px; background-color: red;'" th:text="${carbohydrates} + '%'"></div>
+            <div class="graph" th:style="'width: ' + ${fat * 4} + 'px; background-color: yellow;'" th:text="${fat} + '%'"></div>
+            <div class="graph" th:style="'width: ' + ${calories * 4} + 'px; background-color: blue;'" th:text="${calories} + '%'"></div>
+        </div>
     </div>
     <div th:if="${exist == null}" style="color: red">
         Nie dodano jeszcze posiłku!
