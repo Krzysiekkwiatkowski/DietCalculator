@@ -43,11 +43,6 @@
     height: 774px;
 }
 
-.form{
-    background-color: cornsilk;
-    border: 4px solid green;
-}
-
 .content{
     height: 700px;
     width: 984px;
@@ -61,5 +56,47 @@
 .logButton{
     margin-top: 10px;
     margin-right: 10px;
-    margin-bottom: 10px
+    margin-bottom: 10px;
+    width: 120px;
+    height: 25px;
+}
+
+.navButton{
+    margin-top: 10px;
+    margin-left: 10px;
+    margin-bottom: 10px;
+    width: 90px;
+    height: 25px;
+}
+
+.formButton{
+    margin-top: 10px;
+    width: 120px;
+    height: 30px;
+}
+
+input,select{
+    background-color: lightgray;
+    border: 2px solid grey;
+    border-radius: 2px;
+    margin-top: 6px;
+    margin-bottom: 6px;
+    height: 20px;
+}
+
+.form{
+    text-align: right;
+    display: inline;
+    float: right
+}
+
+.optionButton{
+    margin-bottom: 10px;
+}
+
+.formDiv{
+    display: inline;
+    float: right;
+    width: 400px;
+    height: 700px;
 }

@@ -6,7 +6,9 @@
 </head>
 <body>
 <h3 th:text="'Zmiana produktu'"></h3>
-<form th:action="@{/diet/product/edit/}" th:object="${product}" method="post">
+<div class="formDiv">
+</div>
+<form class="form" th:action="@{/diet/product/edit/}" th:object="${product}" method="post">
     <input type="hidden" name="id" th:field="*{id}" th:value="${id}">
     Nazwa: <input type="text" th:field="*{name}"><th:if="${#fields.hasErrors('name')}" th:errors="*{name}" /></br>
     <th:text> Wartości na 100g produktu: </th:text></br>

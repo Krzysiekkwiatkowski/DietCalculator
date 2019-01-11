@@ -6,8 +6,14 @@
 </head>
 <body>
 <h3 th:text="'Co chcesz zrobić:'"></h3>
-<p><a th:href="@{/diet/user/edit}" ><button style="width: 150px" type="submit" th:text="'Edytuj informacje'"/></a></p>
-<p><a th:href="@{/diet/user/password}" ><button style="width: 150px" type="submit" th:text="'Zmień hasło'"/></a></p>
-<p><a th:href="@{/diet/user/delete}" ><button style="width: 150px" type="submit" th:text="'Usuń konto'"/></a></p>
+    <form class="center" th:action="@{/diet/user/edit}" method="get">
+        <button class="formButton button optionButton" type="submit" > Edytuj informacje </button>
+    </form>
+    <form class="center" th:action="@{/diet/user/password}" method="get">
+        <button class="formButton button optionButton" type="submit" > Zmień hasło </button>
+    </form>
+    <form class="center" th:action="@{/diet/user/delete}" method="get">
+        <button class="formButton button optionButton" type="submit" > Usuń konto </button>
+    </form>
 </body>
 </html>

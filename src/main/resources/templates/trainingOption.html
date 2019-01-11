@@ -6,8 +6,18 @@
 </head>
 <body>
 <h3 th:text="'Co chcesz zrobić:'"></h3>
-<p th:if="${training == null}"><a th:href="@{/diet/training/add}" ><button style="width: 150px" type="submit" th:text="'Dodaj trening'"/></a></p>
-<p th:if="${training != null}"><a th:href="@{'/diet/training/edit/' + ${training}}"><button style="width: 150px" type="submit" th:text="'Aktualizuj trening'"/></a></p>
-<p th:if="${training != null}"><a th:href="@{'/diet/training/delete/' + ${training}}"><button style="width: 150px" type="submit" th:text="'Usuń trening'"/></a></p>
+<div th:if="${training == null}">
+    <form class="center" th:action="@{/diet/training/add}" method="get">
+        <button class="formButton button optionButton" type="submit" > Dodaj trening </button>
+    </form>
+</div>
+<div th:if="${training != null}">
+    <form class="center" th:action="@{'/diet/training/edit/' + ${training}}" method="get">
+        <button class="formButton button optionButton" type="submit" > Aktualizuj trening </button>
+    </form>
+    <form class="center" th:action="@{'/diet/training/delete/' + ${training}}" method="get">
+        <button class="formButton button optionButton" type="submit" > Usuń trening </button>
+    </form>
+</div>
 </body>
 </html>

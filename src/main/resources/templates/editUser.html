@@ -6,7 +6,9 @@
 </head>
 <body>
 <h3 th:text="'Edycja informacji użytkownika'"></h3>
-<form th:action="@{/diet/user/edit}" th:object="${user}" method="post">
+<div class="formDiv">
+</div>
+<form class="form" th:action="@{/diet/user/edit}" th:object="${user}" method="post">
     <input type="hidden" name="id" th:field="*{id}" th:value="${id}">
     <input type="hidden" name="email" th:field="*{email}" th:value="${email}">
     <input type="hidden" name="password" th:field="*{password}" th:value="${password}">

@@ -6,7 +6,9 @@
 </head>
 <body>
 <h3 th:text="'Wybierz produkt:'"></h3>
-<form th:action="@{/diet/meal/addProduct}" method="post">
+<div class="formDiv">
+</div>
+<form class="form" th:action="@{/diet/meal/addProduct}" method="post">
     Produkt: <select name="id">
     <option th:each="product : ${productList}" th:value="${product.id}" th:text="${product.name}" />
     </select></br>

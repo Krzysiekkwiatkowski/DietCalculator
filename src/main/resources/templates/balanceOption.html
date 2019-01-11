@@ -6,7 +6,11 @@
 </head>
 <body>
 <h3 th:text="'Zobacz bilans:'"></h3>
-<p><a th:href="@{/diet/daily/actual}"><button style="width: 150px" type="submit" th:text="'Dzisiejszy'" /></a></p>
-<p><a th:href="@{/diet/daily/weekly}"><button style="width: 150px" type="submit" th:text="'Ostatnie dni'" /></a></p>
+    <form class="center" th:action="@{/diet/daily/actual}" method="get">
+        <button class="formButton button optionButton" type="submit" > Dzisiejszy </button>
+    </form>
+    <form class="center" th:action="@{/diet/daily/weekly}" method="get">
+        <button class="formButton button optionButton" type="submit" > Ostatnie dni </button>
+    </form>
 </body>
 </html>

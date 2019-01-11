@@ -6,7 +6,11 @@
 </head>
 <body>
 <h3 th:text="'Co chcesz zrobić:'"></h3>
-<p><a th:href="@{/diet/meal/add}"><button style="width: 150px" type="submit" th:text="'Dodaj'" /></a></p>
-<p><a th:href="@{/diet/meal/view}"><button style="width: 150px" type="submit" th:text="'Pokaż dzisiejsze'" /></a></p>
+    <form class="center" th:action="@{/diet/meal/add}" method="get">
+        <button class="formButton button optionButton" type="submit" > Dodaj </button>
+    </form>
+    <form class="center" th:action="@{/diet/meal/view}" method="get">
+        <button class="formButton button optionButton" type="submit" > Pokaż dzisiejsze </button>
+    </form>
 </body>
 </html>

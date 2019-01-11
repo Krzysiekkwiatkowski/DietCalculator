@@ -6,7 +6,9 @@
 </head>
 <body>
 <h3 th:text="'Zmiana kategorii'"></h3>
-<form th:action="@{/diet/category/edit/}" th:object="${category}" method="post">
+<div class="formDiv">
+</div>
+<form class="form" th:action="@{/diet/category/edit/}" th:object="${category}" method="post">
     <input type="hidden" name="id" th:field="*{id}" th:value="${id}">
     Nazwa: <input type="text" th:field="*{name}"><th:if="${#fields.hasErrors('name')}" th:errors="*{name}"/></br>
     Opis: <input type="text" th:field="*{description}"><th:if="${#fields.hasErrors('description')}" th:errors="*{description}"/></br>

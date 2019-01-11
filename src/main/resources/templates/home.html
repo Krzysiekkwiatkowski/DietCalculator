@@ -3,7 +3,7 @@
 <head>
     <meta http-equiv="Content-Type"	content="text/html;	charset=UTF-8" />
     <title>Title</title>
-    <link rel="stylesheet" th:href="@{/css/basic.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/basic.css}" >
 </head>
 <body>
 <div class="bcg" style=" width: 1584px; height: 774px;">
@@ -34,7 +34,7 @@
         <div style="background-color: lightgrey; width: 984px" th:include="fragments/navBar">
         </div>
     </div>
-    <div class="floatLeft" style="background-color: gray; width: 984px; height: 600px; text-align: center">
+    <div class="floatLeft" style="background-color: white; width: 984px; height: 600px; text-align: center">
         <div>
             <div th:if="${addProduct != null}">
                 <div class="content, floatRight" th:replace="addProduct :: body" >

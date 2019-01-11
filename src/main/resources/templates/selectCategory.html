@@ -6,7 +6,9 @@
 </head>
 <body>
 <h3 th:text="'Wybierz kategorię:'"></h3>
-<form th:action="@{/diet/meal/add}" method="post">
+<div class="formDiv">
+</div>
+<form class="form" th:action="@{/diet/meal/add}" method="post">
     <div th:if="${mealProducts != null}">
         Produkty:</br>
         <p th:each="product : ${mealProducts}" th:text="${product.name + ' -> ' + product.weight + 'g'}"></p>
