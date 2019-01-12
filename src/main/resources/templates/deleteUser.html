@@ -6,7 +6,11 @@
 </head>
 <body>
 <h3 style="color: red" th:text="'Czy jesteś pewny, że chcesz usunąć konto?'"></h3>
-<a th:href="@{/diet/user/delete/yes}"><button type="submit" th:text="'Tak, jestem pewny'" /></a>
-<a th:href="@{/diet/user/option}"><button type="submit" th:text="'Nie, chcę zachować konto'" /></a>
+    <form th:action="@{/diet/user/delete/yes}" method="get">
+        <button class="formButton button" type="submit" > Tak, jestem pewny </button>
+    </form>
+    <form th:action="@{/diet/user/option}" method="get">
+        <button class="formButton button" type="submit" > Nie, chcę zachować konto </button>
+    </form>
 </body>
 </html>

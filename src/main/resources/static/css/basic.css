@@ -71,7 +71,8 @@
 
 .formButton{
     margin-top: 10px;
-    width: 120px;
+    margin-bottom: 10px;
+    width: 165px;
     height: 30px;
 }
 
@@ -91,7 +92,7 @@ input,select{
 }
 
 .optionButton{
-    margin-bottom: 10px;diet
+    margin-bottom: 10px;
 }
 
 .formDiv{

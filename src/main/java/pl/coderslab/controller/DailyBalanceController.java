@@ -119,55 +119,25 @@ public class DailyBalanceController {
                 caloriesReceived += meal.getTotalCalories();
             }
         }
-        StringBuilder protein = new StringBuilder();
-        StringBuilder carbohydrates = new StringBuilder();
-        StringBuilder fat = new StringBuilder();
-        StringBuilder calories = new StringBuilder();
+        int protein = (int) (proteinReceived * 100 / totalProtein);
+        int carbohydrates = (int) (carbohydratesReceived * 100 / totalCarbohydrates);
+        int fat = (int) (fatReceived * 100 / totalFat);
+        int calories = caloriesReceived * 100 / totalCalories;
         DecimalFormat decimalFormat = new DecimalFormat("#.#");
-        for (int i = 0; i < 100; i++) {
-            if(i < (proteinReceived / totalProtein) * 100){
-                protein.append("|");
-            } else if(i == 99){
-                protein.append("|");
-            } else {
-                protein.append(".");
-            }
-            if(i < (carbohydratesReceived / totalCarbohydrates) * 100){
-                carbohydrates.append("|");
-            } else if(i == 99){
-                carbohydrates.append("|");
-            } else {
-                carbohydrates.append(".");
-            }
-            if(i < (fatReceived / totalFat) * 100){
-                fat.append("|");
-            } else if(i == 99){
-                fat.append("|");
-            } else {
-                fat.append(".");
-            }
-            if(i < ((caloriesReceived  * 100)/ totalCalories)){
-                calories.append("|");
-            } else if(i == 99){
-                calories.append("|");
-            } else {
-                calories.append(".");
-            }
-        }
         StringBuilder sbProtein = new StringBuilder();
         StringBuilder sbCarbohydrates = new StringBuilder();
         StringBuilder sbFat = new StringBuilder();
         StringBuilder sbCalories = new StringBuilder();
+        model.addAttribute("protein", protein);
+        model.addAttribute("carbohydrates", carbohydrates);
+        model.addAttribute("fat", fat);
+        model.addAttribute("calories", calories);
         model.addAttribute("proteinPart", sbProtein.append(" " + Double.parseDouble(decimalFormat.format(proteinReceived).replace(",", ".")) + "/" + Double.parseDouble(decimalFormat.format(totalProtein).replace(",", "."))));
         model.addAttribute("carbohydratesPart", sbCarbohydrates.append(" " + Double.parseDouble(decimalFormat.format(carbohydratesReceived).replace(",", ".")) + "/" + Double.parseDouble(decimalFormat.format(totalCarbohydrates).replace(",", "."))));
         model.addAttribute("fatPart", sbFat.append(" " + Double.parseDouble(decimalFormat.format(fatReceived).replace(",", ".")) + "/" + Double.parseDouble(decimalFormat.format(totalFat).replace(",", "."))));
         model.addAttribute("caloriesPart", sbCalories.append(" " + Double.parseDouble(decimalFormat.format(caloriesReceived).replace(",", ".")) + "/" + totalCalories));
         model.addAttribute("exist", "exist");
         model.addAttribute("weeklyBalance", "weeklyBalance");
-        model.addAttribute("protein", protein.toString());
-        model.addAttribute("carbohydrates", carbohydrates.toString());
-        model.addAttribute("fat", fat.toString());
-        model.addAttribute("calories", calories.toString());
         model.addAttribute("days", days);
         return "home";
     }

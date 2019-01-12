@@ -9,18 +9,26 @@
     <div th:each="meal : ${meals}">
         <p>
             <p style="display: inline" th:text="'Posiłek nr.' + ${meal.mealNumber}"/>
-            <a style="display: inline" th:href="@{'/diet/meal/view/' + ${meal.mealNumber}}" ><button style="margin-left: 10px" type="submit" th:text="'Zobacz szczegóły'" /></a>
-            <a style="display: inline" th:href="@{'/diet/meal/delete/' + ${meal.id}}"><button type="submit" th:text="'Usuń'" /></a>
+            <form class="inLine" th:action="@{'/diet/meal/view/' + ${meal.mealNumber}}" method="get">
+                <button class="formButton button" style="margin-left: 10px" type="submit" th:text="'Zobacz szczegóły'"></button>
+            </form>
+            <form class="inLine" th:action="@{'/diet/meal/delete/' + ${meal.id}}" method="get">
+                <button class="formButton button" style="margin-left: 10px" type="submit" th:text="'Usuń'"></button>
+            </form>
             <div th:if="${meal.id == confirm}">
                 <p th:text="'Czy na pewno chcesz usunąć posiłek nr.' + ${meal.mealNumber}" />
-                <a th:href="@{'/diet/meal/delete/' + ${meal.id} + '/yes'}"><button type="submit" th:text="'Tak'"/></a>
-                <a th:href="@{/diet/meal/view}"><button type="submit" th:text="'Nie'"/></a>
+                <form class="inLine" th:action="@{'/diet/meal/delete/' + ${meal.id} + '/yes'}" method="get">
+                    <button class="formButton button" style="margin-left: 10px" type="submit" th:text="'Tak'"></button>
+                </form>
+                <form class="inLine" th:action="@{/diet/meal/view}" method="get">
+                    <button class="formButton button" style="margin-left: 10px" type="submit" th:text="'Nie'"></button>
+                </form>
             </div>
         </p>
     </div>
 </div>
 <div th:if="${exist == null}">
-    <p style="color: red" th:text="'Nie dodano jeszcze żadnego posiłku!'"></p>
+    <h3 style="color: red" th:text="'Nie dodano jeszcze żadnego posiłku!'"></h3>
 </div>
 </body>
 </html>

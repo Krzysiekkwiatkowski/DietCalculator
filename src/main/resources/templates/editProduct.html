@@ -19,7 +19,7 @@
     Kategoria: <select th:field="*{category}">
         <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"/>
     </select></br>
-    <input type="submit" value="Zmień produkt">
+    <button class="formButton button" type="submit" > Zmień produkt </button>
 </form>
 </body>
 </html>

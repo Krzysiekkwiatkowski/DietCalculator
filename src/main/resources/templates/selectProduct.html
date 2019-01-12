@@ -13,7 +13,7 @@
     <option th:each="product : ${productList}" th:value="${product.id}" th:text="${product.name}" />
     </select></br>
     Ilość: <input type="number" min="0" name="weight" /></br>
-    <input type="submit" value="Dodaj produkt">
+    <button class="formButton button" type="submit" > Dodaj produkt </button>
 </form>
 </body>
 </html>

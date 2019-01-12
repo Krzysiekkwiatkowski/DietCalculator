@@ -12,7 +12,7 @@
     <input type="hidden" name="id" th:field="*{id}" th:value="${id}">
     Nazwa: <input type="text" th:field="*{name}"><th:if="${#fields.hasErrors('name')}" th:errors="*{name}"/></br>
     Opis: <input type="text" th:field="*{description}"><th:if="${#fields.hasErrors('description')}" th:errors="*{description}"/></br>
-    <input type="submit" value="Edytuj kategorię">
+    <button class="formButton button" type="submit" > Edytuj kategorię </button>
 </form>
 </body>
 </html>

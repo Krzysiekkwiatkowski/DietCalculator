@@ -10,6 +10,8 @@
 <p th:text="'Węglowodany: ' + ${meal.totalCarbohydrates}"></p>
 <p th:text="'Tłuszcze: ' + ${meal.totalFat}"></p>
 <p th:text="'Kalorie: ' + ${meal.totalCalories}"></p>
-<a th:href="@{/diet/meal/view}" th:text="'Cofnij'"></a>
+<form th:action="@{/diet/meal/view}" method="get">
+    <button class="formButton button" type="submit" > Cofnij </button>
+</form>
 </body>
 </html>

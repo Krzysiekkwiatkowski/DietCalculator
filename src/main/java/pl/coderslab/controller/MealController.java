@@ -278,7 +278,11 @@ public class MealController {
         if (object != null) {
             DailyBalance dailyBalance = (DailyBalance)object;
             List<Meal> meals = dailyBalance.getMeals();
-            if(meals.size() > 1) {
+            if(meals.size() == 0){
+                model.addAttribute("exist", null);
+                model.addAttribute("viewMeals", "viewMeals");
+                return "home";
+            } else {
                 for (int i = 0; i < meals.size() - 1; i++) {
                     if (meals.get(i).getId() > meals.get(i + 1).getId()) {
                         Meal first = meals.get(i + 1);
