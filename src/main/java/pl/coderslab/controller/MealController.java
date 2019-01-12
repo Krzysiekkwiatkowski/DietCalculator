@@ -166,7 +166,17 @@ public class MealController {
             }
             dailyBalance.setReceived(dailyBalance.getReceived() + meal.getTotalCalories());
             dailyBalance.setBalance(dailyBalance.getReceived() - dailyBalance.getNeeded());
-            meal.setMealNumber(meals.size() + 1);
+            int lastMeal = 0;
+            if(dailyBalance.getMeals() != null) {
+                for (Meal check : dailyBalance.getMeals()) {
+                    if (check.getMealNumber() > lastMeal) {
+                        lastMeal = check.getMealNumber();
+                    }
+                }
+                meal.setMealNumber(lastMeal + 1);
+            } else {
+                meal.setMealNumber(lastMeal + 1);
+            }
             meals.add(meal);
             dailyBalance.setMeals(meals);
             dailyBalances.add(dailyBalance);

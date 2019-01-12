@@ -71,9 +71,9 @@ public class DailyBalanceController {
         model.addAttribute("carbohydrates", carbohydrates);
         model.addAttribute("fat", fat);
         model.addAttribute("calories", calories);
-        model.addAttribute("proteinPart", sbProtein.append(" " + Double.parseDouble(decimalFormat.format(proteinReceived).replace(",", ".")) + "/" + totalProtein).toString());
-        model.addAttribute("carbohydratesPart", sbCarbohydrates.append(" " + Double.parseDouble(decimalFormat.format(carbohydratesReceived).replace(",", ".")) + "/" + totalCarbohydrates).toString());
-        model.addAttribute("fatPart", sbFat.append(" " + Double.parseDouble(decimalFormat.format(fatReceived).replace(",", ".")) + "/" + totalFat).toString());
+        model.addAttribute("proteinPart", sbProtein.append(" " + Double.parseDouble(decimalFormat.format(proteinReceived).replace(",", ".")) + "/" + Double.parseDouble(decimalFormat.format(totalProtein).replace(",", "."))));
+        model.addAttribute("carbohydratesPart", sbCarbohydrates.append(" " + Double.parseDouble(decimalFormat.format(carbohydratesReceived).replace(",", ".")) + "/" + Double.parseDouble(decimalFormat.format(totalCarbohydrates).replace(",", "."))));
+        model.addAttribute("fatPart", sbFat.append(" " + Double.parseDouble(decimalFormat.format(fatReceived).replace(",", ".")) + "/" + Double.parseDouble(decimalFormat.format(totalFat).replace(",", "."))));
         model.addAttribute("caloriesPart", sbCalories.append(" " + Double.parseDouble(decimalFormat.format(caloriesReceived).replace(",", ".")) + "/" + totalCalories));
         model.addAttribute("exist", "exist");
         model.addAttribute("actualBalance", "actualBalance");
@@ -158,9 +158,9 @@ public class DailyBalanceController {
         StringBuilder sbCarbohydrates = new StringBuilder();
         StringBuilder sbFat = new StringBuilder();
         StringBuilder sbCalories = new StringBuilder();
-        model.addAttribute("proteinPart", sbProtein.append(" " + Double.parseDouble(decimalFormat.format(proteinReceived).replace(",", ".")) + "/" + totalProtein).toString());
-        model.addAttribute("carbohydratesPart", sbCarbohydrates.append(" " + Double.parseDouble(decimalFormat.format(carbohydratesReceived).replace(",", ".")) + "/" + totalCarbohydrates).toString());
-        model.addAttribute("fatPart", sbFat.append(" " + Double.parseDouble(decimalFormat.format(fatReceived).replace(",", ".")) + "/" + totalFat).toString());
+        model.addAttribute("proteinPart", sbProtein.append(" " + Double.parseDouble(decimalFormat.format(proteinReceived).replace(",", ".")) + "/" + Double.parseDouble(decimalFormat.format(totalProtein).replace(",", "."))));
+        model.addAttribute("carbohydratesPart", sbCarbohydrates.append(" " + Double.parseDouble(decimalFormat.format(carbohydratesReceived).replace(",", ".")) + "/" + Double.parseDouble(decimalFormat.format(totalCarbohydrates).replace(",", "."))));
+        model.addAttribute("fatPart", sbFat.append(" " + Double.parseDouble(decimalFormat.format(fatReceived).replace(",", ".")) + "/" + Double.parseDouble(decimalFormat.format(totalFat).replace(",", "."))));
         model.addAttribute("caloriesPart", sbCalories.append(" " + Double.parseDouble(decimalFormat.format(caloriesReceived).replace(",", ".")) + "/" + totalCalories));
         model.addAttribute("exist", "exist");
         model.addAttribute("weeklyBalance", "weeklyBalance");

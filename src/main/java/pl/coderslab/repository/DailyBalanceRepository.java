@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import pl.coderslab.entity.DailyBalance;
+import pl.coderslab.entity.Meal;
 import pl.coderslab.entity.User;
 
 import java.sql.Date;
