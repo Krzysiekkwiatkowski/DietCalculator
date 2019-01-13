@@ -9,6 +9,10 @@
     display: inline;
 }
 
+.block{
+    display: block;
+}
+
 .floatLeft{
     float: left;
 }

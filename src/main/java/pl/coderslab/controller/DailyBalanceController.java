@@ -15,6 +15,7 @@ import javax.servlet.http.HttpSession;
 import java.sql.Date;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @RequestMapping("/diet/daily")
@@ -138,6 +139,60 @@ public class DailyBalanceController {
         model.addAttribute("caloriesPart", sbCalories.append(" " + Double.parseDouble(decimalFormat.format(caloriesReceived).replace(",", ".")) + "/" + totalCalories));
         model.addAttribute("exist", "exist");
         model.addAttribute("weeklyBalance", "weeklyBalance");
+        model.addAttribute("days", days);
+        return "home";
+    }
+
+    @RequestMapping(value = "/long")
+    public String longBalance(Model model, HttpSession session){
+        Object object = session.getAttribute("user");
+        if(object == null){
+            model.addAttribute("logged", null);
+            model.addAttribute("loginForm", "loginForm");
+            return "home";
+        }
+        model.addAttribute("logged", "logged");
+        User user = (User)object;
+        User loadedUser = userRepository.findTopByEmail(user.getEmail());
+        Object dailyObject = dailyBalanceRepository.findAllByUserAndDate(loadedUser, Date.valueOf(LocalDate.now()), 30);
+        if(dailyObject == null || ((List) dailyObject).size() <= 7){
+            model.addAttribute("longBalance", "longBalance");
+            model.addAttribute("exist", null);
+            return "home";
+        }
+        List<DailyBalance> dailyBalances = (List<DailyBalance>)dailyObject;
+        int days = dailyBalances.size();
+        double sumProteinN = 0;
+        double sumCarbohydratesN = 0;
+        double sumFatN = 0;
+        int sumCaloriesN = 0;
+        double sumProteinR = 0;
+        double sumCarbohydratesR = 0;
+        double sumFatR = 0;
+        int sumCaloriesR = 0;
+        for (DailyBalance dailyBalance : dailyBalances) {
+            sumProteinN += dailyBalance.getTotalProtein();
+            sumCarbohydratesN += dailyBalance.getTotalCarbohydrates();
+            sumFatN += dailyBalance.getTotalFat();
+            sumCaloriesN += dailyBalance.getNeeded();
+            for (Meal meal : dailyBalance.getMeals()) {
+                sumProteinR += meal.getTotalProtein();
+                sumCarbohydratesR += meal.getTotalCarbohydrates();
+                sumFatR += meal.getTotalFat();
+                sumCaloriesR += meal.getTotalCalories();
+            }
+        }
+        int avgProtein = (int)((sumProteinR / sumProteinN) * 100 );
+        int avgCarbohydrates = (int)((sumCarbohydratesR / sumCarbohydratesN) * 100);
+        int avgFat = (int)((sumFatR / sumFatN) * 100 );
+        int avgCalories = sumCaloriesR * 100 / sumCaloriesN;
+        model.addAttribute("avgProtein", avgProtein);
+        model.addAttribute("avgCarbohydrates", avgCarbohydrates);
+        model.addAttribute("avgFat", avgFat);
+        model.addAttribute("avgCalories", avgCalories);
+        model.addAttribute("balances", dailyBalances);
+        model.addAttribute("exist", "exist");
+        model.addAttribute("longBalance", "longBalance");
         model.addAttribute("days", days);
         return "home";
     }

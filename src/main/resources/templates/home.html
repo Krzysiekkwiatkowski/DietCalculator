@@ -96,7 +96,7 @@
                 <div class="content, floatRight" th:replace="loginForm :: body" >
                 </div>
             </div>
-            <div th:if="${actualBalance != null || weeklyBalance != null}">
+            <div th:if="${actualBalance != null || weeklyBalance != null || longBalance != null}">
                 <div class="content, floatRight" th:replace="actualBalance :: body" >
                 </div>
             </div>

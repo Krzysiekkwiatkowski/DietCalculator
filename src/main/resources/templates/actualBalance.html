@@ -57,5 +57,31 @@
         <h3> Nie ma wymaganej ilości danych! </h3>
     </div>
 </div>
+<div th:if="${longBalance != null}">
+    <div th:if="${exist != null}">
+        <h3 style="color: black" th:text="'Kalorie dostarczone w ciągu ostatnich ' + ${days} + ' dni:'"></h3>
+        <div class="floatLeft" style="width: 150px; height: 541px">
+            <div style="width: 150px; height: 200px; text-align: right; margin-top: 190px" ><b th:text="'100%'"></b></div>
+            <div style="width: 150px; height: 20px; text-align: right" ><b th:text="'0%'"></b></div>
+        </div>
+        <div th:each="daily : ${balances}">
+            <div class="floatLeft" style="width: 20px; height: 400px">
+                <div th:style="'width: 20px; height: ' + ${400 - ((daily.received * 200 )/ daily.needed)} + 'px'">
+                    <div style="height: 200px; border-bottom: 2px solid black"></div>
+                </div>
+                <div th:style="'width: 20px; height: ' + ${(daily.received * 200 )/ daily.needed} + 'px; background-color: blue; border-bottom: 2px solid black'"></div>
+            </div>
+        </div>
+        <div class="floatLeft" style="width: 695px; height: 141px">
+            <p style="height: 15px"><b th:text="'Średnie dzienne pokrycie zapotrzebowania na białko: ' + ${avgProtein} + '%'"></b></p>
+            <p style="height: 15px"><b th:text="'Średnie dzienne pokrycie zapotrzebowania na węglowodany: ' + ${avgCarbohydrates} + '%'"></b></p>
+            <p style="height: 15px"><b th:text="'Średnie dzienne pokrycie zapotrzebowania na tłuszcze: ' + ${avgFat} + '%'"></b></p>
+            <p style="height: 15px"><b th:text="'Średnie dzienne pokrycie zapotrzebowania na kalorie: ' + ${avgCalories} + '%'"></b></p>
+        </div>
+    </div>
+    <div th:if="${exist == null}" style="color: red">
+        <h3> Nie ma wymaganej ilości danych! </h3>
+    </div>
+</div>
 </body>
 </html>

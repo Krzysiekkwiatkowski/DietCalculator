@@ -277,20 +277,11 @@ public class MealController {
         Object object = dailyBalanceRepository.findTopByUserIdAndAndDate(loadedUser.getId(), Date.valueOf(LocalDate.now()));
         if (object != null) {
             DailyBalance dailyBalance = (DailyBalance)object;
-            List<Meal> meals = dailyBalance.getMeals();
+            List<Meal> meals = mealRepository.findAllById(dailyBalance.getId());
             if(meals.size() == 0){
                 model.addAttribute("exist", null);
                 model.addAttribute("viewMeals", "viewMeals");
                 return "home";
-            } else {
-                for (int i = 0; i < meals.size() - 1; i++) {
-                    if (meals.get(i).getId() > meals.get(i + 1).getId()) {
-                        Meal first = meals.get(i + 1);
-                        Meal second = meals.get(i);
-                        meals.set(i, first);
-                        meals.set(i + 1, second);
-                    }
-                }
             }
             model.addAttribute("exist", "exist");
             model.addAttribute("meals", meals);
