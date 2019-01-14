@@ -155,7 +155,7 @@ public class DailyBalanceController {
         User user = (User)object;
         User loadedUser = userRepository.findTopByEmail(user.getEmail());
         Object dailyObject = dailyBalanceRepository.findAllByUserAndDate(loadedUser, Date.valueOf(LocalDate.now()), 30);
-        if(dailyObject == null || ((List) dailyObject).size() <= 7){
+        if(dailyObject == null || ((List) dailyObject).size() == 0){
             model.addAttribute("longBalance", "longBalance");
             model.addAttribute("exist", null);
             return "home";

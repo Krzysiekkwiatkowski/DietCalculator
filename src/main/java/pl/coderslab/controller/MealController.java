@@ -166,6 +166,9 @@ public class MealController {
             }
             dailyBalance.setReceived(dailyBalance.getReceived() + meal.getTotalCalories());
             dailyBalance.setBalance(dailyBalance.getReceived() - dailyBalance.getNeeded());
+            dailyBalance.setTotalProtein(loadedUser.getTotalProtein());
+            dailyBalance.setTotalCarbohydrates(loadedUser.getTotalCarbohydrates());
+            dailyBalance.setTotalFat(loadedUser.getTotalFat());
             int lastMeal = 0;
             if(dailyBalance.getMeals() != null) {
                 for (Meal check : dailyBalance.getMeals()) {

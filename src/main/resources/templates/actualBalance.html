@@ -69,7 +69,9 @@
                 <div th:style="'width: 20px; height: ' + ${400 - ((daily.received * 200 )/ daily.needed)} + 'px'">
                     <div style="height: 200px; border-bottom: 2px solid black"></div>
                 </div>
-                <div th:style="'width: 20px; height: ' + ${(daily.received * 200 )/ daily.needed} + 'px; background-color: blue; border-bottom: 2px solid black'"></div>
+                <div th:style="'width: 20px; height: ' + ${(daily.received * 200 )/ daily.needed} + 'px; background-color: blue; border-bottom: 2px solid black'">
+                    <div th:if="${(400 - ((daily.received * 200 )/ daily.needed)) < 200}" th:style="'position: static; height: ' + ${((daily.received * 200 )/ daily.needed) - 200} + 'px; border-bottom: 2px solid black; background-color: red'"></div>
+                </div>
             </div>
         </div>
         <div class="floatLeft" style="width: 695px; height: 141px">
