@@ -188,6 +188,11 @@ public class MealController {
             dailyBalanceRepository.save(dailyBalance);
             userRepository.save(loadedUser);
             session.removeAttribute("meal");
+        } else {
+            model.addAttribute("selectCategory", "selectCategory");
+            model.addAttribute("categories", allCategories());
+            model.addAttribute("emptyValue", "emptyValue");
+            return "home";
         }
         return "redirect:/diet/home";
     }

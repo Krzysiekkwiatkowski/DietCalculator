@@ -6,6 +6,9 @@
 </head>
 <body>
 <h3 th:text="'Wybierz kategorię:'"></h3>
+<div th:if="${emptyValue != null}">
+    <h3 style="color: red" th:text="'Musisz wybrać kategorię i produkt'"></h3>
+</div>
 <div class="formDiv">
 </div>
 <div>

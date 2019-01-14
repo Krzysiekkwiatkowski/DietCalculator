@@ -112,6 +112,10 @@
                 <div class="content, floatRight" th:replace="selectProduct :: body" >
                 </div>
             </div>
+            <div th:if="${correctCalories != null}">
+                <div class="content, floatRight" th:replace="correctCalories :: body" >
+                </div>
+            </div>
             <div th:if="${trainingOption != null}">
                 <div class="content, floatRight" th:replace="trainingOption :: body" >
                 </div>

@@ -3,11 +3,10 @@ package pl.coderslab.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import java.util.List;
@@ -54,4 +53,7 @@ public class User {
     private double totalCarbohydrates;
     private double totalFat;
     private int totalCalories;
+    @Min(-1000)
+    @Max(1000)
+    private int correct;
 }

@@ -15,6 +15,7 @@ import pl.coderslab.repository.MealRepository;
 import pl.coderslab.repository.TrainingRepository;
 import pl.coderslab.repository.UserRepository;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.sql.Date;
@@ -209,7 +210,7 @@ public class UserController {
         } else if(goal.equals("Przybranie wagi")){
             goalFactor = 500;
         }
-        int total = (int) metabolism + activityFactor + somatotypeFactor + goalFactor;
+        int total = (int) metabolism + activityFactor + somatotypeFactor + goalFactor + user.getCorrect();
         user.setTotalCalories(total);
         DecimalFormat decimalFormat = new DecimalFormat("#.#");
         user.setTotalProtein(Double.parseDouble(decimalFormat.format(user.getWeight() * 1.8).replace(",", ".")));
@@ -236,6 +237,125 @@ public class UserController {
         }
         userRepository.save(user);
         return "redirect:/diet/user/option";
+    }
+
+    @RequestMapping(value = "/correct", method = RequestMethod.GET)
+    public String correctGet(Model model, HttpSession session){
+        Object object = session.getAttribute("user");
+        if(object == null){
+            model.addAttribute("logged", null);
+            model.addAttribute("loginForm", "loginForm");
+            return "home";
+        }
+        User user = (User) object;
+        User loadedUser = userRepository.findTopByEmail(user.getEmail());
+        model.addAttribute("user", loadedUser);
+        model.addAttribute("logged", "logged");
+        model.addAttribute("correctCalories", "correctCalories");
+        return "home";
+    }
+
+    @RequestMapping(value = "/correct", method = RequestMethod.POST)
+    public String correctPost(@ModelAttribute User user, BindingResult  result, Model model, HttpSession session, HttpServletRequest request){
+        Object object = session.getAttribute("user");
+        if(object == null){
+            model.addAttribute("logged", null);
+            model.addAttribute("loginForm", "loginForm");
+            return "home";
+        }
+        model.addAttribute("logged", "logged");
+        if(result.hasErrors()){
+            model.addAttribute("userOption","userOption");
+            model.addAttribute("correctCalories", "correctCalories");
+            return "home";
+        }
+        String correctString = request.getParameter("correct");
+        int correct = 0;
+        if(correctString != null){
+            try {
+                correct = Integer.parseInt(correctString);
+            } catch (NumberFormatException e){
+                correct = 0;
+            }
+        }
+        String activity = user.getActivity();
+        String somatotype = user.getSomatotype();
+        String goal = user.getGoal();
+        double metabolism = 0.0;
+        if(user.getGender().equals("Mężczyzna")){
+            metabolism = ((9.99 * user.getWeight()) + (6.25 * user.getHeight()) - (4.92 * user.getAge()) + 5) * 1.1;
+        } else if(user.getGender().equals("Kobieta")){
+            metabolism = ((9.99 * user.getWeight()) + (6.25 * user.getHeight()) - (4.92 * user.getAge()) - 161) * 1.1;
+        }
+        int activityFactor = 0;
+        int somatotypeFactor = 0;
+        int goalFactor = 0;
+        if(somatotype.equals("Ektomorfik")){
+            somatotypeFactor = 800;
+        } else if(somatotype.equals("Endomorfik")){
+            somatotypeFactor = 400;
+        } else if(somatotype.equals("Mezomorfik")){
+            somatotypeFactor = 450;
+        }
+        if(activity.equals("Średnia")){
+            if(somatotype.equals("Mezomorfik")){
+                activityFactor = 50;
+            } else {
+                activityFactor = 100;
+            }
+        } else if(activity.equals("Duża")){
+            if(somatotype.equals("Mezomorfik")){
+                activityFactor = 100;
+            } else {
+                activityFactor = 200;
+            }
+        } else if(activity.equals("Umiarkowana fizyczna")){
+            if(somatotype.equals("Mezomorfik")){
+                activityFactor = 150;
+            } else {
+                activityFactor = 300;
+            }
+        } else if(activity.equals("Ciężka fizyczna")){
+            if(somatotype.equals("Mezomorfik")){
+                activityFactor = 200;
+            } else {
+                activityFactor = 400;
+            }
+        }
+        if(goal.equals("Utrata wagi")){
+            goalFactor = -500;
+        } else if(goal.equals("Przybranie wagi")){
+            goalFactor = 500;
+        }
+        int total = (int) metabolism + activityFactor + somatotypeFactor + goalFactor + user.getCorrect();
+        user.setTotalCalories(total);
+        DecimalFormat decimalFormat = new DecimalFormat("#.#");
+        user.setTotalProtein(Double.parseDouble(decimalFormat.format(user.getWeight() * 1.8).replace(",", ".")));
+        if(goal.equals("Utrata wagi")){
+            user.setTotalCarbohydrates(Double.parseDouble(decimalFormat.format(((total - 1.8 * 4 * user.getWeight()) * 0.4) / 4.0).replace(",", ".")));
+            user.setTotalFat(Double.parseDouble(decimalFormat.format(((total - 1.8 * 4 * user.getWeight()) * 0.6) / 9.0).replace(",", ".")));
+        }
+        if(goal.equals("Utrzymanie wagi")){
+            user.setTotalCarbohydrates(Double.parseDouble(decimalFormat.format(((total - 1.8 * 4 * user.getWeight()) * 0.5) / 4.0).replace(",", ".")));
+            user.setTotalFat(Double.parseDouble(decimalFormat.format(((total - 1.8 * 4 * user.getWeight()) * 0.5) / 9.0).replace(",", ".")));
+        }
+        if(goal.equals("Przybranie wagi")){
+            user.setTotalCarbohydrates(Double.parseDouble(decimalFormat.format(((total - 1.8 * 4 * user.getWeight()) * 0.6) / 4.0).replace(",", ".")));
+            user.setTotalFat(Double.parseDouble(decimalFormat.format(((total - 1.8 * 4 * user.getWeight()) * 0.4) / 9.0).replace(",", ".")));
+        }
+        if(dailyBalanceRepository.findTopByUserIdAndAndDate(user.getId(), Date.valueOf(LocalDate.now())) != null) {
+            DailyBalance dailyBalance = dailyBalanceRepository.findTopByUserIdAndAndDate(user.getId(), Date.valueOf(LocalDate.now()));
+            dailyBalance.setTotalProtein(user.getTotalProtein());
+            dailyBalance.setTotalCarbohydrates(user.getTotalCarbohydrates());
+            dailyBalance.setTotalFat(user.getTotalFat());
+            dailyBalance.setNeeded(user.getTotalCalories());
+            dailyBalance.setBalance(dailyBalance.getReceived() - dailyBalance.getNeeded());
+            dailyBalanceRepository.save(dailyBalance);
+        }
+        userRepository.save(user);
+        session.setAttribute("user", user);
+        model.addAttribute("userOption","userOption");
+        return "home";
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
