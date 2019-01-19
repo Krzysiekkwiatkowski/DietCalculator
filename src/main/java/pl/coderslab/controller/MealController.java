@@ -210,7 +210,7 @@ public class MealController {
         return "home";
     }
 
-    @RequestMapping(value = "/delete/{id}")
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
     public String delete(@PathVariable("id") Long id, Model model, HttpSession session){
         Object object = session.getAttribute("user");
         if (object == null) {
@@ -234,7 +234,7 @@ public class MealController {
         return "redirect:/diet/meal/view";
     }
 
-    @RequestMapping(value = "/delete/{id}/yes")
+    @RequestMapping(value = "/delete/{id}/yes", method = RequestMethod.GET)
     public String deleteConfirm(@PathVariable("id") Long id, HttpSession session, Model model) {
         Object object = session.getAttribute("user");
         if (object == null) {
@@ -250,9 +250,9 @@ public class MealController {
             List<Meal> meals = dailyBalance.getMeals();
             Meal toDelete = null;
             for (Meal meal : meals) {
-                if (meal.getId() == id) {
-                    mealRepository.delete(meal);
+                if (meal.getId().equals(id)) {
                     toDelete = meal;
+                    mealRepository.delete(meal);
                 }
             }
             if (toDelete != null) {
@@ -266,7 +266,6 @@ public class MealController {
             dailyBalance.setBalance(totalReceived - dailyBalance.getNeeded());
             dailyBalance.setMeals(meals);
             dailyBalanceRepository.save(dailyBalance);
-
         }
         return "redirect:/diet/meal/view";
     }
