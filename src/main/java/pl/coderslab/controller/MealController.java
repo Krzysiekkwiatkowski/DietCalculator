@@ -145,11 +145,7 @@ public class MealController {
                     meals = new ArrayList<>();
                     dailyBalance.setDate(Date.valueOf(LocalDate.now()));
                     dailyBalance.setUser(loadedUser);
-                    if (loadedUser.getTraining() != null) {
-                        dailyBalance.setNeeded(loadedUser.getTotalCalories() + loadedUser.getTraining().getDailyCalories());
-                    } else {
-                        dailyBalance.setNeeded(loadedUser.getTotalCalories());
-                    }
+                    dailyBalance.setNeeded(loadedUser.getTotalCalories());
                 } else {
                     meals = dailyBalance.getMeals();
                 }
@@ -158,11 +154,7 @@ public class MealController {
                 meals = new ArrayList<>();
                 dailyBalance.setDate(Date.valueOf(LocalDate.now()));
                 dailyBalance.setUser(loadedUser);
-                if (loadedUser.getTraining() != null) {
-                    dailyBalance.setNeeded(loadedUser.getTotalCalories() + loadedUser.getTraining().getDailyCalories());
-                } else {
-                    dailyBalance.setNeeded(loadedUser.getTotalCalories());
-                }
+                dailyBalance.setNeeded(loadedUser.getTotalCalories());
             }
             dailyBalance.setReceived(dailyBalance.getReceived() + meal.getTotalCalories());
             dailyBalance.setBalance(dailyBalance.getReceived() - dailyBalance.getNeeded());
