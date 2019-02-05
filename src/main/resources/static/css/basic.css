@@ -1,3 +1,7 @@
+a{
+    color: darkcyan;
+}
+
 .bcg{
     background: url(http://localhost:63342/DietCalculator/templates/images/background.jpg) no-repeat center center fixed;
     background-size: cover;

@@ -8,7 +8,7 @@
 <h3 th:text="'Wyszukaj:'"></h3>
 <form th:action="@{/diet/product/search}" method="post">
     Nazwa: <input type="text" name="name">
-    <input type="submit" value="Wyszukaj">
+    <button class="formButton button" type="submit">Wyszukaj</button>
 </form>
 <div th:if="${search != null}">
     <h3 th:text="'Lista produktów: '"></h3>
