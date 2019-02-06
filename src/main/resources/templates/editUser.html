@@ -13,6 +13,7 @@
     <input type="hidden" name="email" th:field="*{email}" th:value="${email}">
     <input type="hidden" name="password" th:field="*{password}" th:value="${password}">
     <input type="hidden" name="training" th:field="*{training}" th:value="${training}">
+    <input type="hidden" name="correct" th:field="*{correct}" th:value="${correct}">
     Nick: <input type="text" th:field="*{nickname}"><th:if="${#fields.hasError('nickname')}" th:errors="*{nickname}" /></br>
     Imię: <input type="text" th:field="*{firstName}"><th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}" /></br>
     Nazwisko: <input type="text" th:field="*{lastName}"><th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}" /></br>

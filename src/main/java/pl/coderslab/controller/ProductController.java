@@ -26,9 +26,9 @@ public class ProductController {
     private CategoryRepository categoryRepository;
 
     @RequestMapping(value = "/add", method = RequestMethod.GET)
-    public String addGet(Model model, HttpSession session){
+    public String addGet(Model model, HttpSession session) {
         Object object = session.getAttribute("user");
-        if(object == null){
+        if (object == null) {
             model.addAttribute("logged", null);
             model.addAttribute("loginForm", "loginForm");
             return "home";
@@ -41,19 +41,19 @@ public class ProductController {
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public String addPost(@Valid Product product, BindingResult result, Model model, HttpSession session){
+    public String addPost(@Valid Product product, BindingResult result, Model model, HttpSession session) {
         Object object = session.getAttribute("user");
-        if(object == null){
+        if (object == null) {
             model.addAttribute("logged", null);
             model.addAttribute("loginForm", "loginForm");
             return "home";
         }
         model.addAttribute("logged", "logged");
-        if(result.hasErrors()){
+        if (result.hasErrors()) {
             model.addAttribute("addProduct", "addProduct");
             return "home";
         }
-        if((product.getProtein() + product.getCarbohydrates() + product.getFat()) > 100){
+        if ((product.getProtein() + product.getCarbohydrates() + product.getFat()) > 100) {
             model.addAttribute("addProduct", "addProduct");
             model.addAttribute("mistake", "mistake");
             return "home";
@@ -64,9 +64,9 @@ public class ProductController {
     }
 
     @RequestMapping(value = "/edit/{id}", method = RequestMethod.GET)
-    public String editGet(@PathVariable("id") Long id, Model model, HttpSession session){
+    public String editGet(@PathVariable("id") Long id, Model model, HttpSession session) {
         Object object = session.getAttribute("user");
-        if(object == null){
+        if (object == null) {
             model.addAttribute("logged", null);
             model.addAttribute("loginForm", "loginForm");
             return "home";
@@ -78,15 +78,15 @@ public class ProductController {
     }
 
     @RequestMapping(value = "/edit/*", method = RequestMethod.POST)
-    public String editPost(@Valid Product product, BindingResult result, Model model, HttpSession session){
+    public String editPost(@Valid Product product, BindingResult result, Model model, HttpSession session) {
         Object object = session.getAttribute("user");
-        if(object == null){
+        if (object == null) {
             model.addAttribute("logged", null);
             model.addAttribute("loginForm", "loginForm");
             return "home";
         }
         model.addAttribute("logged", "logged");
-        if(result.hasErrors()){
+        if (result.hasErrors()) {
             model.addAttribute("editProduct", "editProduct");
             return "home";
         }
@@ -95,14 +95,14 @@ public class ProductController {
     }
 
     @RequestMapping(value = "/search", method = RequestMethod.POST)
-    public String search(@RequestParam("name") String name, Model model, HttpSession session){
+    public String search(@RequestParam("name") String name, Model model, HttpSession session) {
         Object object = session.getAttribute("user");
-        if(object == null){
+        if (object == null) {
             model.addAttribute("logged", null);
             model.addAttribute("loginForm", "loginForm");
             return "home";
         }
-        if(name.equals("")){
+        if (name.equals("")) {
             return "redirect:/diet/product/all";
         }
         model.addAttribute("search", "search");
@@ -113,9 +113,9 @@ public class ProductController {
     }
 
     @RequestMapping(value = "/all", method = RequestMethod.GET)
-    public String all(HttpServletRequest request, Model model, HttpSession session){
+    public String all(HttpServletRequest request, Model model, HttpSession session) {
         Object object = session.getAttribute("user");
-        if(object == null){
+        if (object == null) {
             model.addAttribute("logged", null);
             model.addAttribute("loginForm", "loginForm");
             return "home";
@@ -124,16 +124,22 @@ public class ProductController {
         List<Product> limitedProducts = null;
         List<Integer> pages = new ArrayList<>();
         int numberOfPages = count / 12;
-        if(count > 0){
+        if (count > 0) {
             String exist = request.getParameter("page");
-            if(exist == null) {
+            if (exist == null) {
                 limitedProducts = productRepository.findAll(12, 0);
             } else {
                 Integer page = Integer.parseInt(exist);
                 limitedProducts = productRepository.findAll(12, (page - 1) * 12);
             }
-            for (int i = 0; i < numberOfPages + 1; i++) {
-                pages.add(i, i + 1);
+            if (count % 12 != 0) {
+                for (int i = 0; i < numberOfPages + 1; i++) {
+                    pages.add(i, i + 1);
+                }
+            } else {
+                for (int i = 0; i < numberOfPages; i++) {
+                    pages.add(i, i + 1);
+                }
             }
         }
         model.addAttribute("pages", pages);
@@ -144,22 +150,22 @@ public class ProductController {
     }
 
     @RequestMapping(value = "/option", method = RequestMethod.GET)
-    public String option(Model model, HttpSession session){
+    public String option(Model model, HttpSession session) {
         Object object = session.getAttribute("user");
-        if(object == null){
+        if (object == null) {
             model.addAttribute("logged", null);
             model.addAttribute("loginForm", "loginForm");
             return "home";
         }
         model.addAttribute("logged", "logged");
-        model.addAttribute("productOption","productOption");
+        model.addAttribute("productOption", "productOption");
         return "home";
     }
 
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
-    public String deleteGet(@PathVariable("id") Long id, Model model, HttpSession session){
+    public String deleteGet(@PathVariable("id") Long id, Model model, HttpSession session) {
         Object object = session.getAttribute("user");
-        if(object == null){
+        if (object == null) {
             model.addAttribute("logged", null);
             model.addAttribute("loginForm", "loginForm");
             return "home";
@@ -168,14 +174,13 @@ public class ProductController {
         model.addAttribute("logged", "logged");
         model.addAttribute("allProducts", "allProducts");
         model.addAttribute("products", allProducts());
-        model.addAttribute("logged", "logged");
         return "home";
     }
 
     @RequestMapping(value = "/delete/{id}/yes", method = RequestMethod.GET)
-    public String deleteConfirm(@PathVariable("id") Long id, Model model, HttpSession session){
+    public String deleteConfirm(@PathVariable("id") Long id, Model model, HttpSession session) {
         Object object = session.getAttribute("user");
-        if(object == null){
+        if (object == null) {
             model.addAttribute("logged", null);
             model.addAttribute("loginForm", "loginForm");
             return "home";
@@ -186,12 +191,12 @@ public class ProductController {
     }
 
     @ModelAttribute("categories")
-    public List<Category> allCategories(){
+    public List<Category> allCategories() {
         return categoryRepository.findAll();
     }
 
     @ModelAttribute("products")
-    public List<Product> allProducts(){
+    public List<Product> allProducts() {
         return productRepository.findAll();
     }
 }
