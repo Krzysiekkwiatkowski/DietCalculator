@@ -25,6 +25,10 @@ a{
     float: right;
 }
 
+input{
+    background-color: lightgrey;
+}
+
 .wh{
     width: 300px;
     height: 774px;

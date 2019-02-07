@@ -18,7 +18,7 @@
         <div th:if="${confirm != null}">
             <div th:if="${product.id == confirm}">
                 <p th:text="'Czy na pewno chcesz usunąć ' + ${product.name}" />
-                <a th:href="@{'/diet/product/delete/' + ${product.id} + '/yes'}"><button type="submit" th:text="'Tak'"/></button></a>
+                <a th:href="@{'/diet/product/delete/' + ${product.id} + '/yes'}"><button type="submit" th:text="'Tak'"/></a>
                 <a th:href="@{/diet/product/all}"><button type="submit" th:text="'Nie'" /></a>
             </div>
         </div>
@@ -33,7 +33,7 @@
             <div th:if="${confirm != null}">
                 <div th:if="${product.id == confirm}">
                     <p th:text="'Czy na pewno chcesz usunąć ' + ${product.name}" />
-                    <a th:href="@{'/diet/product/delete/' + ${product.id} + '/yes'}"><button type="submit" th:text="'Tak'"/></button></a>
+                    <a th:href="@{'/diet/product/delete/' + ${product.id} + '/yes'}"><button type="submit" th:text="'Tak'"/></a>
                     <a th:href="@{/diet/product/all}"><button type="submit" th:text="'Nie'" /></a>
                 </div>
             </div>

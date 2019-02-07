@@ -16,4 +16,13 @@ $(function () {
     links.on('mouseleave', function () {
         $(this).css('color', 'darkcyan');
     });
+
+    var inputs = $('input');
+    inputs.on('focus', function () {
+        $(this).css('backgroundColor', 'whitesmoke');
+    });
+
+    inputs.on('blur', function () {
+        $(this).css('backgroundColor', 'lightgrey');
+    })
 });
