@@ -171,9 +171,9 @@ public class ProductController {
             return "home";
         }
         model.addAttribute("confirm", id);
+        model.addAttribute("search", "search");
         model.addAttribute("logged", "logged");
         model.addAttribute("allProducts", "allProducts");
-        model.addAttribute("products", allProducts());
         return "home";
     }
 
@@ -199,4 +199,5 @@ public class ProductController {
     public List<Product> allProducts() {
         return productRepository.findAll();
     }
+
 }

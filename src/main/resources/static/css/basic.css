@@ -29,6 +29,10 @@ input{
     background-color: lightgrey;
 }
 
+select{
+    background-color: lightgrey;
+}
+
 .wh{
     width: 300px;
     height: 774px;

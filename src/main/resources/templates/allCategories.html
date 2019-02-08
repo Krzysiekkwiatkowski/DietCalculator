@@ -12,8 +12,8 @@
         <div th:if="${confirm != null}">
             <div th:if="${category.id == confirm}">
                 <p th:text="'Czy na pewno chcesz usunąć ' + ${category.name}"/>
-                <a th:href="@{'/diet/category/delete/' + ${category.id} + '/yes'}" ><button type="submit" th:text="'Tak'"></button></a>
-                <a th:href="@{/diet/category/all}" ><button type="submit" th:text="'Nie'"></button></a>
+                <a th:href="@{'/diet/category/delete/' + ${category.id} + '/yes'}" ><button class="formButton button" type="submit" th:text="'Tak'"></button></a>
+                <a th:href="@{/diet/category/all}" ><button class="formButton button" type="submit" th:text="'Nie'"></button></a>
             </div>
         </div>
     </p>

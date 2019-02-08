@@ -15,13 +15,13 @@
     <div th:each="product : ${products}">
         <p>
         <p style="display: inline" th:text="${product.name} + ' '" /><a style="display: inline" th:href="@{'/diet/product/edit/' + ${product.id}}" th:text="'Edytuj'"></a><a style="margin-left: 5px;display: inline" th:href="@{'/diet/product/delete/' + ${product.id}}" th:text="'Usuń'"></a>
-        <div th:if="${confirm != null}">
-            <div th:if="${product.id == confirm}">
-                <p th:text="'Czy na pewno chcesz usunąć ' + ${product.name}" />
-                <a th:href="@{'/diet/product/delete/' + ${product.id} + '/yes'}"><button type="submit" th:text="'Tak'"/></a>
-                <a th:href="@{/diet/product/all}"><button type="submit" th:text="'Nie'" /></a>
+            <div th:if="${confirm != null}">
+                <div th:if="${product.id == confirm}">
+                    <p th:text="'Czy na pewno chcesz usunąć ' + ${product.name}" />
+                    <a th:href="@{'/diet/product/delete/' + ${product.id} + '/yes'}"><button class="formButton button" type="submit" th:text="'Tak'"/></a>
+                    <a th:href="@{/diet/product/all}"><button class="formButton button" type="submit" th:text="'Nie'" /></a>
+                </div>
             </div>
-        </div>
         </p>
     </div>
 </div>
@@ -33,8 +33,8 @@
             <div th:if="${confirm != null}">
                 <div th:if="${product.id == confirm}">
                     <p th:text="'Czy na pewno chcesz usunąć ' + ${product.name}" />
-                    <a th:href="@{'/diet/product/delete/' + ${product.id} + '/yes'}"><button type="submit" th:text="'Tak'"/></a>
-                    <a th:href="@{/diet/product/all}"><button type="submit" th:text="'Nie'" /></a>
+                    <a th:href="@{'/diet/product/delete/' + ${product.id} + '/yes'}"><button class="formButton button" type="submit" th:text="'Tak'"/></a>
+                    <a th:href="@{/diet/product/all}"><button class="formButton button" type="submit" th:text="'Nie'" /></a>
                 </div>
             </div>
         </p>

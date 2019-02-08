@@ -20,9 +20,22 @@ $(function () {
     var inputs = $('input');
     inputs.on('focus', function () {
         $(this).css('backgroundColor', 'whitesmoke');
+        $(this).css('border', '2px solid black')
     });
 
     inputs.on('blur', function () {
         $(this).css('backgroundColor', 'lightgrey');
-    })
+        $(this).css('border','')
+    });
+
+    var selects = $('select');
+    selects.on('focus', function () {
+        $(this).css('backgroundColor', 'whitesmoke');
+        $(this).css('border', '2px solid black')
+    });
+
+    selects.on('blur', function () {
+        $(this).css('backgroundColor', 'lightgrey');
+        $(this).css('border','')
+    });
 });
