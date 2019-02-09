@@ -38,4 +38,10 @@ $(function () {
         $(this).css('backgroundColor', 'lightgrey');
         $(this).css('border','')
     });
+
+    var deleteLinks = $('.delete');
+    deleteLinks.on('click', function (event) {
+        $(this).next().css('display', 'contents');
+        event.preventDefault();
+    });
 });
