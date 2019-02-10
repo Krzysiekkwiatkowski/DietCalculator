@@ -29,9 +29,10 @@
             </div>
         </div>
     </div>
-    <div class="floatLeft" style="background-color: gray; border: 3px solid black; width: 978px; height: 79px; text-align: center;">
-        <h1 th:text="'Kalkulator diety'"></h1>
+    <a th:href="@{/diet/home}" ><div class="floatLeft" style="background-color: gray; border: 3px solid black; width: 978px; height: 79px; text-align: center;">
+        <h1 style="color: black" th:text="'Kalkulator diety'"></h1>
     </div>
+    </a>
     <div class="floatLeft">
         <div style="background-color: lightgrey; width: 984px" th:include="fragments/navBar">
         </div>
