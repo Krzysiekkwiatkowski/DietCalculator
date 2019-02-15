@@ -161,6 +161,7 @@ public class DailyBalanceController {
             return "home";
         }
         List<DailyBalance> dailyBalances = (List<DailyBalance>)dailyObject;
+        List<DailyBalance> orderBalanced = new ArrayList<>();
         int days = dailyBalances.size();
         double sumProteinN = 0;
         double sumCarbohydratesN = 0;
@@ -170,12 +171,13 @@ public class DailyBalanceController {
         double sumCarbohydratesR = 0;
         double sumFatR = 0;
         int sumCaloriesR = 0;
-        for (DailyBalance dailyBalance : dailyBalances) {
-            sumProteinN += dailyBalance.getTotalProtein();
-            sumCarbohydratesN += dailyBalance.getTotalCarbohydrates();
-            sumFatN += dailyBalance.getTotalFat();
-            sumCaloriesN += dailyBalance.getNeeded();
-            for (Meal meal : dailyBalance.getMeals()) {
+        for (int i = days - 1; i >= 0; i--) {
+            sumProteinN += dailyBalances.get(i).getTotalProtein();
+            sumCarbohydratesN += dailyBalances.get(i).getTotalCarbohydrates();
+            sumFatN += dailyBalances.get(i).getTotalFat();
+            sumCaloriesN += dailyBalances.get(i).getNeeded();
+            orderBalanced.add(dailyBalances.get(i));
+            for (Meal meal : dailyBalances.get(i).getMeals()) {
                 sumProteinR += meal.getTotalProtein();
                 sumCarbohydratesR += meal.getTotalCarbohydrates();
                 sumFatR += meal.getTotalFat();
@@ -190,7 +192,7 @@ public class DailyBalanceController {
         model.addAttribute("avgCarbohydrates", avgCarbohydrates);
         model.addAttribute("avgFat", avgFat);
         model.addAttribute("avgCalories", avgCalories);
-        model.addAttribute("balances", dailyBalances);
+        model.addAttribute("balances", orderBalanced);
         model.addAttribute("exist", "exist");
         model.addAttribute("longBalance", "longBalance");
         model.addAttribute("days", days);
