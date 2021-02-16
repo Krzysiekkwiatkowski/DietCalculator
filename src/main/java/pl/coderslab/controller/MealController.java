@@ -125,11 +125,13 @@ public class MealController {
             double carbohydratesSum = 0.0;
             double fatSum = 0.0;
             int caloriesSum = 0;
+            double glycemicChargeSum = 0.0;
             for (Product product : mealProducts) {
                 proteinSum += product.getProtein();
                 carbohydratesSum += product.getCarbohydrates();
                 fatSum += product.getFat();
                 caloriesSum += product.getCalories();
+                glycemicChargeSum += (product.getCarbohydrates() * product.getGlycemicIndex()) / 100.0;
             }
             DecimalFormat decimalFormat = new DecimalFormat("#.#");
             meal.setProducts(mealProducts);
@@ -137,6 +139,7 @@ public class MealController {
             meal.setTotalCarbohydrates(Double.parseDouble(decimalFormat.format(carbohydratesSum).replace(",", ".")));
             meal.setTotalFat(Double.parseDouble(decimalFormat.format(fatSum).replace(",", ".")));
             meal.setTotalCalories(caloriesSum);
+            meal.setGlycemicCharge(glycemicChargeSum);
             int exist = dailyBalanceRepository.countByUserIdAndDate(loadedUser.getId(), Date.valueOf(LocalDate.now()));
             if (exist == 1) {
                 dailyBalance = dailyBalanceRepository.findTopByUserIdAndAndDate(loadedUser.getId(), Date.valueOf(LocalDate.now()));
@@ -315,6 +318,18 @@ public class MealController {
             }
         }
         return "redirect:/diet/meal/option";
+    }
+
+    @RequestMapping("/plan")
+    public String plan(Model model, HttpSession session){
+        Object objectUser = session.getAttribute("user");
+        if (objectUser == null) {
+            model.addAttribute("logged", null);
+            model.addAttribute("loginForm", "loginForm");
+            return "home";
+        }
+        model.addAttribute("logged", "logged");
+        return "redirect:/diet/home";
     }
 
     @ModelAttribute("categories")

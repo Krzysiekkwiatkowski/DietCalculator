@@ -18,6 +18,7 @@
     Węglowodany: <input type="number" min=0 max = 100 step="0.1" th:field="*{carbohydrates}"><th:if="${#fields.hasErrors('carbohydrates')}" th:errors="*{carbohydrates}"/></br>
     Tłuszcze: <input type="number" min=0 max = 100 step="0.1" th:field="*{fat}"><th:if="${#fields.hasErrors('fat')}" th:errors="*{fat}"/></br>
     Kalorie: <input type="number" min=0 th:field="*{calories}"><th:if="${#fields.hasErrors('calories')}" th:errors="*{calories}"/></br>
+    Indeks glikemiczny: <input type="number" min="0" max="103" th:field="*{glycemicIndex}"><th:if="${#fields.hasErrors('glycemicIndex')}" th:errors="*{glycemicIndex}" /><br>
     Kategoria: <select th:field="*{category}">
         <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}" />
     </select></br>

@@ -32,4 +32,6 @@ public class Meal {
     private double totalFat;
     @Min(0)
     private int totalCalories;
+    @Min(0)
+    private double glycemicCharge;
 }

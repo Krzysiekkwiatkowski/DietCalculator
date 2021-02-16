@@ -36,6 +36,9 @@ public class Product {
     private double fat;
     @Min(0)
     private int calories;
+    @Min(0)
+    @Max(103)
+    private int glycemicIndex;
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "category_id")
@@ -53,6 +56,7 @@ public class Product {
                 ",carbohydrates="+ carbohydrates +
                 ",fat="+ fat +
                 ",calories="+ calories +
+                ",glycemicIndex="+ glycemicIndex +
                 ",category="+ category.getName() +
                 ",weight="+ weight +
                 "}";

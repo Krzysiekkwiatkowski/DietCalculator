@@ -11,7 +11,7 @@
     <groupId>pl.coderslab</groupId>
     <artifactId>DietCalculator</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
     <name>DietCalculator</name>
     <description>Demo project for Spring Boot</description>
     <properties>
