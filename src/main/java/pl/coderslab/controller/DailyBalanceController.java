@@ -51,13 +51,16 @@ public class DailyBalanceController {
         double carbohydratesReceived = 0.0;
         double fatReceived = 0.0;
         int caloriesReceived = 0;
+        double glycemicChargeReceived = 0;
         DailyBalance dailyBalance = dailyBalanceRepository.findTopByUserIdAndAndDate(loadedUser.getId(), Date.valueOf(LocalDate.now()));
         List<Meal> meals = dailyBalance.getMeals();
+        List<Double> glycemicCharges = new ArrayList<>();
         for (Meal meal : meals) {
             proteinReceived += meal.getTotalProtein();
             carbohydratesReceived += meal.getTotalCarbohydrates();
             fatReceived += meal.getTotalFat();
             caloriesReceived += meal.getTotalCalories();
+            glycemicCharges.add(meal.getGlycemicCharge());
         }
         StringBuilder sbProtein = new StringBuilder();
         StringBuilder sbCarbohydrates = new StringBuilder();
@@ -76,6 +79,7 @@ public class DailyBalanceController {
         model.addAttribute("carbohydratesPart", sbCarbohydrates.append(" " + Double.parseDouble(decimalFormat.format(carbohydratesReceived).replace(",", ".")) + "/" + Double.parseDouble(decimalFormat.format(totalCarbohydrates).replace(",", "."))));
         model.addAttribute("fatPart", sbFat.append(" " + Double.parseDouble(decimalFormat.format(fatReceived).replace(",", ".")) + "/" + Double.parseDouble(decimalFormat.format(totalFat).replace(",", "."))));
         model.addAttribute("caloriesPart", sbCalories.append(" " + Double.parseDouble(decimalFormat.format(caloriesReceived).replace(",", ".")) + "/" + totalCalories));
+        model.addAttribute("glycemicCharges", glycemicCharges);
         model.addAttribute("exist", "exist");
         model.addAttribute("actualBalance", "actualBalance");
         return "home";
