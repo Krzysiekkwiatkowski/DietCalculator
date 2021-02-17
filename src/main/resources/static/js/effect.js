@@ -44,4 +44,14 @@ $(function () {
         $(this).next().css('display', 'contents');
         event.preventDefault();
     });
+
+    var settingContent = $('#settingContent');
+    var selfDistributionCheckbox = $('#selfDistribution');
+    selfDistributionCheckbox.on('click', function(){
+        if($(this.checked)){
+            settingContent.css('display' , 'none');
+        } else {
+            settingContent.css('display', '');
+        }
+    });
 });
