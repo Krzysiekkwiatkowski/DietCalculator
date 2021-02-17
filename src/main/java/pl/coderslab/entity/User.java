@@ -53,6 +53,7 @@ public class User {
     private double totalCarbohydrates;
     private double totalFat;
     private int totalCalories;
+    private boolean selfDistribution;
     @OneToOne(cascade = CascadeType.ALL)
     private Setting setting;
     @Min(-1000)
