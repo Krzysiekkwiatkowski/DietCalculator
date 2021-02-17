@@ -53,6 +53,8 @@ public class User {
     private double totalCarbohydrates;
     private double totalFat;
     private int totalCalories;
+    @OneToOne(cascade = CascadeType.ALL)
+    private Setting setting;
     @Min(-1000)
     @Max(1000)
     private int correct;
