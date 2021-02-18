@@ -103,7 +103,7 @@ public class UserController {
             return "home";
         }
         if(verifySetting(user.getSetting())){
-            model.addAttribute("registerUser", "registerUser");
+            model.addAttribute("editUser", "editUser");
             model.addAttribute("incorrectSum", "incorrectSum");
             return "home";
         }
