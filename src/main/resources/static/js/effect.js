@@ -47,11 +47,18 @@ $(function () {
 
     var settingContent = $('#settingContent');
     var selfDistributionCheckbox = $('#selfDistribution');
-    selfDistributionCheckbox.on('click', function(){
-        if($(this.checked)){
-            settingContent.css('display' , 'none');
-        } else {
-            settingContent.css('display', '');
-        }
+
+    selfDistributionCheckbox.on('change', function(){
+        updateView($(this).is(':checked'))
     });
+
+    function updateView(checked){
+        if(checked){
+            settingContent.css('display', '');
+        } else {
+            settingContent.css('display' , 'none');
+        }
+    }
+
+    updateView(selfDistributionCheckbox.is(':checked'))
 });

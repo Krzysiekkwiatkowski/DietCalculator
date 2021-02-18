@@ -30,10 +30,12 @@
     Cel: <select th:field="*{goal}">
         <option th:each="goal : ${goalList}" th:value="${goal}" th:text="${goal}"/>
     </select></br>
-    Własny rozkład makroskładnikowy: <input type="checkbox" th:default="false" th:field="*{selfDistribution}"><br>
-    Zawartość procentowa białka: <input type="number" min="0" max="100" th:default="0" th:field="*{setting.proteinPart}"><th:if="${#fields.hasErrors('setting.proteinPart')}" th:errors="*{setting.proteinPart}" /></br>
-    Zawartość procentowa węglowodanów: <input type="number" min="0" max="100" th th:default="0" th:field="*{setting.carbohydratePart}"><th:if="${#fields.hasErrors('setting.carbohydratePart')}" th:errors="*{setting.carbohydratePart}" /></br>
-    Zawartość procentowa tłuszczy: <input type="number" min="0" max="100" th:default="0" th:field="*{setting.fatPart}"><th:if="${#fields.hasErrors('setting.fatPart')}" th:errors="*{setting.fatPart}" /></br>
+    Własny rozkład makroskładnikowy: <input type="checkbox" id="selfDistribution" th:default="false" th:field="*{selfDistribution}"><br>
+    <div id="settingContent">
+        Zawartość procentowa białka: <input type="number" min="0" max="100" th:default="0" th:field="*{setting.proteinPart}"><th:if="${#fields.hasErrors('setting.proteinPart')}" th:errors="*{setting.proteinPart}" /></br>
+        Zawartość procentowa węglowodanów: <input type="number" min="0" max="100" th th:default="0" th:field="*{setting.carbohydratePart}"><th:if="${#fields.hasErrors('setting.carbohydratePart')}" th:errors="*{setting.carbohydratePart}" /></br>
+        Zawartość procentowa tłuszczy: <input type="number" min="0" max="100" th:default="0" th:field="*{setting.fatPart}"><th:if="${#fields.hasErrors('setting.fatPart')}" th:errors="*{setting.fatPart}" /></br>
+    </div>
     <button class="formButton button" type="submit" > Zarejestruj </button>
 </form>
 </body>
