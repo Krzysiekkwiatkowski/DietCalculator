@@ -9,6 +9,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import pl.coderslab.entity.DailyBalance;
 import pl.coderslab.entity.Meal;
+import pl.coderslab.entity.Setting;
 import pl.coderslab.entity.User;
 import pl.coderslab.repository.DailyBalanceRepository;
 import pl.coderslab.repository.MealRepository;
@@ -54,6 +55,11 @@ public class UserController {
             model.addAttribute("registerUser", "registerUser");
             return "home";
         }
+        if(verifySetting(user.getSetting())){
+            model.addAttribute("registerUser", "registerUser");
+            model.addAttribute("incorrectSum", "incorrectSum");
+            return "home";
+        }
         for (User check : userRepository.findAll()) {
             if(check.getEmail().equals(user.getEmail())){
                 model.addAttribute("registerUser", "registerUser");
@@ -94,6 +100,11 @@ public class UserController {
         model.addAttribute("logged", "logged");
         if(result.hasErrors()){
             model.addAttribute("editUser", "editUser");
+            return "home";
+        }
+        if(verifySetting(user.getSetting())){
+            model.addAttribute("registerUser", "registerUser");
+            model.addAttribute("incorrectSum", "incorrectSum");
             return "home";
         }
         userRepository.save(update(user));
@@ -393,5 +404,9 @@ public class UserController {
             dailyBalanceRepository.save(dailyBalance);
         }
         return user;
+    }
+
+    private boolean verifySetting(Setting setting){
+        return ((setting != null) && ((setting.getProteinPart() + setting.getCarbohydratePart() + setting.getFatPart()) != 100));
     }
 }

@@ -32,6 +32,7 @@
     </select></br>
     Własny rozkład makroskładnikowy: <input type="checkbox" id="selfDistribution" th:default="false" th:field="*{selfDistribution}"><br>
     <div id="settingContent">
+        <p style="color: red" th:if="${incorrectSum}"> Suma zawartości procentowej białek, węglowodanów i tłuszczy musi być równa 100 </p>
         Zawartość procentowa białka: <input type="number" min="0" max="100" th:default="0" th:field="*{setting.proteinPart}"><th:if="${#fields.hasErrors('setting.proteinPart')}" th:errors="*{setting.proteinPart}" /></br>
         Zawartość procentowa węglowodanów: <input type="number" min="0" max="100" th th:default="0" th:field="*{setting.carbohydratePart}"><th:if="${#fields.hasErrors('setting.carbohydratePart')}" th:errors="*{setting.carbohydratePart}" /></br>
         Zawartość procentowa tłuszczy: <input type="number" min="0" max="100" th:default="0" th:field="*{setting.fatPart}"><th:if="${#fields.hasErrors('setting.fatPart')}" th:errors="*{setting.fatPart}" /></br>
