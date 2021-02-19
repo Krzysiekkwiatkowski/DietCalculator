@@ -68,7 +68,7 @@ public class UserController {
             }
         }
         user.setPassword(BCrypt.hashpw(user.getPassword(), BCrypt.gensalt()));
-        userRepository.save(user);
+        userRepository.save(calculateMacroelements(user));
         session.setAttribute("user", user);
         return "redirect:/diet/home";
     }
@@ -107,7 +107,7 @@ public class UserController {
             model.addAttribute("incorrectSum", "incorrectSum");
             return "home";
         }
-        userRepository.save(update(user));
+        userRepository.save(calculateMacroelements(user));
         return "redirect:/diet/user/option";
     }
 
@@ -150,7 +150,7 @@ public class UserController {
                 correct = 0;
             }
         }
-        userRepository.save(update(user));
+        userRepository.save(calculateMacroelements(user));
         session.setAttribute("user", user);
         model.addAttribute("userOption","userOption");
         return "home";
@@ -328,7 +328,7 @@ public class UserController {
         return goals;
     }
 
-    private User update(User user){
+    private User calculateMacroelements(User user){
         String activity = user.getActivity();
         String somatotype = user.getSomatotype();
         String goal = user.getGoal();
@@ -379,20 +379,31 @@ public class UserController {
             goalFactor = 500;
         }
         int total = (int) metabolism + activityFactor + somatotypeFactor + goalFactor + user.getCorrect();
-        user.setTotalCalories(total);
-        DecimalFormat decimalFormat = new DecimalFormat("#.#");
-        user.setTotalProtein(Double.parseDouble(decimalFormat.format(user.getWeight() * 1.8).replace(",", ".")));
-        if(goal.equals("Utrata wagi")){
-            user.setTotalCarbohydrates(Double.parseDouble(decimalFormat.format(((total - 1.8 * 4 * user.getWeight()) * 0.4) / 4.0).replace(",", ".")));
-            user.setTotalFat(Double.parseDouble(decimalFormat.format(((total - 1.8 * 4 * user.getWeight()) * 0.6) / 9.0).replace(",", ".")));
-        }
-        if(goal.equals("Utrzymanie wagi")){
-            user.setTotalCarbohydrates(Double.parseDouble(decimalFormat.format(((total - 1.8 * 4 * user.getWeight()) * 0.5) / 4.0).replace(",", ".")));
-            user.setTotalFat(Double.parseDouble(decimalFormat.format(((total - 1.8 * 4 * user.getWeight()) * 0.5) / 9.0).replace(",", ".")));
-        }
-        if(goal.equals("Przybranie wagi")){
-            user.setTotalCarbohydrates(Double.parseDouble(decimalFormat.format(((total - 1.8 * 4 * user.getWeight()) * 0.6) / 4.0).replace(",", ".")));
-            user.setTotalFat(Double.parseDouble(decimalFormat.format(((total - 1.8 * 4 * user.getWeight()) * 0.4) / 9.0).replace(",", ".")));
+        if(!user.isSelfDistribution()) {
+            user.setTotalCalories(total);
+            DecimalFormat decimalFormat = new DecimalFormat("#.#");
+            user.setTotalProtein(Double.parseDouble(decimalFormat.format(user.getWeight() * 1.8).replace(",", ".")));
+            if (goal.equals("Utrata wagi")) {
+                user.setTotalCarbohydrates(Double.parseDouble(decimalFormat.format(((total - 1.8 * 4 * user.getWeight()) * 0.4) / 4.0).replace(",", ".")));
+                user.setTotalFat(Double.parseDouble(decimalFormat.format(((total - 1.8 * 4 * user.getWeight()) * 0.6) / 9.0).replace(",", ".")));
+            }
+            if (goal.equals("Utrzymanie wagi")) {
+                user.setTotalCarbohydrates(Double.parseDouble(decimalFormat.format(((total - 1.8 * 4 * user.getWeight()) * 0.5) / 4.0).replace(",", ".")));
+                user.setTotalFat(Double.parseDouble(decimalFormat.format(((total - 1.8 * 4 * user.getWeight()) * 0.5) / 9.0).replace(",", ".")));
+            }
+            if (goal.equals("Przybranie wagi")) {
+                user.setTotalCarbohydrates(Double.parseDouble(decimalFormat.format(((total - 1.8 * 4 * user.getWeight()) * 0.6) / 4.0).replace(",", ".")));
+                user.setTotalFat(Double.parseDouble(decimalFormat.format(((total - 1.8 * 4 * user.getWeight()) * 0.4) / 9.0).replace(",", ".")));
+            }
+        } else {
+            int protein = (total * user.getSetting().getProteinPart()) / 400;
+            int carbohydrates = (total * user.getSetting().getCarbohydratePart()) / 400;
+            int fat = (total * user.getSetting().getFatPart()) / 900;
+            total = protein * 4 + carbohydrates * 4 + fat * 9;
+            user.setTotalCalories(total);
+            user.setTotalProtein(protein);
+            user.setTotalCarbohydrates(carbohydrates);
+            user.setTotalFat(fat);
         }
         if(dailyBalanceRepository.findTopByUserIdAndAndDate(user.getId(), Date.valueOf(LocalDate.now())) != null) {
             DailyBalance dailyBalance = dailyBalanceRepository.findTopByUserIdAndAndDate(user.getId(), Date.valueOf(LocalDate.now()));
