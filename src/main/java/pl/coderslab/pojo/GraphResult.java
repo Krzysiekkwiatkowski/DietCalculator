@@ -17,7 +17,7 @@ public class GraphResult {
         return description;
     }
 
-    public String getPercentage() {
+    public String getPart() {
         return part;
     }
 

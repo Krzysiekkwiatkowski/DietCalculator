@@ -70,15 +70,15 @@ public class DailyBalanceController {
         int fat = (int) (fatReceived * 100 / totalFat);
         int calories = caloriesReceived * 100 / totalCalories;
         List<GraphResult> results = new ArrayList<>();
-        results.add(new GraphResult("Białko: " + formatMacroData(proteinReceived, totalProtein), protein, "width: " + (protein * 3) + "px; background-color: green;", true));
-        results.add(new GraphResult("Węglowodany: " + formatMacroData(carbohydratesReceived, totalCarbohydrates), carbohydrates, "width: " + (carbohydrates * 3) + "px; background-color: red;", true));
-        results.add(new GraphResult("Tłuszcz: " + formatMacroData(fatReceived, totalFat), fat, "width: " + (fat * 3) + "px; background-color: yellow;", true));
-        results.add(new GraphResult("Kalorie: " + caloriesReceived + "/" + totalCalories, calories, "width: " + (calories * 3) + "px; background-color: blue;", true));
-        results.add(null);
+        results.add(new GraphResult("Białko: " + formatMacroData(proteinReceived, totalProtein), protein + "%", "width: " + (protein * 3) + "px; background-color: green;", true));
+        results.add(new GraphResult("Węglowodany: " + formatMacroData(carbohydratesReceived, totalCarbohydrates), carbohydrates + "%", "width: " + (carbohydrates * 3) + "px; background-color: red;", true));
+        results.add(new GraphResult("Tłuszcz: " + formatMacroData(fatReceived, totalFat), fat + "%", "width: " + (fat * 3) + "px; background-color: yellow;", true));
+        results.add(new GraphResult("Kalorie: " + caloriesReceived + "/" + totalCalories, calories + "%", "width: " + (calories * 3) + "px; background-color: blue;", true));
+        results.add(new GraphResult("%", "", "", false));
         for(int i = 0; i < glycemicCharges.size(); i++){
-            int charge = (int)((glycemicCharges.get(i) * 300) / 20);
-            results.add(new GraphResult("Posiłek " + (i + 1), charge,"width: " + charge + "px; background-color: orange;", true));
+            results.add(new GraphResult("Posiłek " + (i + 1), glycemicCharges.get(i) + "","width: " + ((int)(glycemicCharges.get(i) * 30) / 2) + "px; background-color: orange;", true));
         }
+        results.add(new GraphResult("", "", "", false));
         model.addAttribute("results", results);
         model.addAttribute("exist", "exist");
         model.addAttribute("balance", "balance");
