@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import pl.coderslab.entity.DailyBalance;
 import pl.coderslab.entity.Meal;
 import pl.coderslab.entity.User;
+import pl.coderslab.pojo.GraphResult;
 import pl.coderslab.repository.DailyBalanceRepository;
 import pl.coderslab.repository.UserRepository;
 
@@ -21,6 +22,9 @@ import java.util.List;
 @RequestMapping("/diet/daily")
 @Controller
 public class DailyBalanceController {
+    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.#");
+
+
     @Autowired
     private UserRepository userRepository;
 
@@ -51,7 +55,6 @@ public class DailyBalanceController {
         double carbohydratesReceived = 0.0;
         double fatReceived = 0.0;
         int caloriesReceived = 0;
-        double glycemicChargeReceived = 0;
         DailyBalance dailyBalance = dailyBalanceRepository.findTopByUserIdAndAndDate(loadedUser.getId(), Date.valueOf(LocalDate.now()));
         List<Meal> meals = dailyBalance.getMeals();
         List<Double> glycemicCharges = new ArrayList<>();
@@ -62,26 +65,23 @@ public class DailyBalanceController {
             caloriesReceived += meal.getTotalCalories();
             glycemicCharges.add(meal.getGlycemicCharge());
         }
-        StringBuilder sbProtein = new StringBuilder();
-        StringBuilder sbCarbohydrates = new StringBuilder();
-        StringBuilder sbFat = new StringBuilder();
-        StringBuilder sbCalories = new StringBuilder();
         int protein = (int) (proteinReceived * 100 / totalProtein);
         int carbohydrates = (int) (carbohydratesReceived * 100 / totalCarbohydrates);
         int fat = (int) (fatReceived * 100 / totalFat);
         int calories = caloriesReceived * 100 / totalCalories;
-        DecimalFormat decimalFormat = new DecimalFormat("#.#");
-        model.addAttribute("protein", protein);
-        model.addAttribute("carbohydrates", carbohydrates);
-        model.addAttribute("fat", fat);
-        model.addAttribute("calories", calories);
-        model.addAttribute("proteinPart", sbProtein.append(" " + Double.parseDouble(decimalFormat.format(proteinReceived).replace(",", ".")) + "/" + Double.parseDouble(decimalFormat.format(totalProtein).replace(",", "."))));
-        model.addAttribute("carbohydratesPart", sbCarbohydrates.append(" " + Double.parseDouble(decimalFormat.format(carbohydratesReceived).replace(",", ".")) + "/" + Double.parseDouble(decimalFormat.format(totalCarbohydrates).replace(",", "."))));
-        model.addAttribute("fatPart", sbFat.append(" " + Double.parseDouble(decimalFormat.format(fatReceived).replace(",", ".")) + "/" + Double.parseDouble(decimalFormat.format(totalFat).replace(",", "."))));
-        model.addAttribute("caloriesPart", sbCalories.append(" " + Double.parseDouble(decimalFormat.format(caloriesReceived).replace(",", ".")) + "/" + totalCalories));
-        model.addAttribute("glycemicCharges", glycemicCharges);
+        List<GraphResult> results = new ArrayList<>();
+        results.add(new GraphResult("Białko: " + formatMacroData(proteinReceived, totalProtein), protein, "width: " + (protein * 3) + "px; background-color: green;", true));
+        results.add(new GraphResult("Węglowodany: " + formatMacroData(carbohydratesReceived, totalCarbohydrates), carbohydrates, "width: " + (carbohydrates * 3) + "px; background-color: red;", true));
+        results.add(new GraphResult("Tłuszcz: " + formatMacroData(fatReceived, totalFat), fat, "width: " + (fat * 3) + "px; background-color: yellow;", true));
+        results.add(new GraphResult("Kalorie: " + caloriesReceived + "/" + totalCalories, calories, "width: " + (calories * 3) + "px; background-color: blue;", true));
+        results.add(null);
+        for(int i = 0; i < glycemicCharges.size(); i++){
+            int charge = (int)((glycemicCharges.get(i) * 300) / 20);
+            results.add(new GraphResult("Posiłek " + (i + 1), charge,"width: " + charge + "px; background-color: orange;", true));
+        }
+        model.addAttribute("results", results);
         model.addAttribute("exist", "exist");
-        model.addAttribute("actualBalance", "actualBalance");
+        model.addAttribute("balance", "balance");
         return "home";
     }
 
@@ -214,5 +214,9 @@ public class DailyBalanceController {
         model.addAttribute("logged", "logged");
         model.addAttribute("balanceOption","balanceOption");
         return "home";
+    }
+
+    private String formatMacroData(double received, double total){
+        return Double.parseDouble(DECIMAL_FORMAT.format(received).replace(",", ".")) + "/" + Double.parseDouble(DECIMAL_FORMAT.format(total).replace(",", "."));
     }
 }

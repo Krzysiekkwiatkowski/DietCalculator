@@ -5,50 +5,82 @@
     <title>Title</title>
 </head>
 <body>
-<div th:if="${actualBalance != null || weeklyBalance != null}">
+<div th:if="${balance != null}">
     <div th:if="${exist != null}">
-        <div th:if="${actualBalance != null}">
-            <div style="background-color: grey; float: left; width: 984px; height: 60px">
-                <h3 th:text="'Wszystkie dostarczone dzisiaj makroskładniki:'"></h3>
+        <div style="background-color: grey; float: left; width: 984px; height: 60px">
+            <h3 th:text="'Wszystkie dostarczone dzisiaj makroskładniki:'"></h3>
+        </div>
+        <div style="width: 100%; height: 100%;">
+            <div th:each="result : ${results}">
+                <div th:if="${result != null && result.borders}">
+                    <div class="floatLeft graphText" style="width: 300px; height: 33px" th:text="${result.description}" >
+                        <b><p class="graphText" th:text="${proteinPart}"></p></b>
+                    </div>
+                    <div class="floatLeft" style="border-left: 4px solid black; border-right: 4px solid black;width: 676px; height: 48px">
+                        <div style="width: 300px; border-right: 4px solid black">
+                            <div class="graph" th:style="${result.styles}" th:text="${result.percentage} + '%'"></div>
+                        </div>
+                    </div>
+                </div>
+                <div th:if="${result == null}">
+                    <div class="floatLeft graphText" style="width: 300px; height: 33px" >
+                        <b><p class="graphText"></p></b>
+                    </div>
+                    <div class="floatLeft" style="width: 676px; height: 48px">
+                        <div style="width: 308px">
+                            <div class="floatLeft" th:text="'0%'"/>
+                            <div class="floatRight" th:text="'100%'"/>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        <div th:if="${weeklyBalance != null}">
-            <div style="background-color: grey; float: left; width: 984px; height: 60px">
-                <h3 th:text="'Wszystkie dostarczone makroskładniki w ciągu ostatnich ' + ${days} + ' dni:'"></h3>
-            </div>
-        </div>
-        <div class="floatLeft" style="width: 300px">
-            <b><p class="graphText" th:text="'Białko: ' + ${proteinPart}"></p></b>
-            <b><p class="graphText" th:text="'Węglowodany: ' + ${carbohydratesPart}"></p></b>
-            <b><p class="graphText" th:text="'Tłuszcz: ' + ${fatPart}"></p></b>
-            <b><p class="graphText" th:text="'Kalorie: ' + ${caloriesPart}"></p></b>
-            <b><p class="graphText" th:text="'Ładunki glikemiczne: '"></p></b>
-            <div th:each="glycemicCharge : ${glycemicCharges}">
-                <b><p class="graphText" th:text="${glycemicChargeStat.index + 1} + ' posiłek'"></p></b>
-            </div>
-        </div>
-        <div class="floatLeft" style="border-left: 4px solid black; border-right: 4px solid black;width: 299px; height: 192px">
-            <div class="graph" th:style="'width: ' + ${protein * 3} + 'px; background-color: green;'" th:text="${protein} + '%'"></div>
-            <div class="graph" th:style="'width: ' + ${carbohydrates * 3} + 'px; background-color: red;'" th:text="${carbohydrates} + '%'"></div>
-            <div class="graph" th:style="'width: ' + ${fat * 3} + 'px; background-color: yellow;'" th:text="${fat} + '%'"></div>
-            <div class="graph" th:style="'width: ' + ${calories * 3} + 'px; background-color: blue;'" th:text="${calories} + '%'"></div>
-            <div class="graph"></div>
-            <div th:each="glycemicCharge : ${glycemicCharges}">
-                <div class="graph" th:style="'width: ' + ${(glycemicCharge * 300) / 20} + 'px; background-color: orange;'" th:text="${glycemicCharge}"/>
-            </div>
-        </div>
-        <div class="floatLeft" style="margin-right: 300px; width: 308px">
-            <div class="floatLeft" th:text="'0%'"></div>
-            <div class="floatRight" th:text="'100%'"></div>
-        </div>
-    </div>
-    <div th:if="${actualBalance != null && exist == null}" style="color: red">
-        <h3> Nie dodano jeszcze posiłku! </h3>
-    </div>
-    <div th:if="${weeklyBalance != null && exist == null}" style="color: red">
-        <h3> Nie ma wymaganej ilości danych! </h3>
     </div>
 </div>
+<!--<div th:if="${actualBalance != null || weeklyBalance != null}">-->
+    <!--<div th:if="${exist != null}">-->
+        <!--<div th:if="${actualBalance != null}">-->
+            <!--<div style="background-color: grey; float: left; width: 984px; height: 60px">-->
+                <!--<h3 th:text="'Wszystkie dostarczone dzisiaj makroskładniki:'"></h3>-->
+            <!--</div>-->
+        <!--</div>-->
+        <!--<div th:if="${weeklyBalance != null}">-->
+            <!--<div style="background-color: grey; float: left; width: 984px; height: 60px">-->
+                <!--<h3 th:text="'Wszystkie dostarczone makroskładniki w ciągu ostatnich ' + ${days} + ' dni:'"></h3>-->
+            <!--</div>-->
+        <!--</div>-->
+        <!--<div class="floatLeft" style="width: 300px">-->
+            <!--<b><p class="graphText" th:text="'Białko: ' + ${proteinPart}"></p></b>-->
+            <!--<b><p class="graphText" th:text="'Węglowodany: ' + ${carbohydratesPart}"></p></b>-->
+            <!--<b><p class="graphText" th:text="'Tłuszcz: ' + ${fatPart}"></p></b>-->
+            <!--<b><p class="graphText" th:text="'Kalorie: ' + ${caloriesPart}"></p></b>-->
+            <!--<b><p class="graphText" th:text="'Ładunki glikemiczne: '"></p></b>-->
+            <!--<div th:each="glycemicCharge : ${glycemicCharges}">-->
+                <!--<b><p class="graphText" th:text="${glycemicChargeStat.index + 1} + ' posiłek'"></p></b>-->
+            <!--</div>-->
+        <!--</div>-->
+        <!--<div class="floatLeft" style="border-left: 4px solid black; border-right: 4px solid black;width: 299px; height: 192px">-->
+            <!--<div class="graph" th:style="'width: ' + ${protein * 3} + 'px; background-color: green;'" th:text="${protein} + '%'"></div>-->
+            <!--<div class="graph" th:style="'width: ' + ${carbohydrates * 3} + 'px; background-color: red;'" th:text="${carbohydrates} + '%'"></div>-->
+            <!--<div class="graph" th:style="'width: ' + ${fat * 3} + 'px; background-color: yellow;'" th:text="${fat} + '%'"></div>-->
+            <!--<div class="graph" th:style="'width: ' + ${calories * 3} + 'px; background-color: blue;'" th:text="${calories} + '%'"></div>-->
+            <!--<div class="graph"></div>-->
+            <!--<div th:each="glycemicCharge : ${glycemicCharges}">-->
+                <!--<div class="graph" th:style="'width: ' + ${(glycemicCharge * 300) / 20} + 'px; background-color: orange;'" th:text="${glycemicCharge}"/>-->
+            <!--</div>-->
+        <!--</div>-->
+        <!--<div class="floatLeft" style="margin-right: 300px; width: 308px">-->
+            <!--<div class="floatLeft" th:text="'0%'"></div>-->
+            <!--<div class="floatRight" th:text="'100%'"></div>-->
+        <!--</div>-->
+    <!--</div>-->
+    <!--<div th:if="${actualBalance != null && exist == null}" style="color: red">-->
+        <!--<h3> Nie dodano jeszcze posiłku! </h3>-->
+    <!--</div>-->
+    <!--<div th:if="${weeklyBalance != null && exist == null}" style="color: red">-->
+        <!--<h3> Nie ma wymaganej ilości danych! </h3>-->
+    <!--</div>-->
+<!--</div>-->
 <div th:if="${longBalance != null}">
     <div th:if="${exist != null}">
         <h3 style="color: black" th:text="'Kalorie dostarczone w ciągu ostatnich ' + ${days} + ' dni:'"></h3>
