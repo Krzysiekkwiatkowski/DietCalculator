@@ -2,13 +2,13 @@ package pl.coderslab.pojo;
 
 public class GraphResult {
     private String description;
-    private int percentage;
+    private String part;
     private String styles;
     private boolean borders;
 
-    public GraphResult(String description, int percentage, String styles, boolean borders){
+    public GraphResult(String description, String part, String styles, boolean borders){
         this.description = description;
-        this.percentage = percentage;
+        this.part = part;
         this.styles = styles;
         this.borders = borders;
     }
@@ -17,8 +17,8 @@ public class GraphResult {
         return description;
     }
 
-    public int getPercentage() {
-        return percentage;
+    public String getPercentage() {
+        return part;
     }
 
     public String getStyles(){
