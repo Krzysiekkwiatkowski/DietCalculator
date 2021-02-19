@@ -76,7 +76,7 @@ public class DailyBalanceController {
         results.add(new GraphResult("Kalorie: " + caloriesReceived + "/" + totalCalories, calories + "%", "width: " + (calories * 3) + "px; background-color: blue;", true));
         results.add(new GraphResult("%", "", "", false));
         for(int i = 0; i < glycemicCharges.size(); i++){
-            results.add(new GraphResult("Posiłek " + (i + 1), glycemicCharges.get(i) + "","width: " + ((int)(glycemicCharges.get(i) * 30) / 2) + "px; background-color: orange;", true));
+            results.add(new GraphResult("Posiłek " + (i + 1), roundDouble(glycemicCharges.get(i)) + "","width: " + ((int)(glycemicCharges.get(i) * 30) / 2) + "px; background-color: orange;", true));
         }
         results.add(new GraphResult("", "", "", false));
         model.addAttribute("results", results);
@@ -112,6 +112,9 @@ public class DailyBalanceController {
         double carbohydratesReceived = 0.0;
         double fatReceived = 0.0;
         int caloriesReceived = 0;
+        List<Double> glycemicChargesDay = new ArrayList<>();
+        double glycemicChargesSum = 0.0;
+        int glycemicChargesCount = 0;
         for (DailyBalance dailyBalance : dailyBalances) {
             totalProtein += dailyBalance.getTotalProtein();
             totalCarbohydrates += dailyBalance.getTotalCarbohydrates();
@@ -122,27 +125,30 @@ public class DailyBalanceController {
                 carbohydratesReceived += meal.getTotalCarbohydrates();
                 fatReceived += meal.getTotalFat();
                 caloriesReceived += meal.getTotalCalories();
+                glycemicChargesSum += meal.getGlycemicCharge();
+                glycemicChargesCount++;
             }
+            glycemicChargesDay.add(glycemicChargesSum / glycemicChargesCount);
+            glycemicChargesSum = 0.0;
+            glycemicChargesCount = 0;
         }
         int protein = (int) (proteinReceived * 100 / totalProtein);
         int carbohydrates = (int) (carbohydratesReceived * 100 / totalCarbohydrates);
         int fat = (int) (fatReceived * 100 / totalFat);
         int calories = caloriesReceived * 100 / totalCalories;
-        DecimalFormat decimalFormat = new DecimalFormat("#.#");
-        StringBuilder sbProtein = new StringBuilder();
-        StringBuilder sbCarbohydrates = new StringBuilder();
-        StringBuilder sbFat = new StringBuilder();
-        StringBuilder sbCalories = new StringBuilder();
-        model.addAttribute("protein", protein);
-        model.addAttribute("carbohydrates", carbohydrates);
-        model.addAttribute("fat", fat);
-        model.addAttribute("calories", calories);
-        model.addAttribute("proteinPart", sbProtein.append(" " + Double.parseDouble(decimalFormat.format(proteinReceived).replace(",", ".")) + "/" + Double.parseDouble(decimalFormat.format(totalProtein).replace(",", "."))));
-        model.addAttribute("carbohydratesPart", sbCarbohydrates.append(" " + Double.parseDouble(decimalFormat.format(carbohydratesReceived).replace(",", ".")) + "/" + Double.parseDouble(decimalFormat.format(totalCarbohydrates).replace(",", "."))));
-        model.addAttribute("fatPart", sbFat.append(" " + Double.parseDouble(decimalFormat.format(fatReceived).replace(",", ".")) + "/" + Double.parseDouble(decimalFormat.format(totalFat).replace(",", "."))));
-        model.addAttribute("caloriesPart", sbCalories.append(" " + Double.parseDouble(decimalFormat.format(caloriesReceived).replace(",", ".")) + "/" + totalCalories));
+        List<GraphResult> results = new ArrayList<>();
+        results.add(new GraphResult("Białko: " + formatMacroData(proteinReceived, totalProtein), protein + "%", "width: " + (protein * 3) + "px; background-color: green;", true));
+        results.add(new GraphResult("Węglowodany: " + formatMacroData(carbohydratesReceived, totalCarbohydrates), carbohydrates + "%", "width: " + (carbohydrates * 3) + "px; background-color: red;", true));
+        results.add(new GraphResult("Tłuszcz: " + formatMacroData(fatReceived, totalFat), fat + "%", "width: " + (fat * 3) + "px; background-color: yellow;", true));
+        results.add(new GraphResult("Kalorie: " + caloriesReceived + "/" + totalCalories, calories + "%", "width: " + (calories * 3) + "px; background-color: blue;", true));
+        results.add(new GraphResult("%", "", "", false));
+        for(int i = 0; i < glycemicChargesDay.size(); i++){
+            results.add(new GraphResult("Dzień " + (i + 1), roundDouble(glycemicChargesDay.get(i)) + "","width: " + ((int)(glycemicChargesDay.get(i) * 30) / 2) + "px; background-color: orange;", true));
+        }
+        results.add(new GraphResult("", "", "", false));
+        model.addAttribute("results", results);
         model.addAttribute("exist", "exist");
-        model.addAttribute("weeklyBalance", "weeklyBalance");
+        model.addAttribute("balance", "balance");
         model.addAttribute("days", days);
         return "home";
     }
@@ -217,6 +223,10 @@ public class DailyBalanceController {
     }
 
     private String formatMacroData(double received, double total){
-        return Double.parseDouble(DECIMAL_FORMAT.format(received).replace(",", ".")) + "/" + Double.parseDouble(DECIMAL_FORMAT.format(total).replace(",", "."));
+        return roundDouble(received) + "/" + roundDouble(total);
+    }
+
+    private double roundDouble(double number){
+        return Double.parseDouble(DECIMAL_FORMAT.format(number).replace(",", "."));
     }
 }

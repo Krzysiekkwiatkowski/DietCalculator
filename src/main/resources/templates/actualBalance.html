@@ -7,8 +7,11 @@
 <body>
 <div th:if="${balance != null}">
     <div th:if="${exist != null}">
-        <div style="background-color: grey; float: left; width: 984px; height: 60px">
+        <div th:if="${days == null}" style="background-color: grey; float: left; width: 984px; height: 60px">
             <h3 th:text="'Wszystkie dostarczone dzisiaj makroskładniki:'"></h3>
+        </div>
+        <div th:if="${days != null}" style="background-color: grey; float: left; width: 984px; height: 60px">
+            <h3 th:text="'Kalorie dostarczone w ciągu ostatnich ' + ${days} + ' dni:'"></h3>
         </div>
         <div style="width: 100%; height: 100%;">
             <div th:each="result : ${results}">
@@ -24,7 +27,10 @@
                 </div>
                 <div th:if="${result != null && !result.borders}">
                     <div class="floatLeft graphText" style="width: 300px; height: 33px" >
-                        <div th:if="${result.description == '%'}" th:text="'Ładunki glikemiczne posiłków:'">
+                        <div th:if="${result.description == '%' && days == null}" th:text="'Ładunki glikemiczne posiłków:'">
+                            <b><p class="graphText"></p></b>
+                        </div>
+                        <div th:if="${result.description == '%' && days != null}" th:text="'Średnie ładunki glikemiczne:'">
                             <b><p class="graphText"></p></b>
                         </div>
                         <div th:if="${result.description != '%'}">
