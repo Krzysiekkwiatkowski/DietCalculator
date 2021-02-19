@@ -84,6 +84,9 @@ public class UserController {
         model.addAttribute("logged", "logged");
         User user = (User)object;
         User loadedUser = userRepository.findTopByEmail(user.getEmail());
+        if(loadedUser.getSetting() == null){
+            loadedUser.setSetting(new Setting(0L, 20, 50, 30));
+        }
         model.addAttribute("editUser", "editUser");
         model.addAttribute("user", loadedUser);
         return "home";
