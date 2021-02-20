@@ -174,16 +174,16 @@ public class UserController {
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public String loginPost(@RequestParam("email") String email, @RequestParam("password") String password, Model model, HttpSession session){
-        Object object = userRepository.findTopByEmail(email);
-        if(object == null) {
+        Object object;
+        if((email == null) || (password == null) || email.trim().equals("") || password.trim().equals("") || ((object = userRepository.findTopByEmail(email)) == null)){
             model.addAttribute("logged", null);
             model.addAttribute("loginForm", "loginForm");
             model.addAttribute("wrong", "wrong");
             return "home";
         }
-        model.addAttribute("logged", "logged");
         User user = (User)object;
         if(BCrypt.checkpw(password, user.getPassword())){
+            model.addAttribute("logged", "logged");
             session.setAttribute("user", user);
             return "redirect:/diet/home";
         }
