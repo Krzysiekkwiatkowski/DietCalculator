@@ -6,6 +6,7 @@
 </head>
 <body>
 <div style="text-align: right">
+    <p class="inLine" th:text="'Witaj, ' + ${session.user.nickname} + '!'"></p>
     <form class="inLine" th:action="@{/diet/user/logout}" method="get">
         <button class="logButton button" type="submit" > Wyloguj się </button>
     </form>
