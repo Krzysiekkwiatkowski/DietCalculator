@@ -53,6 +53,14 @@
             </div>
         </div>
     </div>
+    <div th:if="${exist == null}">
+        <div th:if="${days == null}" style="color: red">
+            <H3>Nie dodano jeszcze żadnego posiłku!</H3>
+        </div>
+        <div th:if="${days == 0}" style="color: red">
+            <H3>Nie ma wymaganej ilości danych!</H3>
+        </div>
+    </div>
 </div>
 <div th:if="${longBalance != null}">
     <div th:if="${exist != null}">

@@ -47,7 +47,7 @@ public class DailyBalanceController {
         double totalFat = loadedUser.getTotalFat();
         int totalCalories = loadedUser.getTotalCalories();
         if(dailyBalanceRepository.findTopByUserIdAndAndDate(loadedUser.getId(), Date.valueOf(LocalDate.now())) == null){
-            model.addAttribute("actualBalance", "actualBalance");
+            model.addAttribute("balance", "balance");
             model.addAttribute("exist", null);
             return "home";
         }
@@ -98,8 +98,9 @@ public class DailyBalanceController {
         User loadedUser = userRepository.findTopByEmail(user.getEmail());
         Object dailyObject = dailyBalanceRepository.findAllByUserAndDate(loadedUser, Date.valueOf(LocalDate.now()));
         if(dailyObject == null || ((List) dailyObject).size() == 0){
-            model.addAttribute("weeklyBalance", "weeklyBalance");
+            model.addAttribute("balance", "balance");
             model.addAttribute("exist", null);
+            model.addAttribute("days", 0);
             return "home";
         }
         List<DailyBalance> dailyBalances = (List<DailyBalance>)dailyObject;
@@ -131,6 +132,12 @@ public class DailyBalanceController {
             glycemicChargesDay.add(glycemicChargesSum / glycemicChargesCount);
             glycemicChargesSum = 0.0;
             glycemicChargesCount = 0;
+        }
+        if((totalProtein == 0) || (totalCarbohydrates == 0) || (totalFat == 0) || (totalCalories==0)){
+            model.addAttribute("balance", "balance");
+            model.addAttribute("exist", null);
+            model.addAttribute("days", 0);
+            return "home";
         }
         int protein = (int) (proteinReceived * 100 / totalProtein);
         int carbohydrates = (int) (carbohydratesReceived * 100 / totalCarbohydrates);
@@ -193,6 +200,11 @@ public class DailyBalanceController {
                 sumFatR += meal.getTotalFat();
                 sumCaloriesR += meal.getTotalCalories();
             }
+        }
+        if((sumProteinN == 0) || (sumCarbohydratesN == 0) || (sumFatN == 0) || (sumCaloriesN == 0)){
+            model.addAttribute("longBalance", "longBalance");
+            model.addAttribute("exist", null);
+            return "home";
         }
         int avgProtein = (int)((sumProteinR / sumProteinN) * 100 );
         int avgCarbohydrates = (int)((sumCarbohydratesR / sumCarbohydratesN) * 100);
