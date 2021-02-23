@@ -57,6 +57,7 @@ public class DailyBalanceController {
         int caloriesReceived = 0;
         DailyBalance dailyBalance = dailyBalanceRepository.findTopByUserIdAndAndDate(loadedUser.getId(), Date.valueOf(LocalDate.now()));
         List<Meal> meals = dailyBalance.getMeals();
+        meals.sort((m1, m2) -> Integer.compare(m1.getMealNumber(), m2.getMealNumber()));
         List<Double> glycemicCharges = new ArrayList<>();
         for (Meal meal : meals) {
             proteinReceived += meal.getTotalProtein();
