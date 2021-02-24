@@ -233,7 +233,7 @@ public class UserController {
         }
         model.addAttribute("changePassword", "changePassword");
         model.addAttribute("wrongPassword", "wrongPassword");
-        return "redirect:/diet/user/option";
+        return "home";
     }
 
     @RequestMapping(value = "/option", method = RequestMethod.GET)
