@@ -192,12 +192,16 @@ public class ProductController {
 
     @ModelAttribute("categories")
     public List<Category> allCategories() {
-        return categoryRepository.findAll();
+        List<Category> categories = categoryRepository.findAll();
+        categories.sort((c1,c2) -> c1.getName().compareToIgnoreCase(c2.getName()));
+        return categories;
     }
 
     @ModelAttribute("products")
     public List<Product> allProducts() {
-        return productRepository.findAll();
+        List<Product> products = productRepository.findAll();
+        products.sort((p1,p2) -> p1.getName().compareToIgnoreCase(p2.getName()));
+        return products;
     }
 
 }

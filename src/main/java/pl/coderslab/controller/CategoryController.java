@@ -138,6 +138,8 @@ public class CategoryController {
 
     @ModelAttribute("categories")
     public List<Category> allCategories(){
-        return categoryRepository.findAll();
+        List<Category> categories = categoryRepository.findAll();
+        categories.sort((c1,c2) -> c1.getName().compareToIgnoreCase(c2.getName()));
+        return categories;
     }
 }
