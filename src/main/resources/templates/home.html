@@ -1,146 +1,135 @@
 <!DOCTYPE html>
 <html lang="pl" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml">
 <head>
-    <meta http-equiv="Content-Type"	content="text/html;	charset=UTF-8" />
+    <meta http-equiv="Content-Type" content="text/html;	charset=UTF-8"/>
     <title>Title</title>
-    <link rel="stylesheet" type="text/css" th:href="@{/css/basic.css}" >
+    <link rel="stylesheet" type="text/css" th:href="@{/css/basic.css}">
     <script type="text/javascript" th:src="@{/webjars/jquery/3.2.1/jquery.min.js/}"></script>
     <script type="text/javascript" th:src="@{/js/effect.js}"></script>
 </head>
 <body>
-<div class="bcg" style=" width: 1584px; height: 774px;">
-    <div class="floatLeft">
-        <div class="wh">
-        </div>
-    </div>
-    <div class="floatRight">
-        <div class="wh" >
-        </div>
-    </div>
+<div style="display: inline-flex">
+<div id="leftPanel" class="inLine"></div><div id="content" class="inLine">
     <div th:if="${logged == null}">
-        <div class="floatRight">
-            <div class="w" style="background-color: lightgrey" th:include="fragments/logBar">
-            </div>
-        </div>
+        <div class="w block" style="background-color: lightgrey" th:include="fragments/logBar"></div>
     </div>
     <div th:if="${logged != null}">
-        <div class="floatRight">
-            <div class="w" style="background-color: lightgrey" th:include="fragments/logoutBar">
-            </div>
+        <div class="w block" style="background-color: lightgrey" th:include="fragments/logoutBar"></div>
+    </div>
+    <a class="aMain" th:href="@{/diet/home}">
+        <div class="block" style="background-color: gray; border: 3px solid black; width: 979px; height: 79px; text-align: center;">
+            <h1 style="color: black" th:text="'Kalkulator diety'"></h1>
         </div>
-    </div>
-    <a th:href="@{/diet/home}" ><div class="floatLeft" style="background-color: gray; border: 3px solid black; width: 978px; height: 79px; text-align: center;">
-        <h1 style="color: black" th:text="'Kalkulator diety'"></h1>
-    </div>
     </a>
-    <div class="floatLeft">
-        <div style="background-color: lightgrey; width: 984px" th:include="fragments/navBar">
-        </div>
+    <div class="block">
+        <div style="background-color: lightgrey; width: 984px" th:include="fragments/navBar"></div>
     </div>
-    <div class="floatLeft" style="background-color: white; width: 984px; height: 600px; text-align: center">
-        <div>
-            <div th:if="${addProduct != null}">
-                <div class="content, floatRight" th:replace="addProduct :: body" >
+    <div id="centralPanel">
+        <div class="block positionAbsolute" style="background-color: white; text-align: center">
+            <div class="positionRelative" th:if="${addProduct != null}">
+                <div th:replace="addProduct :: body">
                 </div>
             </div>
-            <div th:if="${editProduct != null}">
-                <div class="content, floatRight" th:replace="editProduct :: body" >
+            <div class="positionRelative" th:if="${editProduct != null}">
+                <div th:replace="editProduct :: body">
                 </div>
             </div>
-            <div th:if="${allProducts != null}">
-                <div class="content, floatRight" th:replace="allProducts :: body" >
+            <div class="positionRelative" th:if="${allProducts != null}">
+                <div th:replace="allProducts :: body">
                 </div>
             </div>
-            <div th:if="${productOption != null}">
-                <div class="content, floatRight" th:replace="productOption :: body" >
+            <div class="positionRelative" th:if="${productOption != null}">
+                <div th:replace="productOption :: body">
                 </div>
             </div>
-            <div th:if="${addCategory != null}">
-                <div class="content, floatRight" th:replace="addCategory :: body" >
+            <div class="positionRelative" th:if="${addCategory != null}">
+                <div th:replace="addCategory :: body">
                 </div>
             </div>
-            <div th:if="${editCategory != null}">
-                <div class="content, floatRight" th:replace="editCategory :: body" >
+            <div class="positionRelative" th:if="${editCategory != null}">
+                <div th:replace="editCategory :: body">
                 </div>
             </div>
-            <div th:if="${allCategories != null}">
-                <div class="content, floatRight" th:replace="allCategories :: body" >
+            <div class="positionRelative" th:if="${allCategories != null}">
+                <div th:replace="allCategories :: body">
                 </div>
             </div>
-            <div th:if="${categoryOption != null}">
-                <div class="content, floatRight" th:replace="categoryOption :: body" >
+            <div class="positionRelative" th:if="${categoryOption != null}">
+                <div th:replace="categoryOption :: body">
                 </div>
             </div>
-            <div th:if="${addTraining != null}">
-                <div class="content, floatRight" th:replace="addTraining :: body" >
+            <div class="positionRelative" th:if="${addTraining != null}">
+                <div th:replace="addTraining :: body">
                 </div>
             </div>
-            <div th:if="${balanceOption != null}">
-                <div class="content, floatRight" th:replace="balanceOption :: body" >
+            <div class="positionRelative" th:if="${balanceOption != null}">
+                <div th:replace="balanceOption :: body">
                 </div>
             </div>
-            <div th:if="${editTraining != null}">
-                <div class="content, floatRight" th:replace="editTraining :: body" >
+            <div class="positionRelative" th:if="${editTraining != null}">
+                <div th:replace="editTraining :: body">
                 </div>
             </div>
-            <div th:if="${registerUser != null}">
-                <div class="content, floatRight" th:replace="registerUser :: body" >
+            <div class="positionRelative" th:if="${registerUser != null}">
+                <div th:replace="registerUser :: body">
                 </div>
             </div>
-            <div th:if="${editUser != null}">
-                <div class="content, floatRight" th:replace="editUser :: body" >
+            <div class="positionRelative" th:if="${editUser != null}">
+                <div th:replace="editUser :: body">
                 </div>
             </div>
-            <div th:if="${userOption != null}">
-                <div class="content, floatRight" th:replace="userOption :: body" >
+            <div class="positionRelative" th:if="${userOption != null}">
+                <div th:replace="userOption :: body">
                 </div>
             </div>
-            <div th:if="${loginForm != null}">
-                <div class="content, floatRight" th:replace="loginForm :: body" >
+            <div class="positionRelative" th:if="${loginForm != null}">
+                <div th:replace="loginForm :: body">
                 </div>
             </div>
-            <div th:if="${balance != null || weeklyBalance != null || longBalance != null}">
-                <div class="content, floatRight" th:replace="actualBalance :: body" >
+            <div class="positionRelative" th:if="${changePassword != null}">
+                <div th:replace="changePassword :: body">
                 </div>
             </div>
-            <div th:if="${changePassword != null}">
-                <div class="content, floatRight" th:replace="changePassword :: body" >
+            <div class="positionRelative" th:if="${selectCategory != null}">
+                <div th:replace="selectCategory :: body">
                 </div>
             </div>
-            <div th:if="${selectCategory != null}">
-                <div class="content, floatRight" th:replace="selectCategory :: body" >
+            <div class="positionRelative" th:if="${selectProduct != null}">
+                <div th:replace="selectProduct :: body">
                 </div>
             </div>
-            <div th:if="${selectProduct != null}">
-                <div class="content, floatRight" th:replace="selectProduct :: body" >
+            <div class="positionRelative" th:if="${correctCalories != null}">
+                <div th:replace="correctCalories :: body">
                 </div>
             </div>
-            <div th:if="${correctCalories != null}">
-                <div class="content, floatRight" th:replace="correctCalories :: body" >
+            <div class="positionRelative" th:if="${trainingOption != null}">
+                <div th:replace="trainingOption :: body">
                 </div>
             </div>
-            <div th:if="${trainingOption != null}">
-                <div class="content, floatRight" th:replace="trainingOption :: body" >
+            <div class="positionRelative" th:if="${viewMeal != null}">
+                <div th:replace="viewMeal :: body">
                 </div>
             </div>
-            <div th:if="${viewMeal != null}">
-                <div class="content, floatRight" th:replace="viewMeal :: body" >
+            <div class="positionRelative" th:if="${viewMeals != null}">
+                <div th:replace="viewMeals :: body">
                 </div>
             </div>
-            <div th:if="${viewMeals != null}">
-                <div class="content, floatRight" th:replace="viewMeals :: body" >
+            <div class="positionRelative" th:if="${mealOption != null}">
+                <div th:replace="mealOption :: body">
                 </div>
             </div>
-            <div th:if="${mealOption != null}">
-                <div class="content, floatRight" th:replace="mealOption :: body" >
-                </div>
-            </div>
-            <div th:if="${deleteUser != null}">
-                <div class="content, floatRight" th:replace="deleteUser :: body" >
+            <div class="positionRelative" th:if="${deleteUser != null}">
+                <div th:replace="deleteUser :: body">
                 </div>
             </div>
         </div>
+        <div class="block" style="background-color: white; text-align: center">
+            <div th:if="${balance != null || longBalance != null}">
+                <div th:replace="actualBalance :: body">
+                </div>
+            </div>
+        </div>
     </div>
-</div>
+</div><div id="rightPanel" class="inLine"></div></div>
 </body>
 </html>

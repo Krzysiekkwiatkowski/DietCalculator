@@ -1,5 +1,27 @@
+.positionAbsolute {
+    position: absolute;
+    left: 50%;
+}
+
+.positionRelative {
+    position: relative;
+    left: -50%;
+}
+
+#leftPanel {
+    background-color: royalblue;
+}
+
+#rightPanel {
+    background-color: royalblue;
+}
+
 a{
     color: darkcyan;
+}
+
+.aMain {
+    color: grey;
 }
 
 .hidden{
@@ -14,7 +36,7 @@ a{
 }
 
 .inLine{
-    display: inline;
+    display: inline-block;
 }
 
 .block{
@@ -42,7 +64,7 @@ select{
     height: 774px;
 }
 
-.w{
+.width{
     width: 984px;
 }
 
@@ -56,16 +78,6 @@ select{
 
 .center{
     text-align: center;
-}
-
-.page{
-    width: 1584px;
-    height: 774px;
-}
-
-.content{
-    height: 700px;
-    width: 984px;
 }
 
 .button{
@@ -131,4 +143,8 @@ input,select{
     display:block;
     height: 33px;
     padding-top: 15px;
+}
+
+.error {
+    color: red;
 }

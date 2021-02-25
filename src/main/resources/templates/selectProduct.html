@@ -5,15 +5,28 @@
     <title>Title</title>
 </head>
 <body>
-<h3 th:text="'Wybierz produkt:'"></h3>
-<div class="formDiv">
-</div>
-<form class="form" th:action="@{/diet/meal/addProduct}" method="post">
-    Produkt: <select name="id">
-    <option th:each="product : ${productList}" th:value="${product.id}" th:text="${product.name}" />
-    </select></br>
-    Ilość: <input type="number" min="0" name="weight" /></br>
-    <button class="formButton button" type="submit" > Dodaj produkt </button>
-</form>
+    <h3 th:text="'Wybierz produkt:'"></h3>
+    <form th:action="@{/diet/meal/addProduct}" method="post">
+        <table>
+            <tbody>
+                <tr>
+                    <td><label>Produkt:</label></td>
+                    <td>
+                        <select name="id">
+                            <option th:each="product : ${productList}" th:value="${product.id}" th:text="${product.name}" />
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label>Ilość:</label></td>
+                    <td><input type="number" min="0" name="weight" /></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><button class="formButton button" type="submit" > Dodaj produkt </button></td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
 </body>
 </html>

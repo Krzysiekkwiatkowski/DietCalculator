@@ -5,39 +5,122 @@
     <title>Title</title>
 </head>
 <body>
-<h3 th:text="'Rejestracja'"></h3>
-<div class="formDiv">
-</div>
-<form class="form" th:action="@{/diet/user/register}" th:object="${user}" method="post">
-    Nick: <input type="text" th:field="*{nickname}"><th:if="${#fields.hasError('nickname')}" th:errors="*{nickname}" /></br>
-    Imię: <input type="text" th:field="*{firstName}"><th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}" /></br>
-    Nazwisko: <input type="text" th:field="*{lastName}"><th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}" /></br>
-    <p style="color: red" th:if="${repeat}"> Istnieje już użytkownik o takim emailu! </p>
-    Email: <input type="text" th:field="*{email}"><th:if="${#fields.hasErrors('email')}" th:errors="*{email}" /></br>
-    Hasło: <input type="password" th:field="*{password}"><th:if="${#fields.hasErrors('password')}" th:errors="*{password}" /></br>
-    Płeć: <select th:field="*{gender}">
-        <option th:each="gender : ${genderList}" th:value="${gender}" th:text="${gender}" />
-    </select></br>
-    Wiek: <input type="number" min="0" th:field="*{age}"><th:if="${#fields.hasErrors('age')}" th:errors="*{age}" /></br>
-    Wzrost: <input type="number" min="0" th:field="*{height}"><th:if="${#fields.hasErrors('height')}" th:errors="*{height}" /></br>
-    Waga: <input type="number" min="0" step="0.1" th:field="*{weight}"><th:if="${#fields.hasErrors('weight')}" th:errors="*{weight}" /></br>
-    Aktywność: <select th:field="*{activity}">
-        <option th:each="activity : ${activityList}" th:value="${activity}" th:text="${activity}" />
-    </select></br>
-    Somatotyp: <select th:field="*{somatotype}">
-        <option th:each="somatotype : ${somatotypeList}" th:value="${somatotype}" th:text="${somatotype}"/>
-    </select></br>
-    Cel: <select th:field="*{goal}">
-        <option th:each="goal : ${goalList}" th:value="${goal}" th:text="${goal}"/>
-    </select></br>
-    Własny rozkład makroskładnikowy: <input type="checkbox" id="selfDistribution" th:default="false" th:field="*{selfDistribution}"><br>
-    <div id="settingContent">
-        <p style="color: red" th:if="${incorrectSum}"> Suma zawartości procentowej białek, węglowodanów i tłuszczy musi być równa 100 </p>
-        Zawartość procentowa białka: <input type="number" min="0" max="100" th:default="0" th:field="*{setting.proteinPart}"><th:if="${#fields.hasErrors('setting.proteinPart')}" th:errors="*{setting.proteinPart}" /></br>
-        Zawartość procentowa węglowodanów: <input type="number" min="0" max="100" th th:default="0" th:field="*{setting.carbohydratePart}"><th:if="${#fields.hasErrors('setting.carbohydratePart')}" th:errors="*{setting.carbohydratePart}" /></br>
-        Zawartość procentowa tłuszczy: <input type="number" min="0" max="100" th:default="0" th:field="*{setting.fatPart}"><th:if="${#fields.hasErrors('setting.fatPart')}" th:errors="*{setting.fatPart}" /></br>
-    </div>
-    <button class="formButton button" type="submit" > Zarejestruj </button>
-</form>
+    <h3 th:text="'Rejestracja'"></h3>
+    <form th:action="@{/diet/user/register}" th:object="${user}" method="post">
+        <input type="hidden" name="correct" th:field="*{correct}" th:value="${correct}">
+        <table>
+            <tbody>
+                <tr>
+                    <td><label>Nick:</label></td>
+                    <td><input type="text" th:field="*{nickname}"></td>
+                    <td class="error"><th:if="${#fields.hasError('nickname')}" th:errors="*{nickname}" /></td>
+                </tr>
+                <tr>
+                    <td><label>Imię:</label></td>
+                    <td><input type="text" th:field="*{firstName}"></td>
+                    <td class="error"><th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}" /></td>
+                </tr>
+                <tr>
+                    <td><label>Nazwisko:</label></td>
+                    <td><input type="text" th:field="*{lastName}"></td>
+                    <td class="error"><th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}" /></td>
+                </tr>
+                <tr>
+                    <td><label></label></td>
+                    <td class="error" th:if="${repeat}">Taki email już istnieje!</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><label>Email:</label></td>
+                    <td><input type="text" th:field="*{email}"></td>
+                    <td class="error"><th:if="${#fields.hasErrors('email')}" th:errors="*{email}" /></td>
+                </tr>
+                <tr>
+                    <td><label>Hasło:</label></td>
+                    <td><input type="password" th:field="*{password}"></td>
+                    <td class="error"><th:if="${#fields.hasErrors('password')}" th:errors="*{password}" /></td>
+                </tr>
+                <tr>
+                    <td><label>Płeć:</label></td>
+                    <td>
+                        <select th:field="*{gender}">
+                            <option th:each="gender : ${genderList}" th:value="${gender}" th:text="${gender}" />
+                        </select>
+                    </td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><label>Wiek:</label></td>
+                    <td><input type="number" min="0" th:field="*{age}"></td>
+                    <td><th:if="${#fields.hasErrors('age')}" th:errors="*{age}" /></td>
+                </tr>
+                <tr>
+                    <td><label>Wzrost:</label></td>
+                    <td><input type="number" min="0" th:field="*{height}"></td>
+                    <td class="error"><th:if="${#fields.hasErrors('height')}" th:errors="*{height}" /></td>
+                </tr>
+                <tr>
+                    <td><label>Waga:</label></td>
+                    <td><input type="number" min="0" step="0.1" th:field="*{weight}"></td>
+                    <td><th:if="${#fields.hasErrors('weight')}" th:errors="*{weight}" /></td>
+                </tr>
+                <tr>
+                    <td><label>Aktywność:</label></td>
+                    <td>
+                        <select th:field="*{activity}">
+                            <option th:each="activity : ${activityList}" th:value="${activity}" th:text="${activity}" />
+                        </select>
+                    </td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><label>Somatotyp:</label></td>
+                    <td>
+                        <select th:field="*{somatotype}">
+                            <option th:each="somatotype : ${somatotypeList}" th:value="${somatotype}" th:text="${somatotype}"/>
+                        </select>
+                    </td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><label>Cel:</label></td>
+                    <td>
+                        <select th:field="*{goal}">
+                            <option th:each="goal : ${goalList}" th:value="${goal}" th:text="${goal}"/>
+                        </select>
+                    </td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><label>Własny rozkład makroskładnikowy:</label></td>
+                    <td><input type="checkbox" id="selfDistribution" th:default="false" th:field="*{selfDistribution}"></td>
+                    <td></td>
+                </tr>
+                <tr th:if="${incorrectSum}">
+                    <td colspan="3" class="error">Suma procentowych wartości musi być równa 100</td>
+                </tr>
+                <tr class="settingContent">
+                    <td><label>Zawartość procentowa białka:</label></td>
+                    <td><input type="number" min="0" max="100" th:default="0" th:field="*{setting.proteinPart}"></td>
+                    <td class="error"><th:if="${#fields.hasErrors('setting.proteinPart')}" th:errors="*{setting.proteinPart}" /></td>
+                </tr>
+                <tr class="settingContent">
+                    <td><label>Zawartość procentowa węglowodanów:</label></td>
+                    <td><input type="number" min="0" max="100" th th:default="0" th:field="*{setting.carbohydratePart}"></td>
+                    <td class="error"><th:if="${#fields.hasErrors('setting.carbohydratePart')}" th:errors="*{setting.carbohydratePart}" /></td>
+                </tr>
+                <tr class="settingContent">
+                    <td><label>Zawartość procentowa tłuszczy:</label></td>
+                    <td><input type="number" min="0" max="100" th:default="0" th:field="*{setting.fatPart}"></td>
+                    <td class="error"><th:if="${#fields.hasErrors('setting.fatPart')}" th:errors="*{setting.fatPart}" /></td>
+                </tr>
+                <tr>
+                    <td><label></label></td>
+                    <td><button class="formButton button" type="submit" > Zarejestruj </button></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
 </body>
 </html>

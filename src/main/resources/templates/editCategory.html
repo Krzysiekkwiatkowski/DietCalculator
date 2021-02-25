@@ -5,14 +5,28 @@
     <title>Title</title>
 </head>
 <body>
-<h3 th:text="'Zmiana kategorii'"></h3>
-<div class="formDiv">
-</div>
-<form class="form" th:action="@{/diet/category/edit/}" th:object="${category}" method="post">
-    <input type="hidden" name="id" th:field="*{id}" th:value="${id}">
-    Nazwa: <input type="text" th:field="*{name}"><th:if="${#fields.hasErrors('name')}" th:errors="*{name}"/></br>
-    Opis: <input type="text" th:field="*{description}"><th:if="${#fields.hasErrors('description')}" th:errors="*{description}"/></br>
-    <button class="formButton button" type="submit" > Edytuj kategorię </button>
-</form>
+    <h3 th:text="'Zmiana kategorii'"></h3>
+    <form th:action="@{/diet/category/edit/}" th:object="${category}" method="post">
+        <input type="hidden" name="id" th:field="*{id}" th:value="${id}">
+        <table>
+            <tbody>
+                <tr>
+                    <td><label>Nazwa:</label></td>
+                    <td><input type="text" th:field="*{name}"></td>
+                    <td class="error"><th:if="${#fields.hasErrors('name')}" th:errors="*{name}"/></td>
+                </tr>
+                <tr>
+                    <td><label>Opis:</label></td>
+                    <td><input type="text" th:field="*{description}"></td>
+                    <td class="error"><th:if="${#fields.hasErrors('description')}" th:errors="*{description}"/></td>
+                </tr>
+                <tr>
+                    <td><label></label></td>
+                    <td><button class="formButton button" type="submit" > Edytuj kategorię </button></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
 </body>
 </html>

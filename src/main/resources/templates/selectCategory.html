@@ -5,27 +5,49 @@
     <title>Title</title>
 </head>
 <body>
-<h3 th:text="'Wybierz kategorię:'"></h3>
-<div th:if="${emptyValue != null}">
-    <h3 style="color: red" th:text="'Musisz wybrać kategorię i produkt'"></h3>
-</div>
-<div class="formDiv">
-</div>
-<div>
-    <form class="form" th:action="@{/diet/meal/add}" method="post">
-        <div th:if="${mealProducts != null}">
-            Produkty:</br>
-            <p th:each="product : ${mealProducts}" th:text="${product.name + ' -> ' + product.weight + 'g'}"></p>
-        </div>
-        Kategoria: <select name="id">
-        <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}" >
-        </option>
-        </select></br>
-        <button class="formButton button" type="submit" > Potwierdź kategorię </button>
-    </form></br>
-    <form class="form" style="margin-left: 300px" th:action="@{/diet/meal/confirm}" method="get">
-        <button class="formButton button" type="submit" > Zatwierdź posiłek </button>
+    <h3 th:text="'Wybierz kategorię:'"></h3>
+    <div th:if="${emptyValue != null}">
+        <h3 style="color: red" th:text="'Musisz wybrać kategorię i produkt'"></h3>
+    </div>
+    <table style="text-align: start" th:if="${mealProducts != null}">
+        <tbody>
+        <tr >
+            <td>Produkty:</td>
+        </tr>
+        <tr th:each="product : ${mealProducts}">
+            <td th:text="${product.name + ' -> ' + product.weight + 'g'}"></td>
+        </tr>
+        </tbody>
+    </table>
+    <form th:action="@{/diet/meal/add}" method="post">
+        <table>
+            <tbody>
+                <tr></tr>
+                <tr>
+                    <td><label>Kategoria:</label></td>
+                </tr>
+                <tr>
+                    <td>
+                        <select name="id">
+                            <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}" >
+                            </option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td><button class="formButton button" type="submit" > Potwierdź kategorię </button></td>
+                </tr>
+            </tbody>
+        </table>
     </form>
-</div>
+    <form th:action="@{/diet/meal/confirm}" method="get">
+        <table>
+            <tbody>
+                <tr>
+                    <td><button class="formButton button" type="submit" > Zatwierdź posiłek </button></td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
 </body>
 </html>

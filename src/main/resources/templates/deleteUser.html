@@ -5,7 +5,7 @@
     <title>Title</title>
 </head>
 <body>
-<h3 style="color: red" th:text="'Czy jesteś pewny, że chcesz usunąć konto?'"></h3>
+<h3 class="error" th:text="'Czy jesteś pewny, że chcesz usunąć konto?'"></h3>
     <form th:action="@{/diet/user/delete/yes}" method="get">
         <button class="formButton button" type="submit" > Tak, jestem pewny </button>
     </form>

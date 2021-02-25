@@ -5,27 +5,37 @@
     <title>Title</title>
 </head>
 <body>
-<h3 th:text="'Wprowadź korektę zapotrzebowania kalorycznego'"></h3>
-<div class="formDiv">
-</div>
-<form class="form" th:action="@{/diet/user/correct}" th:object="${user}" method="post">
-    <input type="hidden" name="id" th:field="*{id}" th:value="${id}">
-    <input type="hidden" name="email" th:field="*{email}" th:value="${email}">
-    <input type="hidden" name="password" th:field="*{password}" th:value="${password}">
-    <input type="hidden" name="training" th:field="*{training}" th:value="${training}">
-    <input type="hidden" name="nickname" th:field="*{nickname}" th:value="${nickname}">
-    <input type="hidden" name="firstName" th:field="*{firstName}" th:value="${firstName}">
-    <input type="hidden" name="lastName" th:field="*{lastName}" th:value="${lastName}">
-    <input type="hidden" name="gender" th:field="*{gender}" th:value="${gender}">
-    <input type="hidden" name="age" th:field="*{age}" th:value="${age}">
-    <input type="hidden" name="height" th:field="*{height}" th:value="${height}">
-    <input type="hidden" name="weight" th:field="*{weight}" th:value="${weight}">
-    <input type="hidden" name="activity" th:field="*{activity}" th:value="${activity}">
-    <input type="hidden" name="somatotype" th:field="*{somatotype}" th:value="${somatotype}">
-    <input type="hidden" name="goal" th:field="*{goal}" th:value="${goal}">
-    <input type="hidden" name="totalCalories" th:field="*{totalCalories}" th:value="${totalCalories}">
-    Korekta zapotrzebowania: <input type="number" min="-1000" max="1000" th:field="*{correct}"><th:if="${#fields.hasErrors('correct')}" th:errors="*{correct}" /></br>
-    <button class="formButton button optionButton" type="submit" > Koryguj </button>
-</form>
+    <h3 th:text="'Wprowadź korektę zapotrzebowania'"></h3>
+    <form th:action="@{/diet/user/correct}" th:object="${user}" method="post">
+        <input type="hidden" name="id" th:field="*{id}" th:value="${id}">
+        <input type="hidden" name="email" th:field="*{email}" th:value="${email}">
+        <input type="hidden" name="password" th:field="*{password}" th:value="${password}">
+        <input type="hidden" name="training" th:field="*{training}" th:value="${training}">
+        <input type="hidden" name="nickname" th:field="*{nickname}" th:value="${nickname}">
+        <input type="hidden" name="firstName" th:field="*{firstName}" th:value="${firstName}">
+        <input type="hidden" name="lastName" th:field="*{lastName}" th:value="${lastName}">
+        <input type="hidden" name="gender" th:field="*{gender}" th:value="${gender}">
+        <input type="hidden" name="age" th:field="*{age}" th:value="${age}">
+        <input type="hidden" name="height" th:field="*{height}" th:value="${height}">
+        <input type="hidden" name="weight" th:field="*{weight}" th:value="${weight}">
+        <input type="hidden" name="activity" th:field="*{activity}" th:value="${activity}">
+        <input type="hidden" name="somatotype" th:field="*{somatotype}" th:value="${somatotype}">
+        <input type="hidden" name="goal" th:field="*{goal}" th:value="${goal}">
+        <input type="hidden" name="totalCalories" th:field="*{totalCalories}" th:value="${totalCalories}">
+        <table>
+            <tbody>
+                <tr>
+                    <td colspan="2" class="error"><th:if="${#fields.hasErrors('correct')}" th:errors="*{correct}" /></td>
+                </tr>
+                <tr>
+                    <td><label th:text="'Korekta zapotrzebowania:&nbsp&nbsp'"></label></td>
+                    <td><input type="number" min="-1000" max="1000" th:field="*{correct}"></td>
+                </tr>
+                <tr>
+                    <td colspan="2"><button class="formButton button optionButton" type="submit" > Koryguj </button></td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
 </body>
 </html>

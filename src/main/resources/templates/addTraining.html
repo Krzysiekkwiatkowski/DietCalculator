@@ -5,21 +5,48 @@
     <title>Title</title>
 </head>
 <body>
-<h3 th:text="'Dodanie treningu'"></h3>
-<div class="formDiv">
-</div>
-<form class="form" th:action="@{/diet/training/add}" th:object="${training}" method="post">
-    Intensywność treningu siłowego: <select th:field="*{strengthIntensity}">
-        <option th:each="intensity : ${intensityListStrength}" th:text="${intensity}" th:value="${intensity}" />
-    </select></br>
-    Czas treningu siłowego: <input type="number" min="0" th:field="*{strengthTime}"></br>
-    Treningi w tygodniu: <input type="number" min="0" th:field="*{strengthDays}"></br>
-    Intensywność treningu aerobowego: <select th:field="*{cardioIntensity}">
-    <option th:each="intensity : ${intensityListCardio}" th:text="${intensity}" th:value="${intensity}" />
-    </select></br>
-    Czas treningu aerobowego: <input type="number" min="0" th:field="*{cardioTime}"></br>
-    Treningi w tygodniu: <input type="number" min="0" th:field="*{cardioDays}"></br>
-    <button class="formButton button" type="submit" > Zatwierdź trening </button>
-</form>
+    <h3 th:text="'Dodanie treningu'"></h3>
+    <form th:action="@{/diet/training/add}" th:object="${training}" method="post">
+        <table>
+            <tbody>
+                <tr>
+                    <td><label>Intensywność treningu siłowego:</label></td>
+                    <td>
+                        <select th:field="*{strengthIntensity}">
+                            <option th:each="intensity : ${intensityListStrength}" th:text="${intensity}" th:value="${intensity}" />
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label>Czas treningu siłowego:</label></td>
+                    <td><input type="number" min="0" th:field="*{strengthTime}"></td>
+                </tr>
+                <tr>
+                    <td><label>Treningi w tygodniu:</label></td>
+                    <td><input type="number" min="0" th:field="*{strengthDays}"></td>
+                </tr>
+                <tr>
+                    <td><label>Intensywność treningu aerobowego:</label></td>
+                    <td>
+                        <select th:field="*{cardioIntensity}">
+                            <option th:each="intensity : ${intensityListCardio}" th:text="${intensity}" th:value="${intensity}" />
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label>Czas treningu aerobowego:</label></td>
+                    <td><input type="number" min="0" th:field="*{cardioTime}"></td>
+                </tr>
+                <tr>
+                    <td><label>Treningi w tygodniu:</label></td>
+                    <td><input type="number" min="0" th:field="*{cardioDays}"></td>
+                </tr>
+                <tr>
+                    <td><label></label></td>
+                    <td><button class="formButton button" type="submit" > Zatwierdź trening </button></td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
 </body>
 </html>

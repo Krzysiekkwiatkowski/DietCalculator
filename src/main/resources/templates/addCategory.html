@@ -5,13 +5,27 @@
     <title>Title</title>
 </head>
 <body>
-<h3 th:text="'Dodanie kategorii'"></h3>
-<div class="formDiv">
-</div>
-<form class="form" th:action="@{/diet/category/add}" th:object="${category}" method="post">
-    Nazwa: <input type="text" th:field="*{name}"><th:if="${#fields.hasErrors('name')}" th:errors="*{name}"/></br>
-    Opis: <input type="text" th:field="*{description}"><th:if="${#fields.hasErrors('description')}" th:errors="*{description}"/></br>
-    <button class="formButton button" type="submit" > Dodaj kategorię </button>
-</form>
+    <h3 th:text="'Dodanie kategorii'"></h3>
+    <form th:action="@{/diet/category/add}" th:object="${category}" method="post">
+        <table>
+            <tbody>
+                <tr>
+                    <td><label>Nazwa:</label></td>
+                    <td><input type="text" th:field="*{name}"></td>
+                    <td class="error"><th:if="${#fields.hasErrors('name')}" th:errors="*{name}"/></td>
+                </tr>
+                <tr>
+                    <td><label>Opis:</label></td>
+                    <td><input type="text" th:field="*{description}"></td>
+                    <td class="error"><th:if="${#fields.hasErrors('description')}" th:errors="*{description}"/></td>
+                </tr>
+                <tr>
+                    <td><label></label></td>
+                    <td><button class="formButton button" type="submit" > Dodaj kategorię </button></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
 </body>
 </html>

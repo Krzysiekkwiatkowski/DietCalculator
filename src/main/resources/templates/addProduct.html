@@ -6,23 +6,63 @@
 </head>
 <body>
 <h3 th:text="'Dodanie produktu'"></h3>
-<div class="formDiv">
-</div>
-<form class="form"  th:action="@{/diet/product/add}" th:object="${product}" method="post">
-    <p th:if="${mistake}">
-        <th:text>Suma białka, węglowodanow i tłuszczy nie może przekroczyć 100g na 100 gram produktu!</th:text>
-    </p>
-    Nazwa: <input type="text" th:field="*{name}"><th:if="${#fields.hasErrors('name')}" th:errors="*{name}"/></br>
-    <th:text> Wartości na 100g produktu: </th:text></br>
-    Białko: <input type="number" min=0 max = 100 step="0.1" th:field="*{protein}"><th:if="${#fields.hasErrors('protein')}" th:errors="*{protein}"/></br>
-    Węglowodany: <input type="number" min=0 max = 100 step="0.1" th:field="*{carbohydrates}"><th:if="${#fields.hasErrors('carbohydrates')}" th:errors="*{carbohydrates}"/></br>
-    Tłuszcze: <input type="number" min=0 max = 100 step="0.1" th:field="*{fat}"><th:if="${#fields.hasErrors('fat')}" th:errors="*{fat}"/></br>
-    Kalorie: <input type="number" min=0 th:field="*{calories}"><th:if="${#fields.hasErrors('calories')}" th:errors="*{calories}"/></br>
-    Indeks glikemiczny: <input type="number" min="0" max="103" th:field="*{glycemicIndex}"><th:if="${#fields.hasErrors('glycemicIndex')}" th:errors="*{glycemicIndex}" /><br>
-    Kategoria: <select th:field="*{category}">
-        <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}" />
-    </select></br>
-    <button class="formButton button" type="submit" > Dodaj produkt </button>
-</form>
+    <form th:action="@{/diet/product/add}" th:object="${product}" method="post">
+        <p class="error" th:if="${mistake}">
+            <th:text>Suma białka, węglowodanow i tłuszczy nie może przekroczyć 100g na 100 gram produktu!</th:text>
+        </p>
+        <table>
+            <tbody>
+                <tr>
+                    <td><label>Nazwa:</label></td>
+                    <td><input type="text" th:field="*{name}"></td>
+                    <td class="error"><th:if="${#fields.hasErrors('name')}" th:errors="*{name}"/></td>
+                </tr>
+                <tr>
+                    <td><label></label></td>
+                    <td>Wartości na 100g produktu:</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><label>Białko:</label></td>
+                    <td><input type="number" min=0 max = 100 step="0.1" th:field="*{protein}"></td>
+                    <td class="error"><th:if="${#fields.hasErrors('protein')}" th:errors="*{protein}"/></td>
+                </tr>
+                <tr>
+                    <td><label>Węglowodany:</label></td>
+                    <td><input type="number" min=0 max = 100 step="0.1" th:field="*{carbohydrates}"></td>
+                    <td class="error"><th:if="${#fields.hasErrors('carbohydrates')}" th:errors="*{carbohydrates}"/></td>
+                </tr>
+                <tr>
+                    <td><label>Tłuszcze:</label></td>
+                    <td><input type="number" min=0 max = 100 step="0.1" th:field="*{fat}"></td>
+                    <td class="error"><th:if="${#fields.hasErrors('fat')}" th:errors="*{fat}"/></td>
+                </tr>
+                <tr>
+                    <td><label>Kalorie:</label></td>
+                    <td><input type="number" min=0 th:field="*{calories}"></td>
+                    <td class="error"><th:if="${#fields.hasErrors('calories')}" th:errors="*{calories}"/></td>
+                </tr>
+                <tr>
+                    <td><label>Indeks glikemiczny:</label></td>
+                    <td><input type="number" min="0" max="103" th:field="*{glycemicIndex}"></td>
+                    <td class="error"><th:if="${#fields.hasErrors('glycemicIndex')}" th:errors="*{glycemicIndex}" /></td>
+                </tr>
+                <tr>
+                    <td><label>Kategoria:</label></td>
+                    <td>
+                        <select th:field="*{category}">
+                            <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}" />
+                        </select>
+                    </td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><label></label></td>
+                    <td><button class="formButton button" type="submit" > Dodaj produkt </button></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
 </body>
 </html>
