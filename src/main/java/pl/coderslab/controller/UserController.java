@@ -131,7 +131,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/correct", method = RequestMethod.POST)
-    public String correctPost(@ModelAttribute User user, BindingResult  result, Model model, HttpSession session, HttpServletRequest request){
+    public String correctPost(@Valid @ModelAttribute User user, BindingResult  result, Model model, HttpSession session, HttpServletRequest request){
         Object object = session.getAttribute("user");
         if(object == null){
             model.addAttribute("logged", null);
@@ -140,18 +140,8 @@ public class UserController {
         }
         model.addAttribute("logged", "logged");
         if(result.hasErrors()){
-            model.addAttribute("userOption","userOption");
             model.addAttribute("correctCalories", "correctCalories");
             return "home";
-        }
-        String correctString = request.getParameter("correct");
-        int correct = 0;
-        if(correctString != null){
-            try {
-                correct = Integer.parseInt(correctString);
-            } catch (NumberFormatException e){
-                correct = 0;
-            }
         }
         userRepository.save(calculateMacroelements(user));
         session.setAttribute("user", user);

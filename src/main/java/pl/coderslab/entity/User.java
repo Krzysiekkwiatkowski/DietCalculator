@@ -5,10 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.*;
 import java.util.List;
 
 @Data
@@ -56,7 +53,8 @@ public class User {
     private boolean selfDistribution;
     @OneToOne(cascade = CascadeType.ALL)
     private Setting setting;
+    @NotNull(message = "Musisz podać prawidłową wartość")
     @Min(-1000)
     @Max(1000)
-    private int correct;
+    private Integer correct;
 }
