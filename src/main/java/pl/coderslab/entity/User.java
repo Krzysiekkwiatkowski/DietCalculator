@@ -51,7 +51,7 @@ public class User {
     private double totalFat;
     private int totalCalories;
     private boolean selfDistribution;
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Setting setting;
     @NotNull(message = "Musisz podać prawidłową wartość")
     @Min(-1000)
