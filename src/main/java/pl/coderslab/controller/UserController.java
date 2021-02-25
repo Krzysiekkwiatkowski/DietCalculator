@@ -42,9 +42,16 @@ public class UserController {
 
     @RequestMapping(value = "/register", method = RequestMethod.GET)
     public String registerGet(Model model){
+        User user = new User();
+        Setting setting = new Setting();
+        setting.setProteinPart(20);
+        setting.setCarbohydratePart(50);
+        setting.setFatPart(30);
+        user.setSetting(setting);
+        user.setCorrect(new Integer(0));
         model.addAttribute("logged", null);
         model.addAttribute("registerUser", "registerUser");
-        model.addAttribute("user", new User());
+        model.addAttribute("user", user);
         return "home";
     }
 
@@ -55,7 +62,7 @@ public class UserController {
             model.addAttribute("registerUser", "registerUser");
             return "home";
         }
-        if(verifySetting(user.getSetting())){
+        if(user.isSelfDistribution() && verifySetting(user.getSetting())){
             model.addAttribute("registerUser", "registerUser");
             model.addAttribute("incorrectSum", "incorrectSum");
             return "home";
@@ -68,6 +75,9 @@ public class UserController {
             }
         }
         user.setPassword(BCrypt.hashpw(user.getPassword(), BCrypt.gensalt()));
+        if(!user.isSelfDistribution()){
+            user.setSetting(null);
+        }
         userRepository.save(calculateMacroelements(user));
         session.setAttribute("user", user);
         return "redirect:/diet/home";
