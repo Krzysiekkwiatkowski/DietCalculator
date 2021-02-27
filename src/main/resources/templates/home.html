@@ -4,7 +4,8 @@
     <meta http-equiv="Content-Type" content="text/html;	charset=UTF-8"/>
     <title>Title</title>
     <link rel="stylesheet" type="text/css" th:href="@{/css/basic.css}">
-    <script type="text/javascript" th:src="@{/webjars/jquery/3.2.1/jquery.min.js/}"></script>
+    <!--<script type="text/javascript" th:src="@{/webjars/jquery/3.2.1/jquery.min.js/}"></script>-->
+    <script type="text/javascript" th:src="@{https://code.jquery.com/jquery-3.2.1.min.js}"></script>
     <script type="text/javascript" th:src="@{/js/effect.js}"></script>
 </head>
 <body>
@@ -90,14 +91,6 @@
                 <div th:replace="changePassword :: body">
                 </div>
             </div>
-            <div class="positionRelative" th:if="${selectCategory != null}">
-                <div th:replace="selectCategory :: body">
-                </div>
-            </div>
-            <div class="positionRelative" th:if="${selectProduct != null}">
-                <div th:replace="selectProduct :: body">
-                </div>
-            </div>
             <div class="positionRelative" th:if="${correctCalories != null}">
                 <div th:replace="correctCalories :: body">
                 </div>
@@ -120,6 +113,10 @@
             </div>
             <div class="positionRelative" th:if="${deleteUser != null}">
                 <div th:replace="deleteUser :: body">
+                </div>
+            </div>
+            <div class="positionRelative" th:if="${addMeal != null}">
+                <div th:replace="addMeal :: body">
                 </div>
             </div>
         </div>

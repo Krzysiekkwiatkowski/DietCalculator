@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;	charset=UTF-8"/>
+    <title>Title</title>
+    <script type="text/javascript" th:src="@{https://code.jquery.com/jquery-3.2.1.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/effect.js}"></script>
+</head>
+<body>
+    <h3 th:text="'Wybierz produkt:'"></h3>
+    <table style="text-align: start" th:if="${mealProducts != null}">
+        <tbody>
+        <tr>
+            <td>Produkty:</td>
+        </tr>
+        <tr th:each="product : ${mealProducts}">
+            <td th:text="${product.name + ' -> ' + product.weight + 'g'}"></td>
+        </tr>
+        </tbody>
+    </table>
+    <form th:action="@{/diet/meal/add}" method="post">
+        <table>
+            <tbody>
+                <tr>
+                    <td><label>Kategoria:</label></td>
+                    <td>
+                        <select id="categories">
+                            <option th:each="category : ${categories}" th:text="${category.name}"
+                            th:value="${category.id}"
+                            th:id="'element' + ${category.id}"/>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label>Produkt:</label></td>
+                    <td>
+                        <select id="product" name="id">
+                            <option th:data="${product.category.id}" th:each="product : ${products}" th:text="${product.name}" th:value="${product.id}"/>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label>Ilość:</label></td>
+                    <td><input type="number" min="0" name="weight"/></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                      <button class="formButton button" type="submit"> Dodaj produkt</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+    <form th:action="@{/diet/meal/confirm}" method="get">
+        <table>
+            <tbody>
+            <tr>
+                <td></td>
+                <td>
+                    <button class="formButton button" type="submit"> Zatwierdź posiłek</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </form>
+</body>
+</html>

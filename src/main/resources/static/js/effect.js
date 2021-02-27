@@ -74,8 +74,39 @@ $(function () {
     var selfDistributionCheckbox = $('#selfDistribution');
 
     selfDistributionCheckbox.on('change', function(){
-        console.log("kliknięcie");
         updateView($(this).is(':checked'))
+    });
+
+    function hideProducts(){
+        var elements = $('#categories').children();
+        var products = $('#product').children();
+        var categoryId = 0;
+        for(var i = 0; i < elements.length; i++){
+            if(elements[i].selected == true){
+                categoryId = elements[i].value;
+                break;
+            }
+        }
+
+        var firstOption = true;
+        for(var i = 0; i < products.length; i++){
+            if(products[i].getAttribute('data') == categoryId){
+                products[i].style.display = '';
+                if(firstOption){
+                    products[i].selected = true;
+                    firstOption = false;
+                }
+            } else {
+                products[i].style.display = 'none';
+                if(products[i].selected == true){
+                    products[i].selected == false;
+                }
+            }
+        }
+    }
+
+    $('#categories').change(function(){
+        hideProducts();
     });
 
     function updateView(checked){
@@ -86,5 +117,6 @@ $(function () {
         }
     }
 
+    hideProducts();
     updateView(selfDistributionCheckbox.is(':checked'));
 });

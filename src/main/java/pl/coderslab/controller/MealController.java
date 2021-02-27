@@ -11,8 +11,7 @@ import javax.servlet.http.HttpSession;
 import java.sql.Date;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @RequestMapping("/diet/meal")
 @Controller
@@ -33,74 +32,57 @@ public class MealController {
     private CategoryRepository categoryRepository;
 
     @RequestMapping(value = "/add", method = RequestMethod.GET)
-    public String addGet(Model model, HttpSession session) {
-        Object objectMeal = session.getAttribute("meal");
+    public String addGet(Model model, HttpSession session){
         Object objectUser = session.getAttribute("user");
-        if (objectUser == null) {
+        if(objectUser == null){
             model.addAttribute("logged", null);
             model.addAttribute("loginForm", "loginForm");
             return "home";
         }
         model.addAttribute("logged", "logged");
-        if (objectMeal != null) {
+        Object objectMeal = session.getAttribute("mealProducts");
+        if(objectMeal != null){
             List<Product> mealProducts = (List<Product>) objectMeal;
-            model.addAttribute("selectCategory", "selectCategory");
             model.addAttribute("mealProducts", mealProducts);
-            model.addAttribute("categories", allCategories());
-            return "home";
         }
-        model.addAttribute("selectCategory", "selectCategory");
         model.addAttribute("categories", allCategories());
+        model.addAttribute("products", allProducts());
+        model.addAttribute("addMeal", "addMeal");
         return "home";
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public String addPost(@ModelAttribute Category category, Model model, HttpSession session) {
-        Object object = session.getAttribute("user");
-        if (object == null) {
-            model.addAttribute("logged", null);
-            model.addAttribute("loginForm", "loginForm");
-            return "home";
-        }
-        model.addAttribute("logged", "logged");
-        model.addAttribute("selectProduct", "selectProduct");
-        model.addAttribute("product", new Product());
-        model.addAttribute("productList", allProductsByCategory(category.getId()));
-        return "home";
-    }
-
-    @RequestMapping(value = "/addProduct", method = RequestMethod.POST)
-    public String addProductPost(@RequestParam("weight") int weight, @ModelAttribute Product product, HttpSession session, Model model) {
+    public String addPost(@RequestParam("id") long id, @RequestParam("weight") int weight, Model model, HttpSession session){
+        System.out.println("\n\n\nID: " + id + ", WEIGHT: " + weight + "\n\n\n");
         Object objectUser = session.getAttribute("user");
-        if (objectUser == null) {
+        if(objectUser == null){
             model.addAttribute("logged", null);
             model.addAttribute("loginForm", "loginForm");
             return "home";
         }
-        model.addAttribute("logged", "logged");
-        Product loadedProduct = productRepository.findTopById(product.getId());
-        double multiplier = weight / 100.0;
-        loadedProduct.setProtein(loadedProduct.getProtein() * multiplier);
-        loadedProduct.setCarbohydrates(loadedProduct.getCarbohydrates() * multiplier);
-        loadedProduct.setFat(loadedProduct.getFat() * multiplier);
-        loadedProduct.setCalories((int) (loadedProduct.getCalories() * multiplier));
-        loadedProduct.setWeight(weight);
-        Object object = session.getAttribute("meal");
-        List<Product> mealProducts;
-        if (object == null) {
-            mealProducts = new ArrayList<>();
+        Object objectMeal = session.getAttribute("mealProducts");
+        List<Product> products;
+        if(objectMeal != null){
+            products = (List<Product>) objectMeal;
         } else {
-            mealProducts = (List<Product>) object;
+            products = new ArrayList<>();
         }
-        mealProducts.add(loadedProduct);
-        model.addAttribute("mealProducts", mealProducts);
-        session.setAttribute("meal", mealProducts);
+        Product product = productRepository.findTopById(id);
+        double multiplier = weight / 100.0;
+        product.setProtein(product.getProtein() * multiplier);
+        product.setCarbohydrates(product.getCarbohydrates() * multiplier);
+        product.setFat(product.getFat() * multiplier);
+        product.setCalories((int) (product.getCalories() * multiplier));
+        product.setWeight(weight);
+        products.add(product);
+        session.setAttribute("mealProducts", products);
+        model.addAttribute("product", new Product());
         return "redirect:/diet/meal/add";
     }
 
     @RequestMapping(value = "/confirm", method = RequestMethod.GET)
     public String confirmGet(HttpSession session, Model model) {
-        Object objectMeal = session.getAttribute("meal");
+        Object objectMeal = session.getAttribute("mealProducts");
         Object objectUser = session.getAttribute("user");
         if (objectUser == null) {
             model.addAttribute("logged", null);
@@ -112,8 +94,8 @@ public class MealController {
             User user = (User) objectUser;
             User loadedUser = userRepository.findTopByEmail(user.getEmail());
             List<DailyBalance> dailyBalances;
-            DailyBalance dailyBalance = null;
-            List<Meal> meals = null;
+            DailyBalance dailyBalance;
+            List<Meal> meals;
             if (loadedUser.getDailyBalances() == null) {
                 dailyBalances = new ArrayList<>();
             } else {
@@ -182,7 +164,7 @@ public class MealController {
             mealRepository.save(meal);
             dailyBalanceRepository.save(dailyBalance);
             userRepository.save(loadedUser);
-            session.removeAttribute("meal");
+            session.removeAttribute("mealProducts");
         } else {
             model.addAttribute("selectCategory", "selectCategory");
             model.addAttribute("categories", allCategories());
@@ -351,5 +333,19 @@ public class MealController {
         List<Product> productList = productRepository.findByCategory(categoryRepository.findTopById(id));
         productList.sort((p1, p2) -> p1.getName().compareToIgnoreCase(p2.getName()));
         return productList;
+    }
+
+    @ModelAttribute("categoriesProducts")
+    public Map<Category, List<Product>> allCategoriesAndItsProducts(){
+        Map<Category, List<Product>> categoriesProducts = new LinkedHashMap<>();
+        allCategories().forEach((c) -> {
+            List<Product> products = allProductsByCategory(c.getId());
+            if (products != null) {
+                categoriesProducts.put(c, products);
+            } else {
+                categoriesProducts.put(c, new ArrayList<>());
+            }
+        });
+        return categoriesProducts;
     }
 }
