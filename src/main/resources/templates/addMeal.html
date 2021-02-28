@@ -44,8 +44,7 @@
                     <td><input type="number" min="0" name="weight"/></td>
                 </tr>
                 <tr>
-                    <td></td>
-                    <td>
+                    <td colspan="2">
                       <button class="formButton button" type="submit"> Dodaj produkt</button>
                     </td>
                 </tr>
@@ -53,10 +52,9 @@
         </table>
     </form>
     <form th:action="@{/diet/meal/confirm}" method="get">
-        <table>
+        <table style="width: 100%;">
             <tbody>
             <tr>
-                <td></td>
                 <td>
                     <button class="formButton button" type="submit"> Zatwierdź posiłek</button>
                 </td>
