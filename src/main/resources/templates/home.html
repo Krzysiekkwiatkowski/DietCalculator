@@ -4,13 +4,12 @@
     <meta http-equiv="Content-Type" content="text/html;	charset=UTF-8"/>
     <title>Title</title>
     <link rel="stylesheet" type="text/css" th:href="@{/css/basic.css}">
-    <!--<script type="text/javascript" th:src="@{/webjars/jquery/3.2.1/jquery.min.js/}"></script>-->
     <script type="text/javascript" th:src="@{https://code.jquery.com/jquery-3.2.1.min.js}"></script>
     <script type="text/javascript" th:src="@{/js/effect.js}"></script>
 </head>
 <body>
 <div style="display: inline-flex">
-<div id="leftPanel" class="inLine"></div><div id="content" class="inLine">
+<div style="background-image: url(/images/background_left.jpg)" id="leftPanel" class="inLine bcgLeft"></div><div id="content" class="inLine">
     <div th:if="${logged == null}">
         <div class="w block" style="background-color: lightgrey" th:include="fragments/logBar"></div>
     </div>
@@ -127,6 +126,6 @@
             </div>
         </div>
     </div>
-</div><div id="rightPanel" class="inLine"></div></div>
+</div><div style="background-image: url(/images/background_right.jpg)" id="rightPanel" class="inLine bcgRight"></div></div>
 </body>
 </html>

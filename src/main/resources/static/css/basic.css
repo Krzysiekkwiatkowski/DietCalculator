@@ -8,14 +8,6 @@
     left: -50%;
 }
 
-#leftPanel {
-    background-color: royalblue;
-}
-
-#rightPanel {
-    background-color: royalblue;
-}
-
 a{
     color: darkcyan;
 }
@@ -28,11 +20,18 @@ a{
     display: none;
 }
 
-.bcg{
-    background: url(http://localhost:63342/DietCalculator/templates/images/background.jpg) no-repeat center center fixed;
-    background-size: cover;
-    width: 1584px;
-    height: 774px;
+.bcgLeft{
+    background-position: left;
+    background-position: top;
+    background-repeat: no-repeat;
+    background-size: auto;
+}
+
+.bcgRight{
+    background-position: right;
+    background-position: top;
+    background-repeat: no-repeat;
+    background-size: auto;
 }
 
 .inLine{
