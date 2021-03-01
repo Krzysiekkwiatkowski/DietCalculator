@@ -10,7 +10,7 @@
     </parent>
     <groupId>pl.coderslab</groupId>
     <artifactId>DietCalculator</artifactId>
-    <version>0.9.0</version>
+    <version>0.9.8</version>
     <packaging>war</packaging>
     <name>DietCalculator</name>
     <description>Demo project for Spring Boot</description>

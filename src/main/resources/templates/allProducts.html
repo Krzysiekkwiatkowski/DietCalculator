@@ -47,7 +47,8 @@
         </p>
     </div>
     <p style="display: inline; margin-left: 10px" th:each="number : ${pages}">
-        <a th:href="@{'/diet/product/all?page=' + ${number}}" th:text="${number} + ' '"></a>
+        <a style="color: darkred" th:if="${page != 0 && page == number}" th:href="@{'/diet/product/all?page=' + ${number}}" th:text="${number} + ' '"></a>
+        <a th:if="${page == 0 || page != number}" th:href="@{'/diet/product/all?page=' + ${number}}" th:text="${number} + ' '"></a>
     </p>
 </div>
 </body>

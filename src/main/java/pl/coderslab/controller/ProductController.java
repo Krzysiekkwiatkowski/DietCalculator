@@ -124,12 +124,13 @@ public class ProductController {
         List<Product> limitedProducts = null;
         List<Integer> pages = new ArrayList<>();
         int numberOfPages = count / 12;
+        Integer page = 0;
         if (count > 0) {
             String exist = request.getParameter("page");
             if (exist == null) {
                 limitedProducts = productRepository.findAll(12, 0);
             } else {
-                Integer page = Integer.parseInt(exist);
+                page = Integer.parseInt(exist);
                 limitedProducts = productRepository.findAll(12, (page - 1) * 12);
             }
             if (count % 12 != 0) {
@@ -146,6 +147,7 @@ public class ProductController {
         model.addAttribute("logged", "logged");
         model.addAttribute("allProducts", "allProducts");
         model.addAttribute("limitedProducts", limitedProducts);
+        model.addAttribute("page", (page == 0 ? 1 : page));
         return "home";
     }
 
