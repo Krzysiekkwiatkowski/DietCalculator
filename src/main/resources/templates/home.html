@@ -124,6 +124,10 @@
                 <div th:replace="actualBalance :: body">
                 </div>
             </div>
+            <div th:if="${planning != null}">
+                <div th:replace="planning :: body">
+                </div>
+            </div>
         </div>
     </div>
 </div><div style="background-image: url(/images/background_right.jpg)" id="rightPanel" class="inLine bcgRight"></div></div>

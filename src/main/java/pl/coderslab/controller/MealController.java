@@ -5,6 +5,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pl.coderslab.entity.*;
+import pl.coderslab.pojo.GraphResult;
+import pl.coderslab.pojo.MissingMacro;
 import pl.coderslab.repository.*;
 
 import javax.servlet.http.HttpSession;
@@ -16,6 +18,8 @@ import java.util.*;
 @RequestMapping("/diet/meal")
 @Controller
 public class MealController {
+    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.#");
+
     @Autowired
     private UserRepository userRepository;
 
@@ -302,8 +306,8 @@ public class MealController {
         return "redirect:/diet/meal/option";
     }
 
-    @RequestMapping("/plan")
-    public String plan(Model model, HttpSession session){
+    @RequestMapping(value = "/plan", method = RequestMethod.GET)
+    public String planGet(Model model, HttpSession session){
         Object objectUser = session.getAttribute("user");
         if (objectUser == null) {
             model.addAttribute("logged", null);
@@ -311,7 +315,115 @@ public class MealController {
             return "home";
         }
         model.addAttribute("logged", "logged");
-        return "redirect:/diet/home";
+        User user = userRepository.findTopByEmail(((User) objectUser).getEmail());
+        MissingMacro missingMacro = getMissingMacro(user.getId());
+        if(missingMacro != null){
+            List<GraphResult> graphResults = new ArrayList<>();
+            graphResults.add(new GraphResult("Białko: 0/" + replaceComma(missingMacro.getProtein() + ""), "0%", "width: 0px; background-color: green;", true));
+            graphResults.add(new GraphResult("Węglowodany: 0/" + replaceComma(missingMacro.getCarbohydrates() + ""), "0%", "width: 0px; background-color: red;", true));
+            graphResults.add(new GraphResult("Tłuszcz: 0/" + replaceComma(missingMacro.getFat() + ""), "0%", "width: 0px; background-color: yellow;", true));
+            graphResults.add(new GraphResult("Kalorie: 0/" + missingMacro.getCalories(), "0%", "width: 0px; background-color: blue;", true));
+            graphResults.add(new GraphResult("%", "", "", false));
+            graphResults.add(new GraphResult("Ładunek posiłku: ", "0.0","width: 0px; background-color: orange;", true));
+            graphResults.add(new GraphResult("", "", "", false));
+            model.addAttribute("graphResults", graphResults);
+        }
+        Object chosenProductsObject = session.getAttribute("chosenProducts");
+        if(chosenProductsObject != null){
+            List<Product> chosenProducts = (List<Product>) chosenProductsObject;
+            model.addAttribute("chosenProducts", chosenProducts);
+        }
+        model.addAttribute("categories", allCategories());
+        model.addAttribute("products", allProducts());
+        model.addAttribute("missingMacro", missingMacro);
+        model.addAttribute("planning", "planning");
+        return "home";
+    }
+
+    @RequestMapping(value = "/plan", method = RequestMethod.POST)
+    public String planPost(@RequestParam("id") long id, Model model, HttpSession session){
+        Object objectUser = session.getAttribute("user");
+        if (objectUser == null) {
+            model.addAttribute("logged", null);
+            model.addAttribute("loginForm", "loginForm");
+            return "home";
+        }
+        Object chosenProductsObject = session.getAttribute("chosenProducts");
+        List<Product> chosenProducts;
+        if(chosenProductsObject != null){
+            chosenProducts = (List<Product>) chosenProductsObject;
+        } else {
+            chosenProducts = new ArrayList<>();
+        }
+        Product product = productRepository.findTopById(id);
+        chosenProducts.add(product);
+        session.setAttribute("chosenProducts", chosenProducts);
+        return "redirect:/diet/meal/plan";
+    }
+
+    @RequestMapping(value = "/plan/delete/{productId}", method = RequestMethod.GET)
+    public String delete(@PathVariable("productId") long id, Model model, HttpSession session){
+        Object objectUser = session.getAttribute("user");
+        if (objectUser == null) {
+            model.addAttribute("logged", null);
+            model.addAttribute("loginForm", "loginForm");
+            return "home";
+        }
+        model.addAttribute("logged", "logged");
+        Object chosenProductsObject = session.getAttribute("chosenProducts");
+        List<Product> chosenProducts = null;
+        if(chosenProductsObject != null){
+            chosenProducts = (List<Product>) chosenProductsObject;
+            int index = -1;
+            for (Product product : chosenProducts) {
+                if(product.getId() == id){
+                    index = chosenProducts.indexOf(product);
+                }
+            }
+            if(index != -1){
+                chosenProducts.remove(index);
+            }
+        }
+        session.setAttribute("chosenProducts", chosenProducts);
+        return "redirect:/diet/meal/plan";
+    }
+
+    @RequestMapping(value = "/plan/option", method = RequestMethod.GET)
+    public String backToOptions(Model model, HttpSession session){
+        Object objectUser = session.getAttribute("user");
+        if (objectUser == null) {
+            model.addAttribute("logged", null);
+            model.addAttribute("loginForm", "loginForm");
+            return "home";
+        }
+        model.addAttribute("logged", "logged");
+        Object chosenMealsObject = session.getAttribute("chosenProducts");
+        if(chosenMealsObject != null){
+            session.removeAttribute("chosenProducts");
+        }
+        return "redirect:/diet/meal/option";
+    }
+
+    private MissingMacro getMissingMacro(long userId){
+        DailyBalance dailyBalance = dailyBalanceRepository.findTopByUserIdAndAndDate(userRepository.findTopById(userId).getId(), Date.valueOf(LocalDate.now()));
+        if(dailyBalance != null){
+            double receivedProtein = 0.0;
+            double receivedCarbohydrates = 0.0;
+            double receivedFat = 0.0;
+            List<Meal> meals = dailyBalance.getMeals();
+            if(meals != null && meals.size() > 0){
+                for(Meal meal : meals){
+                    receivedProtein += meal.getTotalProtein();
+                    receivedCarbohydrates += meal.getTotalCarbohydrates();
+                    receivedFat += meal.getTotalFat();
+                }
+                return new MissingMacro(Double.parseDouble(DECIMAL_FORMAT.format((dailyBalance.getTotalProtein() - receivedProtein)).replace(",", ".")),
+                        Double.parseDouble(DECIMAL_FORMAT.format((dailyBalance.getTotalCarbohydrates() - receivedCarbohydrates)).replace(",", ".")),
+                                Double.parseDouble(DECIMAL_FORMAT.format((dailyBalance.getTotalFat() - receivedFat)).replace(",", ".")),
+                                                dailyBalance.getNeeded() - dailyBalance.getReceived());
+            }
+        }
+        return null;
     }
 
     @ModelAttribute("categories")
@@ -347,5 +459,9 @@ public class MealController {
             }
         });
         return categoriesProducts;
+    }
+
+    private String replaceComma(String number){
+        return number.replace(",", ".");
     }
 }

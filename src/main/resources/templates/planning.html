@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type"	content="text/html;	charset=UTF-8" />
+    <title>Title</title>
+</head>
+<body>
+    <div class="chooseProduct">
+        <h3 th:if="${missingMacro == null}" class="error">Niewystarczająca ilość danych!</h3>
+        <h3 th:if="${missingMacro != null}">Planowanie ostatniego posiłku</h3>
+        <div th:if="${missingMacro != null}" style="width: 100%; height: 100%;">
+            <div th:each="result : ${graphResults}">
+                <div th:if="${result.borders}">
+                    <div class="floatLeft graphText" style="width: 300px; height: 33px" th:text="${result.description}" >
+                        <b><p class="graphText" th:text="${proteinPart}"></p></b>
+                    </div>
+                    <div class="floatLeft" style="border-left: 4px solid black; width: 676px; height: 48px">
+                        <div style="width: 300px; border-right: 4px solid black">
+                            <div class="graph" th:style="${result.styles}" th:text="${result.part}"></div>
+                        </div>
+                    </div>
+                </div>
+                <div th:if="${!result.borders}">
+                    <div class="floatLeft graphText" style="width: 300px; height: 33px" >
+                        <div th:if="${result.description != '%'}">
+                            <b><p class="graphText"></p></b>
+                        </div>
+                    </div>
+                    <div class="floatLeft" style="width: 676px; height: 48px">
+                        <div style="width: 308px">
+                            <div th:if="${result.description == '%'}">
+                                <div class="floatLeft" th:text="'0%'"/>
+                                <div class="floatRight" th:text="'100%'"/>
+                            </div>
+                            <div th:if="${result.description != '%'}">
+                                <div class="floatLeft" th:text="'0'"/>
+                                <div class="floatRight" th:text="'20'"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="chooseProduct" th:if="${missingMacro != null}" >
+        <h3 th:text="'Wybierz produkt:'"></h3>
+        <table style="text-align: start" th:if="${chosenProducts != null}">
+            <tbody>
+            <tr>
+                <td colspan="4">Produkty:</td>
+            </tr>
+            <tr th:each="product : ${chosenProducts}">
+                <td class="product" th:text="${product.name}" th:data-protein="${product.protein}" th:data-carbohydrates="${product.carbohydrates}" th:data-fat="${product.fat}" th:data-calories="${product.calories}" th:data-glycemicIndex="${product.glycemicIndex}"></td>
+                <td><input class="slider" style="width: 250px;" type="range" min="0" max="300" value="0"></td>
+                <td class="value"></td>
+                <td><a class="delete" style="margin-left: 5px;display: inline" th:href="@{'/diet/meal/plan/delete/' + ${product.id}}">Usuń</a></td>
+            </tr>
+            </tbody>
+        </table>
+        <form th:action="@{/diet/meal/plan}" method="post">
+            <table>
+                <tbody>
+                <tr>
+                    <td><label>Kategoria:</label></td>
+                    <td>
+                        <select id="categories">
+                            <option th:each="category : ${categories}" th:text="${category.name}"
+                                    th:value="${category.id}"
+                                    th:id="'element' + ${category.id}"/>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label>Produkt:</label></td>
+                    <td>
+                        <select id="product" name="id">
+                            <option th:data="${product.category.id}" th:each="product : ${products}" th:text="${product.name}" th:value="${product.id}"/>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <button class="formButton button" type="submit"> Dodaj produkt</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </form>
+        <table style="width: 100%;">
+            <tbody>
+            <tr>
+                <td>
+                    <button class="formButton button" onclick="showSummary()"> Podsumowanie </button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+<script>
+    function showSummary(){
+        $('.chooseProduct').css('display', 'none');
+        var products = $('.product');
+        var div = $('<h3>Skład ostatniego posiłku:</h3><div class="positionAbsolute"><div class="positionRelative"><table><tbody id="body" style=\"text-align: left;\"></tbody></table></div></div>');
+        var data = [];
+        for(var i = 0; i < products.length; i++){
+            var product = [];
+            product[0] = products[i].innerText;
+            product[1] = ' -> ';
+            product[2] = products[i].nextElementSibling.nextElementSibling.innerText;
+            data[i] = product;
+        }
+        var firstElement = $('.chooseProduct').first();
+        div.insertBefore(firstElement);
+        for(var i = 0; i < data.length; i++){
+            var newRow = $('<tr><td>' + data[i][0] + '</td><td>' + data[i][1] + '</td><td>' + data[i][2] + '</td></tr>');
+            $('#body').append(newRow);
+        }
+        var button = $('<tr><td colspan="3"><form action="/diet/meal/plan/option" method="get"><button class="formButton button" type="submit"> OK </button></form></td></tr>');
+        $('#body').append(button);
+    }
+</script>
+</body>
+</html>
