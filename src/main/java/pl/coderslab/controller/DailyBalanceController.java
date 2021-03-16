@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import pl.coderslab.entity.DailyBalance;
 import pl.coderslab.entity.Meal;
 import pl.coderslab.entity.User;
+import pl.coderslab.pojo.ContextHelper;
 import pl.coderslab.pojo.GraphResult;
 import pl.coderslab.repository.DailyBalanceRepository;
-import pl.coderslab.repository.UserRepository;
 
 import javax.servlet.http.HttpSession;
 import java.sql.Date;
@@ -24,29 +24,17 @@ import java.util.List;
 public class DailyBalanceController {
     private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.#");
 
-
-    @Autowired
-    private UserRepository userRepository;
-
     @Autowired
     private DailyBalanceRepository dailyBalanceRepository;
 
     @RequestMapping("/actual")
-    public String actualBalance(Model model, HttpSession session){
-        Object object = session.getAttribute("user");
-        if(object == null){
-            model.addAttribute("logged", null);
-            model.addAttribute("loginForm", "loginForm");
-            return "home";
-        }
-        model.addAttribute("logged", "logged");
-        User user = (User)object;
-        User loadedUser = userRepository.findTopByEmail(user.getEmail());
-        double totalProtein = loadedUser.getTotalProtein();
-        double totalCarbohydrates = loadedUser.getTotalCarbohydrates();
-        double totalFat = loadedUser.getTotalFat();
-        int totalCalories = loadedUser.getTotalCalories();
-        if(dailyBalanceRepository.findTopByUserIdAndAndDate(loadedUser.getId(), Date.valueOf(LocalDate.now())) == null){
+    public String actualBalance(Model model){
+        User user = ContextHelper.getUserFromContext();
+        double totalProtein = user.getTotalProtein();
+        double totalCarbohydrates = user.getTotalCarbohydrates();
+        double totalFat = user.getTotalFat();
+        int totalCalories = user.getTotalCalories();
+        if(dailyBalanceRepository.findTopByUserIdAndAndDate(user.getId(), Date.valueOf(LocalDate.now())) == null){
             model.addAttribute("balance", "balance");
             model.addAttribute("exist", null);
             return "home";
@@ -55,7 +43,7 @@ public class DailyBalanceController {
         double carbohydratesReceived = 0.0;
         double fatReceived = 0.0;
         int caloriesReceived = 0;
-        DailyBalance dailyBalance = dailyBalanceRepository.findTopByUserIdAndAndDate(loadedUser.getId(), Date.valueOf(LocalDate.now()));
+        DailyBalance dailyBalance = dailyBalanceRepository.findTopByUserIdAndAndDate(user.getId(), Date.valueOf(LocalDate.now()));
         List<Meal> meals = dailyBalance.getMeals();
         meals.sort((m1, m2) -> Integer.compare(m1.getMealNumber(), m2.getMealNumber()));
         List<Double> glycemicCharges = new ArrayList<>();
@@ -87,17 +75,9 @@ public class DailyBalanceController {
     }
 
     @RequestMapping(value = "/weekly")
-    public String last(Model model, HttpSession session){
-        Object object = session.getAttribute("user");
-        if(object == null){
-            model.addAttribute("logged", null);
-            model.addAttribute("loginForm", "loginForm");
-            return "home";
-        }
-        model.addAttribute("logged", "logged");
-        User user = (User)object;
-        User loadedUser = userRepository.findTopByEmail(user.getEmail());
-        Object dailyObject = dailyBalanceRepository.findAllByUserAndDate(loadedUser, Date.valueOf(LocalDate.now()));
+    public String last(Model model){
+        User user = ContextHelper.getUserFromContext();
+        Object dailyObject = dailyBalanceRepository.findAllByUserAndDate(user, Date.valueOf(LocalDate.now()));
         if(dailyObject == null || ((List) dailyObject).size() == 0){
             model.addAttribute("balance", "balance");
             model.addAttribute("exist", null);
@@ -130,7 +110,13 @@ public class DailyBalanceController {
                 glycemicChargesSum += meal.getGlycemicCharge();
                 glycemicChargesCount++;
             }
-            glycemicChargesDay.add(glycemicChargesSum / glycemicChargesCount);
+            double result;
+            if((glycemicChargesSum == 0.0) ||  (glycemicChargesCount == 0)){
+                result = 0.0;
+            } else {
+                result = glycemicChargesSum / glycemicChargesCount;
+            }
+            glycemicChargesDay.add(result);
             glycemicChargesSum = 0.0;
             glycemicChargesCount = 0;
         }
@@ -162,17 +148,9 @@ public class DailyBalanceController {
     }
 
     @RequestMapping(value = "/long")
-    public String longBalance(Model model, HttpSession session){
-        Object object = session.getAttribute("user");
-        if(object == null){
-            model.addAttribute("logged", null);
-            model.addAttribute("loginForm", "loginForm");
-            return "home";
-        }
-        model.addAttribute("logged", "logged");
-        User user = (User)object;
-        User loadedUser = userRepository.findTopByEmail(user.getEmail());
-        Object dailyObject = dailyBalanceRepository.findAllByUserAndDate(loadedUser, Date.valueOf(LocalDate.now()), 30);
+    public String longBalance(Model model){
+        User user = ContextHelper.getUserFromContext();
+        Object dailyObject = dailyBalanceRepository.findAllByUserAndDate(user, Date.valueOf(LocalDate.now()), 30);
         if(dailyObject == null || ((List) dailyObject).size() == 0){
             model.addAttribute("longBalance", "longBalance");
             model.addAttribute("exist", null);
@@ -224,13 +202,6 @@ public class DailyBalanceController {
 
     @RequestMapping(value = "/option", method = RequestMethod.GET)
     public String option(Model model, HttpSession session){
-        Object object = session.getAttribute("user");
-        if(object == null){
-            model.addAttribute("logged", null);
-            model.addAttribute("loginForm", "loginForm");
-            return "home";
-        }
-        model.addAttribute("logged", "logged");
         model.addAttribute("balanceOption","balanceOption");
         return "home";
     }

@@ -6,7 +6,7 @@
 </head>
 <body>
     <h3 th:text="'Logowanie'"></h3>
-    <p class="error" th:if="${wrong}"> Błędny login lub hasło! </p>
+    <p class="error" th:if="${param.error}"> Błędny login lub hasło! </p>
     <form action="/diet/user/login" method="post">
         <table>
             <tbody>

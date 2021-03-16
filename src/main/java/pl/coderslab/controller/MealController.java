@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pl.coderslab.entity.*;
+import pl.coderslab.pojo.ContextHelper;
 import pl.coderslab.pojo.GraphResult;
 import pl.coderslab.pojo.MissingMacro;
 import pl.coderslab.repository.*;
@@ -37,13 +38,6 @@ public class MealController {
 
     @RequestMapping(value = "/add", method = RequestMethod.GET)
     public String addGet(Model model, HttpSession session){
-        Object objectUser = session.getAttribute("user");
-        if(objectUser == null){
-            model.addAttribute("logged", null);
-            model.addAttribute("loginForm", "loginForm");
-            return "home";
-        }
-        model.addAttribute("logged", "logged");
         Object objectMeal = session.getAttribute("mealProducts");
         if(objectMeal != null){
             List<Product> mealProducts = (List<Product>) objectMeal;
@@ -57,13 +51,6 @@ public class MealController {
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public String addPost(@RequestParam("id") long id, @RequestParam("weight") int weight, Model model, HttpSession session){
-        System.out.println("\n\n\nID: " + id + ", WEIGHT: " + weight + "\n\n\n");
-        Object objectUser = session.getAttribute("user");
-        if(objectUser == null){
-            model.addAttribute("logged", null);
-            model.addAttribute("loginForm", "loginForm");
-            return "home";
-        }
         Object objectMeal = session.getAttribute("mealProducts");
         List<Product> products;
         if(objectMeal != null){
@@ -87,23 +74,15 @@ public class MealController {
     @RequestMapping(value = "/confirm", method = RequestMethod.GET)
     public String confirmGet(HttpSession session, Model model) {
         Object objectMeal = session.getAttribute("mealProducts");
-        Object objectUser = session.getAttribute("user");
-        if (objectUser == null) {
-            model.addAttribute("logged", null);
-            model.addAttribute("loginForm", "loginForm");
-            return "home";
-        }
-        model.addAttribute("logged", "logged");
         if (objectMeal != null) {
-            User user = (User) objectUser;
-            User loadedUser = userRepository.findTopByEmail(user.getEmail());
+            User user = ContextHelper.getUserFromContext();
             List<DailyBalance> dailyBalances;
             DailyBalance dailyBalance;
             List<Meal> meals;
-            if (loadedUser.getDailyBalances() == null) {
+            if (user.getDailyBalances() == null) {
                 dailyBalances = new ArrayList<>();
             } else {
-                dailyBalances = loadedUser.getDailyBalances();
+                dailyBalances = user.getDailyBalances();
             }
             List<Product> mealProducts = (List<Product>) objectMeal;
             Meal meal = new Meal();
@@ -126,15 +105,15 @@ public class MealController {
             meal.setTotalFat(Double.parseDouble(decimalFormat.format(fatSum).replace(",", ".")));
             meal.setTotalCalories(caloriesSum);
             meal.setGlycemicCharge(glycemicChargeSum);
-            int exist = dailyBalanceRepository.countByUserIdAndDate(loadedUser.getId(), Date.valueOf(LocalDate.now()));
+            int exist = dailyBalanceRepository.countByUserIdAndDate(user.getId(), Date.valueOf(LocalDate.now()));
             if (exist == 1) {
-                dailyBalance = dailyBalanceRepository.findTopByUserIdAndAndDate(loadedUser.getId(), Date.valueOf(LocalDate.now()));
+                dailyBalance = dailyBalanceRepository.findTopByUserIdAndAndDate(user.getId(), Date.valueOf(LocalDate.now()));
                 meals = dailyBalance.getMeals();
                 if (meals.size() == 0) {
                     meals = new ArrayList<>();
                     dailyBalance.setDate(Date.valueOf(LocalDate.now()));
-                    dailyBalance.setUser(loadedUser);
-                    dailyBalance.setNeeded(loadedUser.getTotalCalories());
+                    dailyBalance.setUser(user);
+                    dailyBalance.setNeeded(user.getTotalCalories());
                 } else {
                     meals = dailyBalance.getMeals();
                 }
@@ -142,14 +121,14 @@ public class MealController {
                 dailyBalance = new DailyBalance();
                 meals = new ArrayList<>();
                 dailyBalance.setDate(Date.valueOf(LocalDate.now()));
-                dailyBalance.setUser(loadedUser);
-                dailyBalance.setNeeded(loadedUser.getTotalCalories());
+                dailyBalance.setUser(user);
+                dailyBalance.setNeeded(user.getTotalCalories());
             }
             dailyBalance.setReceived(dailyBalance.getReceived() + meal.getTotalCalories());
             dailyBalance.setBalance(dailyBalance.getReceived() - dailyBalance.getNeeded());
-            dailyBalance.setTotalProtein(loadedUser.getTotalProtein());
-            dailyBalance.setTotalCarbohydrates(loadedUser.getTotalCarbohydrates());
-            dailyBalance.setTotalFat(loadedUser.getTotalFat());
+            dailyBalance.setTotalProtein(user.getTotalProtein());
+            dailyBalance.setTotalCarbohydrates(user.getTotalCarbohydrates());
+            dailyBalance.setTotalFat(user.getTotalFat());
             int lastMeal = 0;
             if(dailyBalance.getMeals() != null) {
                 for (Meal check : dailyBalance.getMeals()) {
@@ -164,10 +143,10 @@ public class MealController {
             meals.add(meal);
             dailyBalance.setMeals(meals);
             dailyBalances.add(dailyBalance);
-            loadedUser.setDailyBalances(dailyBalances);
+            user.setDailyBalances(dailyBalances);
             mealRepository.save(meal);
             dailyBalanceRepository.save(dailyBalance);
-            userRepository.save(loadedUser);
+            userRepository.save(user);
             session.removeAttribute("mealProducts");
         } else {
             model.addAttribute("selectCategory", "selectCategory");
@@ -179,30 +158,15 @@ public class MealController {
     }
 
     @RequestMapping(value = "/option", method = RequestMethod.GET)
-    public String option(Model model, HttpSession session) {
-        Object object = session.getAttribute("user");
-        if (object == null) {
-            model.addAttribute("logged", null);
-            model.addAttribute("loginForm", "loginForm");
-            return "home";
-        }
-        model.addAttribute("logged", "logged");
+    public String option(Model model) {
         model.addAttribute("mealOption", "mealOption");
         return "home";
     }
 
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
-    public String delete(@PathVariable("id") Long id, Model model, HttpSession session){
-        Object object = session.getAttribute("user");
-        if (object == null) {
-            model.addAttribute("logged", null);
-            model.addAttribute("loginForm", "loginForm");
-            return "home";
-        }
-        model.addAttribute("logged", "logged");
-        User user = (User) object;
-        User loadedUser = userRepository.findTopByEmail(user.getEmail());
-        Object objectDaily = dailyBalanceRepository.findTopByUserIdAndAndDate(loadedUser.getId(), Date.valueOf(LocalDate.now()));
+    public String delete(@PathVariable("id") Long id, Model model){
+        User user = ContextHelper.getUserFromContext();
+        Object objectDaily = dailyBalanceRepository.findTopByUserIdAndAndDate(user.getId(), Date.valueOf(LocalDate.now()));
         if (objectDaily != null) {
             DailyBalance dailyBalance = (DailyBalance) objectDaily;
             List<Meal> meals = dailyBalance.getMeals();
@@ -216,18 +180,10 @@ public class MealController {
     }
 
     @RequestMapping(value = "/delete/{id}/yes", method = RequestMethod.GET)
-    public String deleteConfirm(@PathVariable("id") Long id, HttpSession session, Model model) {
-        Object object = session.getAttribute("user");
-        if (object == null) {
-            model.addAttribute("logged", null);
-            model.addAttribute("loginForm", "loginForm");
-            return "home";
-        }
-        model.addAttribute("logged", "logged");
-        User user = (User) object;
-        User loadedUser = userRepository.findTopByEmail(user.getEmail());
-        if (dailyBalanceRepository.findTopByUserIdAndAndDate(loadedUser.getId(), Date.valueOf(LocalDate.now())) != null) {
-            DailyBalance dailyBalance = dailyBalanceRepository.findTopByUserIdAndAndDate(loadedUser.getId(), Date.valueOf(LocalDate.now()));
+    public String deleteConfirm(@PathVariable("id") Long id) {
+        User user = ContextHelper.getUserFromContext();
+        if (dailyBalanceRepository.findTopByUserIdAndAndDate(user.getId(), Date.valueOf(LocalDate.now())) != null) {
+            DailyBalance dailyBalance = dailyBalanceRepository.findTopByUserIdAndAndDate(user.getId(), Date.valueOf(LocalDate.now()));
             List<Meal> meals = dailyBalance.getMeals();
             Meal toDelete = null;
             for (Meal meal : meals) {
@@ -252,17 +208,9 @@ public class MealController {
     }
 
     @RequestMapping("/view")
-    public String viewMeals(Model model, HttpSession session) {
-        Object objectUser = session.getAttribute("user");
-        if (objectUser == null) {
-            model.addAttribute("logged", null);
-            model.addAttribute("loginForm", "loginForm");
-            return "home";
-        }
-        model.addAttribute("logged", "logged");
-        User user = (User) objectUser;
-        User loadedUser = userRepository.findTopByEmail(user.getEmail());
-        Object object = dailyBalanceRepository.findTopByUserIdAndAndDate(loadedUser.getId(), Date.valueOf(LocalDate.now()));
+    public String viewMeals(Model model) {
+        User user = ContextHelper.getUserFromContext();
+        Object object = dailyBalanceRepository.findTopByUserIdAndAndDate(user.getId(), Date.valueOf(LocalDate.now()));
         if (object != null) {
             DailyBalance dailyBalance = (DailyBalance)object;
             List<Meal> meals = mealRepository.findAllById(dailyBalance.getId());
@@ -282,17 +230,9 @@ public class MealController {
     }
 
     @RequestMapping("/view/{mealNumber}")
-    public String viewMeal(@PathVariable("mealNumber") Integer mealNumber, Model model, HttpSession session) {
-        Object objectUser = session.getAttribute("user");
-        if (objectUser == null) {
-            model.addAttribute("logged", null);
-            model.addAttribute("loginForm", "loginForm");
-            return "home";
-        }
-        model.addAttribute("logged", "logged");
-        User user = (User) objectUser;
-        User loadedUser = userRepository.findTopByEmail(user.getEmail());
-        Object object = dailyBalanceRepository.findTopByUserIdAndAndDate(loadedUser.getId(), Date.valueOf(LocalDate.now())).getMeals();
+    public String viewMeal(@PathVariable("mealNumber") Integer mealNumber, Model model) {
+        User user = ContextHelper.getUserFromContext();
+        Object object = dailyBalanceRepository.findTopByUserIdAndAndDate(user.getId(), Date.valueOf(LocalDate.now())).getMeals();
         if (object != null) {
             List<Meal> meals = (List<Meal>) object;
             for (Meal meal : meals) {
@@ -308,14 +248,7 @@ public class MealController {
 
     @RequestMapping(value = "/plan", method = RequestMethod.GET)
     public String planGet(Model model, HttpSession session){
-        Object objectUser = session.getAttribute("user");
-        if (objectUser == null) {
-            model.addAttribute("logged", null);
-            model.addAttribute("loginForm", "loginForm");
-            return "home";
-        }
-        model.addAttribute("logged", "logged");
-        User user = userRepository.findTopByEmail(((User) objectUser).getEmail());
+        User user = ContextHelper.getUserFromContext();
         MissingMacro missingMacro = getMissingMacro(user.getId());
         if(missingMacro != null){
             List<GraphResult> graphResults = new ArrayList<>();
@@ -341,13 +274,7 @@ public class MealController {
     }
 
     @RequestMapping(value = "/plan", method = RequestMethod.POST)
-    public String planPost(@RequestParam("id") long id, Model model, HttpSession session){
-        Object objectUser = session.getAttribute("user");
-        if (objectUser == null) {
-            model.addAttribute("logged", null);
-            model.addAttribute("loginForm", "loginForm");
-            return "home";
-        }
+    public String planPost(@RequestParam("id") long id, HttpSession session){
         Object chosenProductsObject = session.getAttribute("chosenProducts");
         List<Product> chosenProducts;
         if(chosenProductsObject != null){
@@ -362,14 +289,7 @@ public class MealController {
     }
 
     @RequestMapping(value = "/plan/delete/{productId}", method = RequestMethod.GET)
-    public String delete(@PathVariable("productId") long id, Model model, HttpSession session){
-        Object objectUser = session.getAttribute("user");
-        if (objectUser == null) {
-            model.addAttribute("logged", null);
-            model.addAttribute("loginForm", "loginForm");
-            return "home";
-        }
-        model.addAttribute("logged", "logged");
+    public String delete(@PathVariable("productId") long id, HttpSession session){
         Object chosenProductsObject = session.getAttribute("chosenProducts");
         List<Product> chosenProducts = null;
         if(chosenProductsObject != null){
@@ -389,14 +309,7 @@ public class MealController {
     }
 
     @RequestMapping(value = "/plan/option", method = RequestMethod.GET)
-    public String backToOptions(Model model, HttpSession session){
-        Object objectUser = session.getAttribute("user");
-        if (objectUser == null) {
-            model.addAttribute("logged", null);
-            model.addAttribute("loginForm", "loginForm");
-            return "home";
-        }
-        model.addAttribute("logged", "logged");
+    public String backToOptions(HttpSession session){
         Object chosenMealsObject = session.getAttribute("chosenProducts");
         if(chosenMealsObject != null){
             session.removeAttribute("chosenProducts");

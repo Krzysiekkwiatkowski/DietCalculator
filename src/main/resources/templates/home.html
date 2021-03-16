@@ -3,17 +3,17 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html;	charset=UTF-8"/>
     <title>Title</title>
-    <link rel="stylesheet" type="text/css" th:href="@{/css/basic.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/static/css/basic.css}">
     <script type="text/javascript" th:src="@{https://code.jquery.com/jquery-3.2.1.min.js}"></script>
-    <script type="text/javascript" th:src="@{/js/effect.js}"></script>
+    <script type="text/javascript" th:src="@{/static/js/effect.js}"></script>
 </head>
 <body>
 <div style="display: inline-flex">
-<div style="background-image: url(/images/background_left.jpg)" id="leftPanel" class="inLine bcgLeft"></div><div id="content" class="inLine">
-    <div th:if="${logged == null}">
+<div style="background-image: url(/static/images/background_left.jpg)" id="leftPanel" class="inLine bcgLeft"></div><div id="content" class="inLine">
+    <div th:if="${!session.containsKey('logged') || session.logged != 'logged'}">
         <div class="w block" style="background-color: lightgrey" th:include="fragments/logBar"></div>
     </div>
-    <div th:if="${logged != null}">
+    <div th:if="${session.logged == 'logged'}">
         <div class="w block" style="background-color: lightgrey" th:include="fragments/logoutBar"></div>
     </div>
     <a class="aMain" th:href="@{/diet/home}">
@@ -130,6 +130,6 @@
             </div>
         </div>
     </div>
-</div><div style="background-image: url(/images/background_right.jpg)" id="rightPanel" class="inLine bcgRight"></div></div>
+</div><div style="background-image: url(/static/images/background_right.jpg)" id="rightPanel" class="inLine bcgRight"></div></div>
 </body>
 </html>
