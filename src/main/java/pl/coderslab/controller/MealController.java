@@ -5,7 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pl.coderslab.entity.*;
-import pl.coderslab.pojo.ContextHelper;
+import pl.coderslab.helper.ContextHelper;
 import pl.coderslab.pojo.GraphResult;
 import pl.coderslab.pojo.MissingMacro;
 import pl.coderslab.repository.*;

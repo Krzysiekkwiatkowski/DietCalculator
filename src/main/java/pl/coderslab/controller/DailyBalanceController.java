@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import pl.coderslab.entity.DailyBalance;
 import pl.coderslab.entity.Meal;
 import pl.coderslab.entity.User;
-import pl.coderslab.pojo.ContextHelper;
+import pl.coderslab.helper.ContextHelper;
 import pl.coderslab.pojo.GraphResult;
 import pl.coderslab.repository.DailyBalanceRepository;
 

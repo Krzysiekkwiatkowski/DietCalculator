@@ -1,6 +1,5 @@
 package pl.coderslab.controller;
 
-import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -9,7 +8,9 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import pl.coderslab.entity.*;
-import pl.coderslab.pojo.ContextHelper;
+import pl.coderslab.helper.ContextHelper;
+import pl.coderslab.helper.DailyBalanceHelper;
+import pl.coderslab.helper.UserHelper;
 import pl.coderslab.repository.*;
 import pl.coderslab.service.UserService;
 
@@ -17,9 +18,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.sql.Date;
 import java.text.DecimalFormat;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,6 +43,12 @@ public class UserController {
 
     @Autowired
     private RoleRepository roleRepository;
+
+    @Autowired
+    private DailyBalanceHelper dailyBalanceHelper;
+
+    @Autowired
+    private UserHelper userHelper;
 
     @RequestMapping(value = "/register", method = RequestMethod.GET)
     public String registerGet(Model model){
@@ -80,7 +85,8 @@ public class UserController {
             }
         }
         String password = user.getPassword();
-        userService.save(calculateMacroelements(user));
+        userHelper.calculateMacroElements(user);
+        userService.save(user);
         if(!user.isSelfDistribution()){
             user.setSetting(null);
         }
@@ -117,7 +123,8 @@ public class UserController {
             return "home";
         }
         user.setRoles(roleRepository.findAllRolesByUserId(user.getId()));
-        userRepository.save(calculateMacroelements(user));
+        userHelper.calculateMacroElements(user);
+        userRepository.save(user);
         return "redirect:/diet/user/option";
     }
 
@@ -135,7 +142,8 @@ public class UserController {
             model.addAttribute("correctCalories", "correctCalories");
             return "home";
         }
-        userRepository.save(calculateMacroelements(user));
+        userHelper.calculateMacroElements(user);
+        userRepository.save(user);
         session.setAttribute("user", user);
         model.addAttribute("userOption","userOption");
         return "home";
@@ -257,95 +265,6 @@ public class UserController {
         goals.add("Utrzymanie wagi");
         goals.add("Przybranie wagi");
         return goals;
-    }
-
-    private User calculateMacroelements(User user){
-        String activity = user.getActivity();
-        String somatotype = user.getSomatotype();
-        String goal = user.getGoal();
-        double metabolism = 0.0;
-        if(user.getGender().equals("Mężczyzna")){
-            metabolism = ((9.99 * user.getWeight()) + (6.25 * user.getHeight()) - (4.92 * user.getAge()) + 5) * 1.1;
-        } else if(user.getGender().equals("Kobieta")){
-            metabolism = ((9.99 * user.getWeight()) + (6.25 * user.getHeight()) - (4.92 * user.getAge()) - 161) * 1.1;
-        }
-        int activityFactor = 0;
-        int somatotypeFactor = 0;
-        int goalFactor = 0;
-        if(somatotype.equals("Ektomorfik")){
-            somatotypeFactor = 800;
-        } else if(somatotype.equals("Endomorfik")){
-            somatotypeFactor = 400;
-        } else if(somatotype.equals("Mezomorfik")){
-            somatotypeFactor = 450;
-        }
-        if(activity.equals("Średnia")){
-            if(somatotype.equals("Mezomorfik")){
-                activityFactor = 50;
-            } else {
-                activityFactor = 100;
-            }
-        } else if(activity.equals("Duża")){
-            if(somatotype.equals("Mezomorfik")){
-                activityFactor = 100;
-            } else {
-                activityFactor = 200;
-            }
-        } else if(activity.equals("Umiarkowana fizyczna")){
-            if(somatotype.equals("Mezomorfik")){
-                activityFactor = 150;
-            } else {
-                activityFactor = 300;
-            }
-        } else if(activity.equals("Ciężka fizyczna")){
-            if(somatotype.equals("Mezomorfik")){
-                activityFactor = 200;
-            } else {
-                activityFactor = 400;
-            }
-        }
-        if(goal.equals("Utrata wagi")){
-            goalFactor = -500;
-        } else if(goal.equals("Przybranie wagi")){
-            goalFactor = 500;
-        }
-        int total = (int) metabolism + activityFactor + somatotypeFactor + goalFactor + user.getCorrect();
-        if(!user.isSelfDistribution()) {
-            user.setTotalCalories(total);
-            DecimalFormat decimalFormat = new DecimalFormat("#.#");
-            user.setTotalProtein(Double.parseDouble(decimalFormat.format(user.getWeight() * 1.8).replace(",", ".")));
-            if (goal.equals("Utrata wagi")) {
-                user.setTotalCarbohydrates(Double.parseDouble(decimalFormat.format(((total - 1.8 * 4 * user.getWeight()) * 0.4) / 4.0).replace(",", ".")));
-                user.setTotalFat(Double.parseDouble(decimalFormat.format(((total - 1.8 * 4 * user.getWeight()) * 0.6) / 9.0).replace(",", ".")));
-            }
-            if (goal.equals("Utrzymanie wagi")) {
-                user.setTotalCarbohydrates(Double.parseDouble(decimalFormat.format(((total - 1.8 * 4 * user.getWeight()) * 0.5) / 4.0).replace(",", ".")));
-                user.setTotalFat(Double.parseDouble(decimalFormat.format(((total - 1.8 * 4 * user.getWeight()) * 0.5) / 9.0).replace(",", ".")));
-            }
-            if (goal.equals("Przybranie wagi")) {
-                user.setTotalCarbohydrates(Double.parseDouble(decimalFormat.format(((total - 1.8 * 4 * user.getWeight()) * 0.6) / 4.0).replace(",", ".")));
-                user.setTotalFat(Double.parseDouble(decimalFormat.format(((total - 1.8 * 4 * user.getWeight()) * 0.4) / 9.0).replace(",", ".")));
-            }
-        } else {
-            int protein = (total * user.getSetting().getProteinPart()) / 400;
-            int carbohydrates = (total * user.getSetting().getCarbohydratePart()) / 400;
-            int fat = (total * user.getSetting().getFatPart()) / 900;
-            total = protein * 4 + carbohydrates * 4 + fat * 9;
-            user.setTotalCalories(total);
-            user.setTotalProtein(protein);
-            user.setTotalCarbohydrates(carbohydrates);
-            user.setTotalFat(fat);
-        }
-        if(dailyBalanceRepository.findTopByUserIdAndAndDate(user.getId(), Date.valueOf(LocalDate.now())) != null) {
-            DailyBalance dailyBalance = dailyBalanceRepository.findTopByUserIdAndAndDate(user.getId(), Date.valueOf(LocalDate.now()));
-            dailyBalance.setTotalProtein(user.getTotalProtein());
-            dailyBalance.setTotalCarbohydrates(user.getTotalCarbohydrates());
-            dailyBalance.setTotalFat(user.getTotalFat());
-            dailyBalance.setNeeded(user.getTotalCalories());
-            dailyBalance.setBalance(dailyBalance.getReceived() - dailyBalance.getNeeded());
-            dailyBalanceRepository.save(dailyBalance);
-        }
-        return user;
     }
 
     private boolean verifySetting(Setting setting){

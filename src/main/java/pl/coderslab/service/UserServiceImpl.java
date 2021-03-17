@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.coderslab.entity.Role;
 import pl.coderslab.entity.User;
-import pl.coderslab.pojo.ContextHelper;
 import pl.coderslab.repository.RoleRepository;
 import pl.coderslab.repository.UserRepository;
 
