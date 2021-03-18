@@ -107,7 +107,7 @@ public class MealController {
             meal.setGlycemicCharge(glycemicChargeSum);
             int exist = dailyBalanceRepository.countByUserIdAndDate(user.getId(), Date.valueOf(LocalDate.now()));
             if (exist == 1) {
-                dailyBalance = dailyBalanceRepository.findTopByUserIdAndAndDate(user.getId(), Date.valueOf(LocalDate.now()));
+                dailyBalance = dailyBalanceRepository.findTopByUserIdAndDate(user.getId(), Date.valueOf(LocalDate.now()));
                 meals = dailyBalance.getMeals();
                 if (meals.size() == 0) {
                     meals = new ArrayList<>();
@@ -166,7 +166,7 @@ public class MealController {
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
     public String delete(@PathVariable("id") Long id, Model model){
         User user = ContextHelper.getUserFromContext();
-        Object objectDaily = dailyBalanceRepository.findTopByUserIdAndAndDate(user.getId(), Date.valueOf(LocalDate.now()));
+        Object objectDaily = dailyBalanceRepository.findTopByUserIdAndDate(user.getId(), Date.valueOf(LocalDate.now()));
         if (objectDaily != null) {
             DailyBalance dailyBalance = (DailyBalance) objectDaily;
             List<Meal> meals = dailyBalance.getMeals();
@@ -182,8 +182,8 @@ public class MealController {
     @RequestMapping(value = "/delete/{id}/yes", method = RequestMethod.GET)
     public String deleteConfirm(@PathVariable("id") Long id) {
         User user = ContextHelper.getUserFromContext();
-        if (dailyBalanceRepository.findTopByUserIdAndAndDate(user.getId(), Date.valueOf(LocalDate.now())) != null) {
-            DailyBalance dailyBalance = dailyBalanceRepository.findTopByUserIdAndAndDate(user.getId(), Date.valueOf(LocalDate.now()));
+        if (dailyBalanceRepository.findTopByUserIdAndDate(user.getId(), Date.valueOf(LocalDate.now())) != null) {
+            DailyBalance dailyBalance = dailyBalanceRepository.findTopByUserIdAndDate(user.getId(), Date.valueOf(LocalDate.now()));
             List<Meal> meals = dailyBalance.getMeals();
             Meal toDelete = null;
             for (Meal meal : meals) {
@@ -210,7 +210,7 @@ public class MealController {
     @RequestMapping("/view")
     public String viewMeals(Model model) {
         User user = ContextHelper.getUserFromContext();
-        Object object = dailyBalanceRepository.findTopByUserIdAndAndDate(user.getId(), Date.valueOf(LocalDate.now()));
+        Object object = dailyBalanceRepository.findTopByUserIdAndDate(user.getId(), Date.valueOf(LocalDate.now()));
         if (object != null) {
             DailyBalance dailyBalance = (DailyBalance)object;
             List<Meal> meals = mealRepository.findAllById(dailyBalance.getId());
@@ -232,7 +232,7 @@ public class MealController {
     @RequestMapping("/view/{mealNumber}")
     public String viewMeal(@PathVariable("mealNumber") Integer mealNumber, Model model) {
         User user = ContextHelper.getUserFromContext();
-        Object object = dailyBalanceRepository.findTopByUserIdAndAndDate(user.getId(), Date.valueOf(LocalDate.now())).getMeals();
+        Object object = dailyBalanceRepository.findTopByUserIdAndDate(user.getId(), Date.valueOf(LocalDate.now())).getMeals();
         if (object != null) {
             List<Meal> meals = (List<Meal>) object;
             for (Meal meal : meals) {
@@ -318,7 +318,7 @@ public class MealController {
     }
 
     private MissingMacro getMissingMacro(long userId){
-        DailyBalance dailyBalance = dailyBalanceRepository.findTopByUserIdAndAndDate(userRepository.findTopById(userId).getId(), Date.valueOf(LocalDate.now()));
+        DailyBalance dailyBalance = dailyBalanceRepository.findTopByUserIdAndDate(userRepository.findTopById(userId).getId(), Date.valueOf(LocalDate.now()));
         if(dailyBalance != null){
             double receivedProtein = 0.0;
             double receivedCarbohydrates = 0.0;

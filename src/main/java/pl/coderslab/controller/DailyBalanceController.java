@@ -34,7 +34,7 @@ public class DailyBalanceController {
         double totalCarbohydrates = user.getTotalCarbohydrates();
         double totalFat = user.getTotalFat();
         int totalCalories = user.getTotalCalories();
-        if(dailyBalanceRepository.findTopByUserIdAndAndDate(user.getId(), Date.valueOf(LocalDate.now())) == null){
+        if(dailyBalanceRepository.findTopByUserIdAndDate(user.getId(), Date.valueOf(LocalDate.now())) == null){
             model.addAttribute("balance", "balance");
             model.addAttribute("exist", null);
             return "home";
@@ -43,7 +43,7 @@ public class DailyBalanceController {
         double carbohydratesReceived = 0.0;
         double fatReceived = 0.0;
         int caloriesReceived = 0;
-        DailyBalance dailyBalance = dailyBalanceRepository.findTopByUserIdAndAndDate(user.getId(), Date.valueOf(LocalDate.now()));
+        DailyBalance dailyBalance = dailyBalanceRepository.findTopByUserIdAndDate(user.getId(), Date.valueOf(LocalDate.now()));
         List<Meal> meals = dailyBalance.getMeals();
         meals.sort((m1, m2) -> Integer.compare(m1.getMealNumber(), m2.getMealNumber()));
         List<Double> glycemicCharges = new ArrayList<>();
@@ -77,7 +77,7 @@ public class DailyBalanceController {
     @RequestMapping(value = "/weekly")
     public String last(Model model){
         User user = ContextHelper.getUserFromContext();
-        Object dailyObject = dailyBalanceRepository.findAllByUserAndDate(user, Date.valueOf(LocalDate.now()));
+        Object dailyObject = dailyBalanceRepository.findAllByUserToDate(user, Date.valueOf(LocalDate.now()), Date.valueOf(LocalDate.now().minusDays(7)));
         if(dailyObject == null || ((List) dailyObject).size() == 0){
             model.addAttribute("balance", "balance");
             model.addAttribute("exist", null);
@@ -150,7 +150,7 @@ public class DailyBalanceController {
     @RequestMapping(value = "/long")
     public String longBalance(Model model){
         User user = ContextHelper.getUserFromContext();
-        Object dailyObject = dailyBalanceRepository.findAllByUserAndDate(user, Date.valueOf(LocalDate.now()), 30);
+        Object dailyObject = dailyBalanceRepository.findAllByUserToDate(user, Date.valueOf(LocalDate.now()), Date.valueOf(LocalDate.now().minusDays(30)));
         if(dailyObject == null || ((List) dailyObject).size() == 0){
             model.addAttribute("longBalance", "longBalance");
             model.addAttribute("exist", null);

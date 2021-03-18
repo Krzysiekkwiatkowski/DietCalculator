@@ -16,7 +16,7 @@ public class DailyBalanceHelper {
     private DailyBalanceRepository dailyBalanceRepository;
 
     public void updateActualDailyBalance(User user){
-        DailyBalance dailyBalance = dailyBalanceRepository.findTopByUserIdAndAndDate(user.getId(), Date.valueOf(LocalDate.now()));
+        DailyBalance dailyBalance = dailyBalanceRepository.findTopByUserIdAndDate(user.getId(), Date.valueOf(LocalDate.now()));
         if(dailyBalance != null){
             dailyBalance.setTotalProtein(user.getTotalProtein());
             dailyBalance.setTotalCarbohydrates(user.getTotalCarbohydrates());
