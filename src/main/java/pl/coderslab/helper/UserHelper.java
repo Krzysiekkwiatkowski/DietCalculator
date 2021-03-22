@@ -4,15 +4,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.coderslab.entity.User;
 
-import java.text.DecimalFormat;
-
 @Component
 public class UserHelper {
 
     @Autowired
     private TrainingHelper trainingHelper;
 
-    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.#");
+    @Autowired
+    private NumberHelper numberHelper;
+
     private static final double PROTEIN_CALORIES = 4.0;
     private static final double CARBOHYDRATES_CALORIES = 4.0;
     private static final double FAT_CALORIES = 9.0;
@@ -98,15 +98,15 @@ public class UserHelper {
         double fat;
         int calories;
         if(!user.isSelfDistribution()){
-            protein = roundDouble(user.getWeight() * PROTEIN_PART);
+            protein = numberHelper.roundDouble(user.getWeight() * PROTEIN_PART);
             MacroParam macroParam = getMacroElementsParam(user);
-            carbohydrates = roundDouble((((user.getTotalCalories() - PROTEIN_PART * PROTEIN_CALORIES * user.getWeight()) * macroParam.carbohydratesParam) / CARBOHYDRATES_CALORIES));
-            fat = roundDouble((((user.getTotalCalories() - PROTEIN_PART * PROTEIN_CALORIES * user.getWeight()) * macroParam.fatParam) / FAT_CALORIES));
+            carbohydrates = numberHelper.roundDouble((((user.getTotalCalories() - PROTEIN_PART * PROTEIN_CALORIES * user.getWeight()) * macroParam.carbohydratesParam) / CARBOHYDRATES_CALORIES));
+            fat = numberHelper.roundDouble((((user.getTotalCalories() - PROTEIN_PART * PROTEIN_CALORIES * user.getWeight()) * macroParam.fatParam) / FAT_CALORIES));
             calories = user.getTotalCalories();
         } else {
-            protein = roundDouble((user.getTotalCalories() * user.getSetting().getProteinPart()) / (PROTEIN_CALORIES * 100.0));
-            carbohydrates = roundDouble((user.getTotalCalories() * user.getSetting().getCarbohydratePart()) / (CARBOHYDRATES_CALORIES * 100.0));
-            fat = roundDouble((user.getTotalCalories() * user.getSetting().getFatPart()) / (FAT_CALORIES * 100.0));
+            protein = numberHelper.roundDouble((user.getTotalCalories() * user.getSetting().getProteinPart()) / (PROTEIN_CALORIES * 100.0));
+            carbohydrates = numberHelper.roundDouble((user.getTotalCalories() * user.getSetting().getCarbohydratePart()) / (CARBOHYDRATES_CALORIES * 100.0));
+            fat = numberHelper.roundDouble((user.getTotalCalories() * user.getSetting().getFatPart()) / (FAT_CALORIES * 100.0));
             calories = (int)(protein * PROTEIN_CALORIES + carbohydrates * CARBOHYDRATES_CALORIES + fat * FAT_CALORIES);
         }
         user.setTotalProtein(protein);
@@ -126,14 +126,6 @@ public class UserHelper {
             default:
                 return new MacroParam(0.55, 0.45);
         }
-    }
-
-    private String replaceComma(String text){
-        return text.replace(",", ".");
-    }
-
-    private double roundDouble(double number){
-        return Double.parseDouble(replaceComma(DECIMAL_FORMAT.format(number)));
     }
 
     private class MacroParam {

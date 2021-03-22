@@ -54,13 +54,7 @@ public class TrainingController {
             return "home";
         }
         User user = ContextHelper.getUserFromContext();
-        user.setTraining(training);
-        int calories = trainingHelper.calculateDailyTrainingCalories(user);
-        training.setDailyCalories(calories);
-        trainingRepository.save(training);
-        userHelper.calculateMacroElements(user);
-        dailyBalanceHelper.updateActualDailyBalance(user);
-        userRepository.save(user);
+        updateEntities(user, training);
         return "home";
     }
 
@@ -78,13 +72,7 @@ public class TrainingController {
             return "home";
         }
         User user = ContextHelper.getUserFromContext();
-        user.setTraining(training);
-        int calories = trainingHelper.calculateDailyTrainingCalories(user);
-        training.setDailyCalories(calories);
-        trainingRepository.save(training);
-        userHelper.calculateMacroElements(user);
-        userRepository.save(user);
-        dailyBalanceHelper.updateActualDailyBalance(user);
+        updateEntities(user, training);
         return "home";
     }
 
@@ -132,5 +120,15 @@ public class TrainingController {
         intensities.add("Wysoka");
         intensities.add("Bardzo wysoka");
         return intensities;
+    }
+
+    private void updateEntities(User user, Training training){
+        user.setTraining(training);
+        int calories = trainingHelper.calculateDailyTrainingCalories(user);
+        training.setDailyCalories(calories);
+        trainingRepository.save(training);
+        userHelper.calculateMacroElements(user);
+        userRepository.save(user);
+        dailyBalanceHelper.updateActualDailyBalance(user);
     }
 }

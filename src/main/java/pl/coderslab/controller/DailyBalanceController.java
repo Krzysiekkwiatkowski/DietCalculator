@@ -9,23 +9,32 @@ import pl.coderslab.entity.DailyBalance;
 import pl.coderslab.entity.Meal;
 import pl.coderslab.entity.User;
 import pl.coderslab.helper.ContextHelper;
+import pl.coderslab.helper.DailyBalanceHelper;
+import pl.coderslab.helper.NumberHelper;
+import pl.coderslab.pojo.BasicMacro;
+import pl.coderslab.pojo.DailyBalanceData;
+import pl.coderslab.pojo.ExtendMacro;
 import pl.coderslab.pojo.GraphResult;
 import pl.coderslab.repository.DailyBalanceRepository;
 
-import javax.servlet.http.HttpSession;
 import java.sql.Date;
-import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @RequestMapping("/diet/daily")
 @Controller
 public class DailyBalanceController {
-    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.#");
 
     @Autowired
     private DailyBalanceRepository dailyBalanceRepository;
+
+    @Autowired
+    private DailyBalanceHelper dailyBalanceHelper;
+
+    @Autowired
+    private NumberHelper numberHelper;
 
     @RequestMapping("/actual")
     public String actualBalance(Model model){
@@ -39,33 +48,30 @@ public class DailyBalanceController {
             model.addAttribute("exist", null);
             return "home";
         }
-        double proteinReceived = 0.0;
-        double carbohydratesReceived = 0.0;
-        double fatReceived = 0.0;
-        int caloriesReceived = 0;
+        ExtendMacro extendMacro = new ExtendMacro();
         DailyBalance dailyBalance = dailyBalanceRepository.findTopByUserIdAndDate(user.getId(), Date.valueOf(LocalDate.now()));
         List<Meal> meals = dailyBalance.getMeals();
         meals.sort((m1, m2) -> Integer.compare(m1.getMealNumber(), m2.getMealNumber()));
         List<Double> glycemicCharges = new ArrayList<>();
-        for (Meal meal : meals) {
-            proteinReceived += meal.getTotalProtein();
-            carbohydratesReceived += meal.getTotalCarbohydrates();
-            fatReceived += meal.getTotalFat();
-            caloriesReceived += meal.getTotalCalories();
-            glycemicCharges.add(meal.getGlycemicCharge());
-        }
-        int protein = (int) (proteinReceived * 100 / totalProtein);
-        int carbohydrates = (int) (carbohydratesReceived * 100 / totalCarbohydrates);
-        int fat = (int) (fatReceived * 100 / totalFat);
-        int calories = caloriesReceived * 100 / totalCalories;
+        meals.forEach(m -> {
+            extendMacro.setProtein(extendMacro.getProtein() + m.getTotalProtein());
+            extendMacro.setCarbohydrates(extendMacro.getCarbohydrates() + m.getTotalCarbohydrates());
+            extendMacro.setFat(extendMacro.getFat() + m.getTotalFat());
+            extendMacro.setCalories(extendMacro.getCalories() + m.getTotalCalories());
+            glycemicCharges.add(m.getGlycemicCharge());
+        });
+        int protein = (int) (extendMacro.getProtein() * 100 / totalProtein);
+        int carbohydrates = (int) (extendMacro.getCarbohydrates() * 100 / totalCarbohydrates);
+        int fat = (int) (extendMacro.getFat() * 100 / totalFat);
+        int calories = extendMacro.getCalories() * 100 / totalCalories;
         List<GraphResult> results = new ArrayList<>();
-        results.add(new GraphResult("Białko: " + formatMacroData(proteinReceived, totalProtein), protein + "%", "width: " + (protein * 3) + "px; background-color: green;", true));
-        results.add(new GraphResult("Węglowodany: " + formatMacroData(carbohydratesReceived, totalCarbohydrates), carbohydrates + "%", "width: " + (carbohydrates * 3) + "px; background-color: red;", true));
-        results.add(new GraphResult("Tłuszcz: " + formatMacroData(fatReceived, totalFat), fat + "%", "width: " + (fat * 3) + "px; background-color: yellow;", true));
-        results.add(new GraphResult("Kalorie: " + caloriesReceived + "/" + totalCalories, calories + "%", "width: " + (calories * 3) + "px; background-color: blue;", true));
+        results.add(new GraphResult("Białko: " + formatMacroData(extendMacro.getProtein(), totalProtein), protein + "%", "width: " + (protein * 3) + "px; background-color: green;", true));
+        results.add(new GraphResult("Węglowodany: " + formatMacroData(extendMacro.getCarbohydrates(), totalCarbohydrates), carbohydrates + "%", "width: " + (carbohydrates * 3) + "px; background-color: red;", true));
+        results.add(new GraphResult("Tłuszcz: " + formatMacroData(extendMacro.getFat(), totalFat), fat + "%", "width: " + (fat * 3) + "px; background-color: yellow;", true));
+        results.add(new GraphResult("Kalorie: " + extendMacro.getCalories() + "/" + totalCalories, calories + "%", "width: " + (calories * 3) + "px; background-color: blue;", true));
         results.add(new GraphResult("%", "", "", false));
         for(int i = 0; i < glycemicCharges.size(); i++){
-            results.add(new GraphResult("Posiłek " + (i + 1), roundDouble(glycemicCharges.get(i)) + "","width: " + ((int)(glycemicCharges.get(i) * 30) / 2) + "px; background-color: orange;", true));
+            results.add(new GraphResult("Posiłek " + (i + 1), numberHelper.roundDouble(glycemicCharges.get(i)) + "","width: " + ((int)(glycemicCharges.get(i) * 30) / 2) + "px; background-color: orange;", true));
         }
         results.add(new GraphResult("", "", "", false));
         model.addAttribute("results", results);
@@ -86,60 +92,30 @@ public class DailyBalanceController {
         }
         List<DailyBalance> dailyBalances = (List<DailyBalance>)dailyObject;
         int days = dailyBalances.size();
-        double totalProtein = 0.0;
-        double totalCarbohydrates = 0.0;
-        double totalFat = 0.0;
-        int totalCalories = 0;
-        double proteinReceived = 0.0;
-        double carbohydratesReceived = 0.0;
-        double fatReceived = 0.0;
-        int caloriesReceived = 0;
-        List<Double> glycemicChargesDay = new ArrayList<>();
-        double glycemicChargesSum = 0.0;
-        int glycemicChargesCount = 0;
-        for (DailyBalance dailyBalance : dailyBalances) {
-            totalProtein += dailyBalance.getTotalProtein();
-            totalCarbohydrates += dailyBalance.getTotalCarbohydrates();
-            totalFat += dailyBalance.getTotalFat();
-            totalCalories += dailyBalance.getNeeded();
-            for (Meal meal : dailyBalance.getMeals()) {
-                proteinReceived += meal.getTotalProtein();
-                carbohydratesReceived += meal.getTotalCarbohydrates();
-                fatReceived += meal.getTotalFat();
-                caloriesReceived += meal.getTotalCalories();
-                glycemicChargesSum += meal.getGlycemicCharge();
-                glycemicChargesCount++;
-            }
-            double result;
-            if((glycemicChargesSum == 0.0) ||  (glycemicChargesCount == 0)){
-                result = 0.0;
-            } else {
-                result = glycemicChargesSum / glycemicChargesCount;
-            }
-            glycemicChargesDay.add(result);
-            glycemicChargesSum = 0.0;
-            glycemicChargesCount = 0;
-        }
-        if((totalProtein == 0) || (totalCarbohydrates == 0) || (totalFat == 0) || (totalCalories==0)){
+        DailyBalanceData data = dailyBalanceHelper.getBalance(dailyBalances, true);
+        if((data.getNeededMacro().getProtein() == 0) || (data.getNeededMacro().getCarbohydrates() == 0) || (data.getNeededMacro().getFat() == 0) || (data.getNeededMacro().getCalories() == 0)){
             model.addAttribute("balance", "balance");
             model.addAttribute("exist", null);
             model.addAttribute("days", 0);
             return "home";
         }
-        int protein = (int) (proteinReceived * 100 / totalProtein);
-        int carbohydrates = (int) (carbohydratesReceived * 100 / totalCarbohydrates);
-        int fat = (int) (fatReceived * 100 / totalFat);
-        int calories = caloriesReceived * 100 / totalCalories;
+        int protein = (int) (data.getReceivedMacro().getProtein() * 100 / data.getNeededMacro().getProtein());
+        int carbohydrates = (int) (data.getReceivedMacro().getCarbohydrates() * 100 / data.getNeededMacro().getCarbohydrates());
+        int fat = (int) (data.getReceivedMacro().getFat() * 100 / data.getNeededMacro().getFat());
+        int calories = data.getReceivedMacro().getCalories() * 100 / data.getNeededMacro().getCalories();
         List<GraphResult> results = new ArrayList<>();
-        results.add(new GraphResult("Białko: " + formatMacroData(proteinReceived, totalProtein), protein + "%", "width: " + (protein * 3) + "px; background-color: green;", true));
-        results.add(new GraphResult("Węglowodany: " + formatMacroData(carbohydratesReceived, totalCarbohydrates), carbohydrates + "%", "width: " + (carbohydrates * 3) + "px; background-color: red;", true));
-        results.add(new GraphResult("Tłuszcz: " + formatMacroData(fatReceived, totalFat), fat + "%", "width: " + (fat * 3) + "px; background-color: yellow;", true));
-        results.add(new GraphResult("Kalorie: " + caloriesReceived + "/" + totalCalories, calories + "%", "width: " + (calories * 3) + "px; background-color: blue;", true));
+        results.add(new GraphResult("Białko: " + formatMacroData(data.getReceivedMacro().getProtein(), data.getNeededMacro().getProtein()), protein + "%", "width: " + (protein * 3) + "px; background-color: green;", true));
+        results.add(new GraphResult("Węglowodany: " + formatMacroData(data.getReceivedMacro().getCarbohydrates(), data.getNeededMacro().getCarbohydrates()), carbohydrates + "%", "width: " + (carbohydrates * 3) + "px; background-color: red;", true));
+        results.add(new GraphResult("Tłuszcz: " + formatMacroData(data.getReceivedMacro().getFat(), data.getNeededMacro().getFat()), fat + "%", "width: " + (fat * 3) + "px; background-color: yellow;", true));
+        results.add(new GraphResult("Kalorie: " + data.getReceivedMacro().getCalories() + "/" + data.getNeededMacro().getCalories(), calories + "%", "width: " + (calories * 3) + "px; background-color: blue;", true));
         results.add(new GraphResult("%", "", "", false));
-        for(int i = 0; i < glycemicChargesDay.size(); i++){
-            results.add(new GraphResult("Dzień " + (i + 1), roundDouble(glycemicChargesDay.get(i)) + "","width: " + ((int)(glycemicChargesDay.get(i) * 30) / 2) + "px; background-color: orange;", true));
+        List<Object> objectsList = data.getDataList();
+        for(int i = 0; i < objectsList.size(); i++){
+            double number = (Double) objectsList.get(i);
+            results.add(new GraphResult("Dzień " + (i + 1), numberHelper.roundDouble(number) + "","width: " + ((int)(number * 30) / 2) + "px; background-color: orange;", true));
         }
         results.add(new GraphResult("", "", "", false));
+        data.clearAll();
         model.addAttribute("results", results);
         model.addAttribute("exist", "exist");
         model.addAttribute("balance", "balance");
@@ -157,43 +133,24 @@ public class DailyBalanceController {
             return "home";
         }
         List<DailyBalance> dailyBalances = (List<DailyBalance>)dailyObject;
-        List<DailyBalance> orderBalanced = new ArrayList<>();
         int days = dailyBalances.size();
-        double sumProteinN = 0;
-        double sumCarbohydratesN = 0;
-        double sumFatN = 0;
-        int sumCaloriesN = 0;
-        double sumProteinR = 0;
-        double sumCarbohydratesR = 0;
-        double sumFatR = 0;
-        int sumCaloriesR = 0;
-        for (int i = days - 1; i >= 0; i--) {
-            sumProteinN += dailyBalances.get(i).getTotalProtein();
-            sumCarbohydratesN += dailyBalances.get(i).getTotalCarbohydrates();
-            sumFatN += dailyBalances.get(i).getTotalFat();
-            sumCaloriesN += dailyBalances.get(i).getNeeded();
-            orderBalanced.add(dailyBalances.get(i));
-            for (Meal meal : dailyBalances.get(i).getMeals()) {
-                sumProteinR += meal.getTotalProtein();
-                sumCarbohydratesR += meal.getTotalCarbohydrates();
-                sumFatR += meal.getTotalFat();
-                sumCaloriesR += meal.getTotalCalories();
-            }
-        }
-        if((sumProteinN == 0) || (sumCarbohydratesN == 0) || (sumFatN == 0) || (sumCaloriesN == 0)){
+        Collections.reverse(dailyBalances);
+        DailyBalanceData data = dailyBalanceHelper.getBalance(dailyBalances, false);
+        if((data.getNeededMacro().getProtein() == 0) || (data.getNeededMacro().getCarbohydrates() == 0) || (data.getNeededMacro().getFat() == 0) || (data.getNeededMacro().getCalories() == 0)){
             model.addAttribute("longBalance", "longBalance");
             model.addAttribute("exist", null);
             return "home";
         }
-        int avgProtein = (int)((sumProteinR / sumProteinN) * 100 );
-        int avgCarbohydrates = (int)((sumCarbohydratesR / sumCarbohydratesN) * 100);
-        int avgFat = (int)((sumFatR / sumFatN) * 100 );
-        int avgCalories = sumCaloriesR * 100 / sumCaloriesN;
+        int avgProtein = (int)((data.getReceivedMacro().getProtein() / data.getNeededMacro().getProtein()) * 100);
+        int avgCarbohydrates = (int)((data.getReceivedMacro().getCarbohydrates() / data.getNeededMacro().getCarbohydrates()) * 100);
+        int avgFat = (int)((data.getReceivedMacro().getFat() / data.getNeededMacro().getFat()) * 100 );
+        int avgCalories = (data.getReceivedMacro().getCalories() * 100) / data.getNeededMacro().getCalories();
+        data.clearAll();
         model.addAttribute("avgProtein", avgProtein);
         model.addAttribute("avgCarbohydrates", avgCarbohydrates);
         model.addAttribute("avgFat", avgFat);
         model.addAttribute("avgCalories", avgCalories);
-        model.addAttribute("balances", orderBalanced);
+        model.addAttribute("balances", dailyBalances);
         model.addAttribute("exist", "exist");
         model.addAttribute("longBalance", "longBalance");
         model.addAttribute("days", days);
@@ -201,16 +158,12 @@ public class DailyBalanceController {
     }
 
     @RequestMapping(value = "/option", method = RequestMethod.GET)
-    public String option(Model model, HttpSession session){
+    public String option(Model model){
         model.addAttribute("balanceOption","balanceOption");
         return "home";
     }
 
     private String formatMacroData(double received, double total){
-        return roundDouble(received) + "/" + roundDouble(total);
-    }
-
-    private double roundDouble(double number){
-        return Double.parseDouble(DECIMAL_FORMAT.format(number).replace(",", "."));
+        return numberHelper.roundDouble(received) + "/" + numberHelper.roundDouble(total);
     }
 }

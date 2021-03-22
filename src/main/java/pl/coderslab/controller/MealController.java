@@ -6,20 +6,21 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pl.coderslab.entity.*;
 import pl.coderslab.helper.ContextHelper;
+import pl.coderslab.helper.NumberHelper;
+import pl.coderslab.pojo.ExtendMacro;
 import pl.coderslab.pojo.GraphResult;
-import pl.coderslab.pojo.MissingMacro;
+import pl.coderslab.pojo.BasicMacro;
 import pl.coderslab.repository.*;
 
 import javax.servlet.http.HttpSession;
 import java.sql.Date;
-import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RequestMapping("/diet/meal")
 @Controller
 public class MealController {
-    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.#");
 
     @Autowired
     private UserRepository userRepository;
@@ -35,6 +36,9 @@ public class MealController {
 
     @Autowired
     private CategoryRepository categoryRepository;
+
+    @Autowired
+    private NumberHelper numberHelper;
 
     @RequestMapping(value = "/add", method = RequestMethod.GET)
     public String addGet(Model model, HttpSession session){
@@ -86,25 +90,20 @@ public class MealController {
             }
             List<Product> mealProducts = (List<Product>) objectMeal;
             Meal meal = new Meal();
-            double proteinSum = 0.0;
-            double carbohydratesSum = 0.0;
-            double fatSum = 0.0;
-            int caloriesSum = 0;
-            double glycemicChargeSum = 0.0;
-            for (Product product : mealProducts) {
-                proteinSum += product.getProtein();
-                carbohydratesSum += product.getCarbohydrates();
-                fatSum += product.getFat();
-                caloriesSum += product.getCalories();
-                glycemicChargeSum += (product.getCarbohydrates() * product.getGlycemicIndex()) / 100.0;
-            }
-            DecimalFormat decimalFormat = new DecimalFormat("#.#");
+            ExtendMacro extendMacro = new ExtendMacro();
+            mealProducts.forEach(p -> {
+                extendMacro.setProtein(extendMacro.getProtein() + p.getProtein());
+                extendMacro.setCarbohydrates(extendMacro.getCarbohydrates() + p.getCarbohydrates());
+                extendMacro.setFat(extendMacro.getFat() + p.getFat());
+                extendMacro.setCalories(extendMacro.getCalories() + p.getCalories());
+                extendMacro.setGlycemicCharge(extendMacro.getGlycemicCharge() + ((p.getCarbohydrates() * p.getGlycemicIndex()) / 100.0));
+            });
             meal.setProducts(mealProducts);
-            meal.setTotalProtein(Double.parseDouble(decimalFormat.format(proteinSum).replace(",", ".")));
-            meal.setTotalCarbohydrates(Double.parseDouble(decimalFormat.format(carbohydratesSum).replace(",", ".")));
-            meal.setTotalFat(Double.parseDouble(decimalFormat.format(fatSum).replace(",", ".")));
-            meal.setTotalCalories(caloriesSum);
-            meal.setGlycemicCharge(glycemicChargeSum);
+            meal.setTotalProtein(numberHelper.roundDouble(extendMacro.getProtein()));
+            meal.setTotalCarbohydrates(numberHelper.roundDouble(extendMacro.getCarbohydrates()));
+            meal.setTotalFat(numberHelper.roundDouble(extendMacro.getFat()));
+            meal.setTotalCalories(extendMacro.getCalories());
+            meal.setGlycemicCharge(numberHelper.roundDouble(extendMacro.getGlycemicCharge()));
             int exist = dailyBalanceRepository.countByUserIdAndDate(user.getId(), Date.valueOf(LocalDate.now()));
             if (exist == 1) {
                 dailyBalance = dailyBalanceRepository.findTopByUserIdAndDate(user.getId(), Date.valueOf(LocalDate.now()));
@@ -129,16 +128,13 @@ public class MealController {
             dailyBalance.setTotalProtein(user.getTotalProtein());
             dailyBalance.setTotalCarbohydrates(user.getTotalCarbohydrates());
             dailyBalance.setTotalFat(user.getTotalFat());
-            int lastMeal = 0;
-            if(dailyBalance.getMeals() != null) {
-                for (Meal check : dailyBalance.getMeals()) {
-                    if (check.getMealNumber() > lastMeal) {
-                        lastMeal = check.getMealNumber();
-                    }
-                }
-                meal.setMealNumber(lastMeal + 1);
+            OptionalInt max = dailyBalance.getMeals().stream()
+                    .mapToInt(m -> m.getMealNumber())
+                    .max();
+            if(dailyBalance.getMeals() != null && max.isPresent()) {
+                meal.setMealNumber(max.getAsInt() + 1);
             } else {
-                meal.setMealNumber(lastMeal + 1);
+                meal.setMealNumber(1);
             }
             meals.add(meal);
             dailyBalance.setMeals(meals);
@@ -185,20 +181,14 @@ public class MealController {
         if (dailyBalanceRepository.findTopByUserIdAndDate(user.getId(), Date.valueOf(LocalDate.now())) != null) {
             DailyBalance dailyBalance = dailyBalanceRepository.findTopByUserIdAndDate(user.getId(), Date.valueOf(LocalDate.now()));
             List<Meal> meals = dailyBalance.getMeals();
-            Meal toDelete = null;
-            for (Meal meal : meals) {
-                if (meal.getId().equals(id)) {
-                    toDelete = meal;
-                    mealRepository.delete(meal);
-                }
-            }
-            if (toDelete != null) {
-                meals.remove(toDelete);
-            }
-            int totalReceived = 0;
-            for (Meal meal : meals) {
-                totalReceived += meal.getTotalCalories();
-            }
+            Meal mealToDelete = meals.stream()
+                                        .filter(m -> m.getId().equals(id))
+                                        .collect(Collectors.toList()).get(0);
+            mealRepository.delete(mealToDelete);
+            meals.remove(mealToDelete);
+            BasicMacro basicMacro = new BasicMacro();
+            meals.forEach(m -> basicMacro.setCalories(basicMacro.getCalories() + m.getTotalCalories()));
+            int totalReceived = basicMacro.getCalories();
             dailyBalance.setReceived(totalReceived);
             dailyBalance.setBalance(totalReceived - dailyBalance.getNeeded());
             dailyBalance.setMeals(meals);
@@ -214,15 +204,12 @@ public class MealController {
         if (object != null) {
             DailyBalance dailyBalance = (DailyBalance)object;
             List<Meal> meals = mealRepository.findAllById(dailyBalance.getId());
-            if(meals.size() == 0){
-                model.addAttribute("exist", null);
+            if(meals.size() != 0){
+                model.addAttribute("exist", "exist");
+                model.addAttribute("meals", meals);
                 model.addAttribute("viewMeals", "viewMeals");
                 return "home";
             }
-            model.addAttribute("exist", "exist");
-            model.addAttribute("meals", meals);
-            model.addAttribute("viewMeals", "viewMeals");
-            return "home";
         }
         model.addAttribute("exist", null);
         model.addAttribute("viewMeals", "viewMeals");
@@ -235,12 +222,13 @@ public class MealController {
         Object object = dailyBalanceRepository.findTopByUserIdAndDate(user.getId(), Date.valueOf(LocalDate.now())).getMeals();
         if (object != null) {
             List<Meal> meals = (List<Meal>) object;
-            for (Meal meal : meals) {
-                if(meal.getMealNumber() == mealNumber) {
+            Meal meal = meals.stream()
+                    .filter(m -> m.getMealNumber() == mealNumber)
+                    .collect(Collectors.toList()).get(0);
+            if(meal != null){
                     model.addAttribute("meal", meal);
                     model.addAttribute("viewMeal", "viewMeal");
                     return "home";
-                }
             }
         }
         return "redirect:/diet/meal/option";
@@ -249,12 +237,12 @@ public class MealController {
     @RequestMapping(value = "/plan", method = RequestMethod.GET)
     public String planGet(Model model, HttpSession session){
         User user = ContextHelper.getUserFromContext();
-        MissingMacro missingMacro = getMissingMacro(user.getId());
+        BasicMacro missingMacro = getMissingMacro(user.getId());
         if(missingMacro != null){
             List<GraphResult> graphResults = new ArrayList<>();
-            graphResults.add(new GraphResult("Białko: 0/" + replaceComma(missingMacro.getProtein() + ""), "0%", "width: 0px; background-color: green;", true));
-            graphResults.add(new GraphResult("Węglowodany: 0/" + replaceComma(missingMacro.getCarbohydrates() + ""), "0%", "width: 0px; background-color: red;", true));
-            graphResults.add(new GraphResult("Tłuszcz: 0/" + replaceComma(missingMacro.getFat() + ""), "0%", "width: 0px; background-color: yellow;", true));
+            graphResults.add(new GraphResult("Białko: 0/" + numberHelper.replaceComma(missingMacro.getProtein() + ""), "0%", "width: 0px; background-color: green;", true));
+            graphResults.add(new GraphResult("Węglowodany: 0/" + numberHelper.replaceComma(missingMacro.getCarbohydrates() + ""), "0%", "width: 0px; background-color: red;", true));
+            graphResults.add(new GraphResult("Tłuszcz: 0/" + numberHelper.replaceComma(missingMacro.getFat() + ""), "0%", "width: 0px; background-color: yellow;", true));
             graphResults.add(new GraphResult("Kalorie: 0/" + missingMacro.getCalories(), "0%", "width: 0px; background-color: blue;", true));
             graphResults.add(new GraphResult("%", "", "", false));
             graphResults.add(new GraphResult("Ładunek posiłku: ", "0.0","width: 0px; background-color: orange;", true));
@@ -294,15 +282,10 @@ public class MealController {
         List<Product> chosenProducts = null;
         if(chosenProductsObject != null){
             chosenProducts = (List<Product>) chosenProductsObject;
-            int index = -1;
-            for (Product product : chosenProducts) {
-                if(product.getId() == id){
-                    index = chosenProducts.indexOf(product);
-                }
-            }
-            if(index != -1){
-                chosenProducts.remove(index);
-            }
+            Product product = chosenProducts.stream()
+                    .filter(p -> p.getId() == id)
+                    .collect(Collectors.toList()).get(0);
+            chosenProducts.remove(product);
         }
         session.setAttribute("chosenProducts", chosenProducts);
         return "redirect:/diet/meal/plan";
@@ -317,23 +300,22 @@ public class MealController {
         return "redirect:/diet/meal/option";
     }
 
-    private MissingMacro getMissingMacro(long userId){
+    private BasicMacro getMissingMacro(long userId){
         DailyBalance dailyBalance = dailyBalanceRepository.findTopByUserIdAndDate(userRepository.findTopById(userId).getId(), Date.valueOf(LocalDate.now()));
         if(dailyBalance != null){
-            double receivedProtein = 0.0;
-            double receivedCarbohydrates = 0.0;
-            double receivedFat = 0.0;
             List<Meal> meals = dailyBalance.getMeals();
             if(meals != null && meals.size() > 0){
-                for(Meal meal : meals){
-                    receivedProtein += meal.getTotalProtein();
-                    receivedCarbohydrates += meal.getTotalCarbohydrates();
-                    receivedFat += meal.getTotalFat();
-                }
-                return new MissingMacro(Double.parseDouble(DECIMAL_FORMAT.format((dailyBalance.getTotalProtein() - receivedProtein)).replace(",", ".")),
-                        Double.parseDouble(DECIMAL_FORMAT.format((dailyBalance.getTotalCarbohydrates() - receivedCarbohydrates)).replace(",", ".")),
-                                Double.parseDouble(DECIMAL_FORMAT.format((dailyBalance.getTotalFat() - receivedFat)).replace(",", ".")),
-                                                dailyBalance.getNeeded() - dailyBalance.getReceived());
+                BasicMacro basicMacro = new BasicMacro();
+                meals.forEach(m -> {
+                    basicMacro.setProtein(basicMacro.getProtein() + m.getTotalProtein());
+                    basicMacro.setCarbohydrates(basicMacro.getCarbohydrates() + m.getTotalCarbohydrates());
+                    basicMacro.setFat(basicMacro.getFat() + m.getTotalFat());
+                });
+                basicMacro.setProtein(numberHelper.roundDouble(dailyBalance.getTotalProtein() - basicMacro.getProtein()));
+                basicMacro.setCarbohydrates(numberHelper.roundDouble(dailyBalance.getTotalCarbohydrates() - basicMacro.getCarbohydrates()));
+                basicMacro.setFat(numberHelper.roundDouble(dailyBalance.getTotalFat() - basicMacro.getFat()));
+                basicMacro.setCalories(dailyBalance.getNeeded() - dailyBalance.getReceived());
+                return basicMacro;
             }
         }
         return null;
@@ -372,9 +354,5 @@ public class MealController {
             }
         });
         return categoriesProducts;
-    }
-
-    private String replaceComma(String number){
-        return number.replace(",", ".");
     }
 }
