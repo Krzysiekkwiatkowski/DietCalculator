@@ -11,7 +11,7 @@
     <groupId>pl.coderslab</groupId>
     <artifactId>DietCalculator</artifactId>
     <version>0.9.8</version>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
     <name>DietCalculator</name>
     <description>Demo project for Spring Boot</description>
     <properties>
@@ -52,11 +52,6 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-tomcat</artifactId>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
