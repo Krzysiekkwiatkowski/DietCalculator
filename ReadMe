@@ -6,3 +6,9 @@ To build this project you need to navigate in your file system to the source fol
 Starting and stopping application:
 To start application run command: mvn spring-boot:run
 When you need to stop it just press on your keyboard: Ctrl + C
+
+Using:
+to register/log in you need to go to:
+http://localhost:8080/diet/home
+
+Default page is for logging in, but if you don't have account yet, at the top to the right is a register button, otherwise just log in. After you click it and fulfill form, your account is created and your macro elements are calculated. You can use application from now on. You have few navigation options: products, categories, meals, user, training and balance. Enjoy!
